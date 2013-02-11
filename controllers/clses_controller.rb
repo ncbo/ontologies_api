@@ -102,7 +102,7 @@ class ClsesController
       rescue
         error 400, "Page number and page size must integers. page no. is #{page} and page size is #{size}."
       end
-      raise error 400, "Limit page size is 200. Page size in request is #{size}" if size > 200
+      raise error 400, "Limit page size is 500. Page size in request is #{size}" if size > 500
       return page, size
     end
 

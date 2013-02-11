@@ -28,6 +28,10 @@ require 'rack/post-body-to-params'
 # Use middleware (ORDER IS IMPORTANT)
 use Rack::Accept
 use Rack::PostBodyToParams
+if [:development].include?(settings.environment)
+  require 'rack/perftools_profiler'
+  use Rack::PerftoolsProfiler, :default_printer => :pdf, :mode => :cputime, :frequency => 1000
+end
 
 # Initialize the app
 require_relative 'init'
