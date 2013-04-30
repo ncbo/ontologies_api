@@ -16,6 +16,7 @@ require 'ncbo_annotator'
 # Require middleware
 require 'rack/accept'
 require 'rack/post-body-to-params'
+require_relative 'lib/rack/rack_cache_custom_purge'
 
 # Logging setup
 require_relative "config/logging"
@@ -60,6 +61,7 @@ end
 
 if settings.environment == :production
   require 'rack/cache'
+  use Rack::Cache::CustomPurge
   use Rack::Cache,
     :verbose     => true,
     :metastore   => 'file:./cache/rack/meta',
