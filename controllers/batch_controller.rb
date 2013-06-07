@@ -18,17 +18,27 @@ class BatchController < ApplicationController
         class_id_by_ontology[class_input["ontology"]] << class_input["class"]
       end
       classes = []
-      class_id_by_ontology.each do |ont_id,class_ids|
-        ont_id = ont_id.sub(LinkedData.settings.rest_url_prefix, Goo.id_prefix)
-        class_ids.uniq!
-        class_ids.map! { |id| RDF::URI.new(id) }
-        ont = LinkedData::Models::Ontology.find(RDF::URI.new(ont_id))
-                    .include(submissions: [:submissionId]).first
-        error 404, "Ontology #{ont_id} could not be found" if ont.nil?
-        latest = ont.latest_submission
-        latest.bring(ontology:[:acronym])
-        classes.concat(LinkedData::Models::Class.in(latest).ids(class_ids).include(goo_include.map{|x| x.to_sym}).read_only.all)
+      total_time = 0
+      threads = []
+      mutex = Mutex.new
+      class_id_by_ontology.keys.length.times do
+        class_id_by_ontology.keys.each do |ont_id|
+          class_ids = class_id_by_ontology.delete(ont_id)
+          threads << Thread.new do
+            ont_id = ont_id.sub(LinkedData.settings.rest_url_prefix, Goo.id_prefix)
+            class_ids.uniq!
+            class_ids.map! { |id| RDF::URI.new(id) }
+            ont = LinkedData::Models::Ontology.find(RDF::URI.new(ont_id))
+                        .include(submissions: [:submissionId]).first
+            error 404, "Ontology #{ont_id} could not be found" if ont.nil?
+            latest = ont.latest_submission
+            latest.bring(ontology:[:acronym])
+            ont_classes = LinkedData::Models::Class.in(latest).ids(class_ids).include(goo_include).all
+            mutex.synchronize { classes.concat(ont_classes) }
+          end
+        end
       end
+      threads.each{|t| t.join}
       reply({ resource_type => classes })
     end
 
