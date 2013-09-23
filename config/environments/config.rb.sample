@@ -10,8 +10,12 @@ LinkedData.config do |config|
   config.search_server_url = "http://localhost:8983/solr"
   config.rest_url_prefix = "http://data.bioontology.org/"
   config.enable_security = false
-  config.redis_host = "localhost"
-  config.redis_port = 6379
+
+  #caches
+  config.http_redis_host = "localhost"
+  config.http_redis_port = 6379
+  config.goo_redis_host = "localhost"
+  config.goo_redis_port = 6379
 end
 
 Annotator.config do |config|
@@ -19,4 +23,11 @@ Annotator.config do |config|
   config.stop_words_default_file ||= "./config/default_stop_words.txt"
   config.mgrep_host            ||= "localhost"
   config.mgrep_port            ||= 55555
+  config.http_redis_host = "localhost"
+  config.http_redis_port = 6379
+end
+
+LinkedData::OntologiesAPI.config do |config|
+  config.resolver_redis_host = "localhost"
+  config.resolver_redis_port = 6379
 end
