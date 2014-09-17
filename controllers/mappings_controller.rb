@@ -157,7 +157,14 @@ class MappingsController < ApplicationController
 
     get '/ontologies' do
       expires 86400, :public
-      reply LinkedData::Mappings.mapping_counts()
+      persistent_counts = {}
+      LinkedData::Models::MappingCount.where(pair_count: false)
+      .include(:all)
+      .all
+      .each do |m|
+        persistent_counts[m.ontologies.first] = m.count
+      end
+      reply persistent_counts
     end
 
     # Statistics for an ontology
@@ -172,7 +179,19 @@ class MappingsController < ApplicationController
         error(404, "Ontology #{@params[:ontology]} does not have a submission")
       end
   
-      reply LinkedData::Mappings.mapping_ontologies_count(sub,nil)
+      persistent_counts = {}
+      LinkedData::Models::MappingCount.where(pair_count: true)
+                                      .and(ontologies: [ontology.acronym])
+      .include(:all)
+      .all
+      .each do |m|
+        other = m.ontologies.first
+        if other == ontology.acronym
+          other = m.ontologies[1]
+        end
+        persistent_counts[other] = m.count
+      end
+      reply persistent_counts
     end
 
   end
