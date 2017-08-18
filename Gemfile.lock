@@ -62,7 +62,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 89f07286b3f54cfe69094f03f8b8c4129d26d9b5
+  revision: c3936b36fc5855178c0203a2236ed6785d6ee115
   branch: solr_6_upgrade
   specs:
     ontologies_linked_data (0.0.1)
