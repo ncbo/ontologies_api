@@ -261,7 +261,7 @@ GEM
     rdf (1.0.8)
       addressable (>= 2.2)
     recursive-open-struct (1.1.2)
-    redcarpet (3.5.0)
+    redcarpet (3.5.1)
     redis (4.2.1)
     redis-activesupport (4.1.5)
       activesupport (>= 3, < 5)
