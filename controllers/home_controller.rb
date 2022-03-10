@@ -3,16 +3,6 @@ require 'redcarpet'
 
 class HomeController < ApplicationController
 
-CROSSDOMAIN = <<EOS.freeze
-<?xml version="1.0"?>
-<!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
-<cross-domain-policy>
-    <site-control permitted-cross-domain-policies="all"/>
-    <allow-access-from domain="*" secure="false"/>
-    <allow-http-request-headers-from domain="*" headers="*" secure="false"/>
-</cross-domain-policy>
-EOS
-
   CLASS_MAP = {
       Property: "LinkedData::Models::ObjectProperty"
   }
@@ -43,14 +33,6 @@ EOS
     get "metadata/:class" do
       @metadata = metadata(params["class"])
       haml "documentation/metadata".to_sym, :layout => "documentation/layout".to_sym
-    end
-
-    ##
-    # This is needed by Adobe Flash/Flex applications for cross-domain security access
-    get "crossdomain.xml" do
-      expires 3600, :public
-      content_type 'application/xml', charset: 'utf-8'
-      CROSSDOMAIN
     end
 
     def resource_collection_link(cls)
