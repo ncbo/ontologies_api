@@ -4,7 +4,6 @@ gem 'activesupport', '~> 3.0'
 # see https://github.com/ncbo/ontologies_api/issues/69
 gem 'bigdecimal', '1.4.2'
 gem 'faraday', '~> 1.9'
-gem 'google-api-client', '~> 0.10'
 gem 'json-schema', '~> 2.0'
 gem 'multi_json', '~> 1.0'
 gem 'oj', '~> 2.0'
@@ -24,7 +23,7 @@ gem 'rack-cors', require: 'rack/cors'
 # GitHub dependency can be removed when https://github.com/niko/rack-post-body-to-params/pull/6 is merged and released
 gem 'rack-post-body-to-params', github: 'palexander/rack-post-body-to-params', branch: 'multipart_support'
 gem 'rack-timeout'
-gem 'redis-rack-cache', '~> 1.0'
+gem 'redis-rack-cache', '~> 2.0'
 
 # Data access (caching)
 gem 'redis'
