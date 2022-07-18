@@ -51,9 +51,6 @@ gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branc
 gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
 gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'develop'
 
-# NCBO (unversioned)
-gem 'ncbo_resolver', github: 'ncbo/ncbo_resolver'
-
 group :development do
   gem 'capistrano', '~> 3', require: false
   gem 'capistrano-bundler', require: false
