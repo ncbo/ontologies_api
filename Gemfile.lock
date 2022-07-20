@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: d46f0cb63fec84c8fdd6a0d9506146a34ba8ec88
+  revision: ca01815c2db998ebb9073db20d86dd9ef47717ab
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -61,7 +61,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 2e62a962f4ba66db28890270f3bb5eb504f2a7f2
+  revision: 52b7cec3c5b13d964aa2c20b463598e66dcb7270
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -258,10 +258,6 @@ GEM
     rack-test (2.0.2)
       rack (>= 1.3)
     rack-timeout (0.6.3)
-    rainbows (5.2.1)
-      kgio (~> 2.5)
-      rack (>= 1.1, < 3.0)
-      unicorn (~> 5.1)
     raindrops (0.20.0)
     rake (10.5.0)
     rdf (1.0.8)
@@ -327,13 +323,13 @@ GEM
     temple (0.8.2)
     tilt (2.0.10)
     trailblazer-option (0.1.2)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
-    unicorn (5.8.0)
+    unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
     unicorn-worker-killer (0.4.5)
@@ -384,7 +380,6 @@ DEPENDENCIES
   rack-post-body-to-params!
   rack-test
   rack-timeout
-  rainbows
   rake (~> 10.0)
   redcarpet
   redis

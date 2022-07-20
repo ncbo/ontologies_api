@@ -35,7 +35,6 @@ gem 'cube-ruby', require: 'cube'
 gem 'newrelic_rpm'
 
 # HTTP server
-gem 'rainbows'
 gem 'unicorn'
 gem 'unicorn-worker-killer'
 
