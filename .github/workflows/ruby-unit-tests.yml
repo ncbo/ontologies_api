@@ -6,10 +6,23 @@ on:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        backend: ['api', 'api-agraph'] # api runs tests with 4store backend and api-agraph runs with AllegroGraph backend
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build docker-compose
-      run: docker-compose build
+      run: docker-compose --profile 4store build #profile flag is set in order to build all containers in this step
     - name: Run unit tests
-      run: docker-compose run --rm api wait-for-it solr-ut:8983 -- bundle exec rake test
+      # unit tests are run inside a container
+      # http://docs.codecov.io/docs/testing-with-docker
+      run: |
+        ci_env=`bash <(curl -s https://codecov.io/env)`
+        docker-compose run $ci_env -e CI --rm ${{ matrix.backend }} wait-for-it solr-ut:8983 -- bundle exec rake test TESTOPTS='-v'
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        flags: unittests
+        verbose: true
+        fail_ci_if_error: false # optional (default = false)

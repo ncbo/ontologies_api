@@ -70,38 +70,6 @@ namespace :unicorn do
   end
 end
 
-namespace :rainbows do
-  namespace :start do
-    desc "rainbows start (production settings)"
-    task :production do
-      print "Starting rainbows...\n"
-      `bundle exec rainbows -p 80 -c config/rainbows.rb -D -E production`
-    end
-
-    desc "rainbows start (development settings)"
-    task :development do
-      print "Starting rainbows...\n"
-      `bundle exec rainbows -p 9393 -c config/rainbows.rb`
-    end
-  end
-
-  desc "rainbows stop"
-  task :stop do
-    `pkill -QUIT -f 'rainbows master'`
-    if $?.exitstatus == 1
-      puts "rainbows not running"
-    elsif $?.exitstatus == 0
-      print "Killing rainbows..."
-      pids = `pgrep -f 'rainbows master'`
-      while !pids.empty?
-        print "."
-        pids = `pgrep -f 'rainbows master'`
-      end
-      print "\n"
-    end
-  end
-end
-
 def clear_cache(env)
   require 'ontologies_linked_data'
   require 'ncbo_annotator'
@@ -142,7 +110,7 @@ namespace :deploy do
     `git pull`
     puts "Installing bundle"
     `bundle install`
-    puts 'Restarting rainbows'
+    puts 'Restarting unicorn'
     `sudo env PATH=$PATH rake unicorn:stop`
     `sudo env PATH=$PATH rake unicorn:start:production`
   end

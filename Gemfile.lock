@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 532f89677472dbf63475862d81fe9be3e1883353
+  revision: 00d04b4a4a43da4534aee5662a5175e74ff7d628
   branch: develop
   specs:
     ncbo_annotator (0.0.1)
@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: d46f0cb63fec84c8fdd6a0d9506146a34ba8ec88
+  revision: ca01815c2db998ebb9073db20d86dd9ef47717ab
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -52,16 +52,8 @@ GIT
       redis
 
 GIT
-  remote: https://github.com/ncbo/ncbo_resolver.git
-  revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
-  specs:
-    ncbo_resolver (0.0.1)
-      recursive-open-struct
-      redis
-
-GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 0356ef875725fe4514fea26e69944a3a5fc4268f
+  revision: 52b7cec3c5b13d964aa2c20b463598e66dcb7270
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -221,7 +213,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (7.0.1)
     netrc (0.11.0)
-    newrelic_rpm (8.8.0)
+    newrelic_rpm (8.9.0)
     oj (2.18.5)
     omni_logger (0.1.4)
       logger
@@ -249,15 +241,10 @@ GEM
     rack-test (2.0.2)
       rack (>= 1.3)
     rack-timeout (0.6.3)
-    rainbows (5.2.1)
-      kgio (~> 2.5)
-      rack (>= 1.1, < 3.0)
-      unicorn (~> 5.1)
     raindrops (0.20.0)
     rake (10.5.0)
     rdf (1.0.8)
       addressable (>= 2.2)
-    recursive-open-struct (1.1.3)
     redcarpet (3.5.1)
     redis (4.7.0)
     redis-activesupport (5.3.0)
@@ -296,6 +283,9 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
+    simplecov-cobertura (2.1.0)
+      rexml
+      simplecov (~> 0.19)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     sinatra (1.4.8)
@@ -318,13 +308,13 @@ GEM
     temple (0.8.2)
     tilt (2.0.10)
     trailblazer-option (0.1.2)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
-    unicorn (5.8.0)
+    unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
     unicorn-worker-killer (0.4.5)
@@ -356,7 +346,6 @@ DEPENDENCIES
   ncbo_annotator!
   ncbo_cron!
   ncbo_ontology_recommender!
-  ncbo_resolver!
   newrelic_rpm
   oj (~> 2.0)
   ontologies_linked_data!
@@ -371,7 +360,6 @@ DEPENDENCIES
   rack-post-body-to-params!
   rack-test
   rack-timeout
-  rainbows
   rake (~> 10.0)
   redcarpet
   redis
@@ -379,6 +367,7 @@ DEPENDENCIES
   redis-rack-cache (~> 2.0)
   shotgun!
   simplecov
+  simplecov-cobertura
   sinatra (~> 1.0)
   sinatra-advanced-routes
   sinatra-contrib (~> 1.0)

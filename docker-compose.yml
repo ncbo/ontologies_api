@@ -10,7 +10,7 @@ x-app: &app
       # default bundle config resolves to /usr/local/bundle/config inside of the container
       # we are setting it to local app directory if we need to use 'bundle config local'
       BUNDLE_APP_CONFIG: /srv/ontoportal/ontologies_api/.bundle
-      #COVERAGE=true
+      COVERAGE: 'true'
       GOO_REDIS_HOST: redis-ut
       REDIS_HOST: redis-ut
       REDIS_PORT: 6379
@@ -23,7 +23,7 @@ x-app: &app
     tty: true
     command: "bundle exec rackup -o 0.0.0.0 --port 9393"
     ports:
-      - "9393:9393"
+      - 9393:9393
     volumes:
       # bundle volume for hosting gems installed by bundle; it helps in local development with gem udpates
       - bundle:/srv/ontoportal/bundle
@@ -48,7 +48,7 @@ services:
       GOO_PATH_DATA: /data/
       GOO_PATH_UPDATE: /update/
     profiles:
-      - '4store'
+      - 4store
     depends_on:
       - solr-ut
       - redis-ut
@@ -62,7 +62,6 @@ services:
       GOO_BACKEND_NAME: ag
       GOO_PORT: 10035
       GOO_HOST: agraph-ut
-      MGREP_HOST: mgrep-ut
       GOO_PATH_QUERY: /repositories/bioportal_test
       GOO_PATH_DATA: /repositories/bioportal_test/statements
       GOO_PATH_UPDATE: /repositories/bioportal_test/statements
@@ -85,7 +84,7 @@ services:
       && 4s-backend ontoportal_kb
       && 4s-httpd -D -s-1 -p 9000 ontoportal_kb"
     profiles:
-      - '4store'
+      - 4store
 
 
   solr-ut:

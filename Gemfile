@@ -34,7 +34,6 @@ gem 'cube-ruby', require: 'cube'
 gem 'newrelic_rpm'
 
 # HTTP server
-gem 'rainbows'
 gem 'unicorn'
 gem 'unicorn-worker-killer'
 
@@ -49,9 +48,6 @@ gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'develop'
 gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'develop'
 gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
 gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'develop'
-
-# NCBO (unversioned)
-gem 'ncbo_resolver', github: 'ncbo/ncbo_resolver'
 
 group :development do
   gem 'capistrano', '~> 3', require: false
@@ -71,4 +67,5 @@ group :test do
   gem 'minitest-stub_any_instance'
   gem 'rack-test'
   gem 'simplecov', require: false
+  gem 'simplecov-cobertura' # for codecov.io
 end
