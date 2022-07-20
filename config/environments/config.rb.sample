@@ -34,7 +34,5 @@ Annotator.config do |config|
 end
 
 LinkedData::OntologiesAPI.config do |config|
-  config.resolver_redis_host = "localhost"
-  config.resolver_redis_port = 6379
   config.restrict_download = ["ACR0", "ACR1", "ACR2"]
 end
