@@ -35,22 +35,6 @@ module Sinatra
         ont_submission
       end
 
-      ##
-      # Checks to see if the request has a file attached
-      def request_has_file?
-        @params.any? {|p,v| v.instance_of?(Hash) && v.key?(:tempfile) && v[:tempfile].instance_of?(Tempfile)}
-      end
-
-      ##
-      # Looks for a file that was included as a multipart in a request
-      def file_from_request
-        @params.each do |param, value|
-          if value.instance_of?(Hash) && value.has_key?(:tempfile) && value[:tempfile].instance_of?(Tempfile)
-            return value[:filename], value[:tempfile]
-          end
-        end
-        return nil, nil
-      end
 
       ##
       # Add a file to the submission if a file exists in the params
