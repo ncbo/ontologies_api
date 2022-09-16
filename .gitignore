@@ -68,3 +68,5 @@ test/test_run.log
 test/data/ontology_files/catalog-v001.xml
 
 create_permissions.log
+
+ontologies_api.iml

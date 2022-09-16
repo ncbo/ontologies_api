@@ -33,6 +33,32 @@ module Sinatra
 
         mappings
       end
+      ##
+      # Parse the uploaded mappings file
+      def parse_bulk_load_file
+        filename, tmpfile = file_from_request
+        if tmpfile
+          if filename.nil?
+            error 400, "Failure to resolve mappings json filename from upload file."
+          end
+          Array(::JSON.parse(tmpfile.read,{:symbolize_names => true}))
+        end
+
+      end
+      def creator_id
+        params[:creator]&.start_with?("http://") ?
+          params[:creator]&.split("/")[-1] : params[:creator]
+      end
+
+      def find_user
+        user_id = creator_id
+        user_creator = LinkedData::Models::User.find(user_id)
+                                               .include(:username).first
+        if user_creator.nil?
+          raise StandardError, "User with id `#{params[:creator]}` not found"
+        end
+        user_creator
+      end
     end
   end
 end
