@@ -10,9 +10,9 @@ gem 'oj', '~> 2.0'
 gem 'parseconfig'
 gem 'rack'
 gem 'rake', '~> 10.0'
-gem 'sinatra', '~> 1.0'
+gem 'sinatra', '~> 3.0'
 gem 'sinatra-advanced-routes'
-gem 'sinatra-contrib', '~> 1.0'
+gem 'sinatra-contrib', '~> 3.0'
 
 # Rack middleware
 gem 'ffi'
