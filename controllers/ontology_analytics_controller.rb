@@ -7,6 +7,7 @@ class OntologyAnalyticsController < ApplicationController
   namespace "/analytics" do
 
     get do
+      expires 86400, :public
       year = year_param(params)
       error 400, "The year you supplied is invalid. Valid years start with 2 and contain 4 digits." if params["year"] && !year
       month = month_param(params)
@@ -24,6 +25,7 @@ class OntologyAnalyticsController < ApplicationController
   namespace "/ontologies/:acronym/analytics" do
 
     get do
+      expires 86400, :public
       ont = Ontology.find(params["acronym"]).first
       error 404, "No ontology exists with the acronym: #{params["acronym"]}" if ont.nil?
       analytics = ont.analytics

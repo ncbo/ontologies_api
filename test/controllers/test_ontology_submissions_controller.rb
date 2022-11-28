@@ -125,6 +125,10 @@ class TestOntologySubmissionsController < TestCase
     # Clear restrictions on downloads
     LinkedData::OntologiesAPI.settings.restrict_download = []
     # see also test_ontologies_controller::test_download_ontology
+
+    # Test downloads of nonexistent ontology
+    get "/ontologies/BOGUS66/submissions/55/download"
+    assert_equal(422, last_response.status, "failed to handle downloads of nonexistent ontology" + get_errors(last_response))
   end
 
   def test_download_ontology_submission_rdf

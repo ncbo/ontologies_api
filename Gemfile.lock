@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 57204d8e54432ba660af4c49806e2a3019a23fa2
+  revision: 71d41e3afb35dafe29abfb6d9becaadc725bad36
   branch: master
   specs:
     ncbo_annotator (0.0.1)
@@ -109,6 +109,7 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     backports (3.23.0)
     bcrypt (3.1.18)
+    bcrypt_pbkdf (1.1.0)
     bigdecimal (1.4.2)
     builder (3.2.4)
     capistrano (3.17.1)
@@ -131,6 +132,7 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    ed25519 (1.3.0)
     faraday (1.10.2)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -330,12 +332,14 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 3.0)
+  bcrypt_pbkdf (>= 1.0, < 2.0)
   bigdecimal (= 1.4.2)
   capistrano (~> 3)
   capistrano-bundler
   capistrano-locally
   capistrano-rbenv
   cube-ruby
+  ed25519 (>= 1.2, < 2.0)
   faraday (~> 1.9)
   ffi
   goo!
@@ -377,4 +381,4 @@ DEPENDENCIES
   unicorn-worker-killer
 
 BUNDLED WITH
-   2.3.20
+   2.3.23

@@ -1,6 +1,6 @@
 # config valid only for Capistrano 3
 
-APP_PATH = '/srv/ncbo'
+APP_PATH = '/srv/ontoportal'
 
 set :application, 'ontologies_api'
 set :repo_url, "https://github.com/ncbo/#{fetch(:application)}.git"
@@ -77,7 +77,7 @@ end
 
 namespace :deploy do
 
-  desc 'Incorporate the bioportal_conf private repository content'
+  desc 'Incorporate the private repository content'
   # Get cofiguration from repo if PRIVATE_CONFIG_REPO env var is set
   # or get config from local directory if LOCAL_CONFIG_PATH env var is set
   task :get_config do

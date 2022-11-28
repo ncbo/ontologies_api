@@ -1,0 +1,85 @@
+# Workflow for deploying ontologies_api to stage/prod systems via capistrano.
+# This workflow runs after a successeful execution of the unit test workflow and it
+# can also be triggered manually.
+#
+# Required github secrets:
+#
+# CONFIG_REPO - github repo containing config and customizations for the API. Format 'author/private_config_repo'
+# it is used for getting capistrano deployment configuration for stages on the github actions runner and
+# PRIVATE_CONFIG_REPO env var is constructed from it which is used by capistrano on the remote servers for pulling configs.
+#
+# GH_PAT - github Personal Access Token for accessing PRIVATE_CONFIG_REPO
+#
+# SSH_JUMPHOST - ssh jump/proxy host though which deployments have to though if app servers are hosted on private network.
+#
+# DEPLOY_ENC_KEY - key for decrypting deploymnet ssh key residing in config/deploy_id_rsa_enc (see miloserdow/capistrano-deploy)
+# this SSH key is used for accessing jump host, UI nodes, and private github repo.
+
+name: Capistrano Deployment
+# Controls when the action will run.
+on:
+  # Trigger deployment to staging after unit test action completes
+  workflow_run:
+    workflows: ["Ruby Unit Tests"]
+    types:
+      - completed
+    branches: [master, develop]
+  # Allows running this workflow manually from the Actions tab
+  workflow_dispatch:
+    branches: [master, develop]
+    inputs:
+      BRANCH:
+        description: 'Branch/tag to deploy'
+        default: develop
+        required: true
+      environment:
+        description: 'target environment to deploy to'
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # run deployment only if "Ruby Unit Tests" workflow completes sucessefully
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
+    env:
+      BUNDLE_WITHOUT: default #install gems required primarily for the deployment in order to speed this workflow
+      PRIVATE_CONFIG_REPO: ${{ format('git@github.com:{0}.git', secrets.CONFIG_REPO) }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: set branch/tag and environment to deploy from inputs
+      run: |
+        # workflow_dispatch default input doesn't get set on push so we need to set defaults
+        # via shell parameter expansion
+        # https://dev.to/mrmike/github-action-handling-input-default-value-5f2g
+        USER_INPUT_BRANCH=${{ inputs.branch }}
+        echo "BRANCH=${USER_INPUT_BRANCH:-develop}" >> $GITHUB_ENV
+        USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
+        echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> $GITHUB_ENV
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.6 # Not needed with a .ruby-version file
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: get-deployment-config
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ secrets.CONFIG_REPO }} # repository containing deployment settings
+        token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+        path:  deploy_config
+    - name: copy-deployment-config
+      run:  cp -r deploy_config/ontologies_api/* .
+    # add ssh hostkey so that capistrano doesn't complain
+    - name: Add jumphost's hostkey to Known Hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.SSH_JUMPHOST }} > ~/.ssh/known_hosts
+      shell: bash
+    - uses: miloserdow/capistrano-deploy@master
+      with:
+        target: ${{ env.TARGET }} # which environment to deploy
+        deploy_key: ${{ secrets.DEPLOY_ENC_KEY }} # Name of the variable configured in Settings/Secrets of your github project
