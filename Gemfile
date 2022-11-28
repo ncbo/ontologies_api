@@ -38,7 +38,7 @@ gem 'unicorn'
 gem 'unicorn-worker-killer'
 
 # Templating
-gem 'haml'
+gem 'haml', '~> 5.2.2'
 gem 'redcarpet'
 
 # NCBO
