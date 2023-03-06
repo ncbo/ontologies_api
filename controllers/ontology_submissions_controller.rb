@@ -38,6 +38,7 @@ class OntologySubmissionsController < ApplicationController
     # Display a submission
     get '/:ontology_submission_id' do
       ont = Ontology.find(params["acronym"]).include(:acronym).first
+      error 422, "Ontology #{params["acronym"]} does not exist" unless ont
       check_last_modified_segment(LinkedData::Models::OntologySubmission, [ont.acronym])
       ont.bring(:submissions)
       ont_submission = ont.submission(params["ontology_submission_id"])

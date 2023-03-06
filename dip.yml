@@ -34,14 +34,14 @@ interaction:
 
   # A shortcut to run unit tests
   test:
-    description: Run minitest unit tests
+    description: Run minitest unit tests with 4store triplestore
     service: api
-    command: bundle exec rake test
+    command: bundle exec rake test TESTOPTS='-v'
 
   test-ag:
-    description: Run minitest unit tests
+    description: Run minitest unit tests with AllegroGraph triplestore
     service: api-agraph
-    command: bundle exec rake test
+    command: bundle exec rake test TESTOPTS='-v'
 
   rackup:
     description: Run onotlogies_api service via rack up commands

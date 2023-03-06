@@ -4,7 +4,7 @@
 # server in each group is considered to be the first
 # unless any hosts have the primary property set.
 # Don't declare `role :all`, it's a meta role
-ole :app, %w{api1.prd.ontoportal.org api2.prd.ontoportal.org/}
+ole :app, %w{api1.stg.ontoportal.org api2.stg.ontoportal.org}
 
 # Extended Server Syntax
 # ======================
@@ -45,7 +45,7 @@ set :ssh_options, {
 
 # set git branch to deploy from.  Default to master in produciton and develop in staging
 # this can be overwritten with a different branch or tag, i.e v6.9.0 by setting env variable BRANCH
-BRANCH = ENV.include?('BRANCH') ? ENV['BRANCH'] : 'master'
+BRANCH = ENV.include?('BRANCH') ? ENV['BRANCH'] : 'develop'
 set :branch, BRANCH
 
 # private git repo for configuraiton

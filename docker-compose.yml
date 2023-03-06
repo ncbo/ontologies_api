@@ -1,40 +1,44 @@
 x-app: &app
-    build:
-      context: .
-      args:
-        RUBY_VERSION: '2.7'
-    # Increase the version number in the image tag every time Dockerfile or its arguments is changed
-    image: ontologies_api:0.0.1
-    environment: &env
-      BUNDLE_PATH: /srv/ontoportal/bundle
-      # default bundle config resolves to /usr/local/bundle/config inside of the container
-      # we are setting it to local app directory if we need to use 'bundle config local'
-      BUNDLE_APP_CONFIG: /srv/ontoportal/ontologies_api/.bundle
-      COVERAGE: 'true'
-      GOO_REDIS_HOST: redis-ut
-      REDIS_HOST: redis-ut
-      REDIS_PORT: 6379
-      SOLR_HOST: solr-ut
-      SOLR_TERM_SEARCH_URL: http://solr-ut:8983/solr/term_search_core1
-      SOLR_PROP_SEARCH_URL: http://solr-ut:8983/solr/prop_search_core1
-      MGREP_HOST: mgrep-ut
-      MGREP_PORT: 55555
-    stdin_open: true
-    tty: true
-    command: "bundle exec rackup -o 0.0.0.0 --port 9393"
-    ports:
-      - 9393:9393
-    volumes:
-      # bundle volume for hosting gems installed by bundle; it helps in local development with gem udpates
-      - bundle:/srv/ontoportal/bundle
-      # api code
-      - .:/srv/ontoportal/ontologies_api
-      # mount directory containing development version of the gems if you need to use 'bundle config local'
-      #- /Users/alexskr/ontoportal:/Users/alexskr/ontoportal
-    depends_on:
-      - solr-ut
-      - redis-ut
-      - mgrep-ut
+  build:
+    context: .
+    args:
+      RUBY_VERSION: '2.7'
+  # Increase the version number in the image tag every time Dockerfile or its arguments is changed
+  image: ontologies_api:0.0.1
+  environment: &env
+    BUNDLE_PATH: /srv/ontoportal/bundle
+    # default bundle config resolves to /usr/local/bundle/config inside of the container
+    # we are setting it to local app directory if we need to use 'bundle config local'
+    BUNDLE_APP_CONFIG: /srv/ontoportal/ontologies_api/.bundle
+    COVERAGE: 'true'
+    GOO_REDIS_HOST: redis-ut
+    REDIS_GOO_CACHE_HOST: redis-ut
+    REDIS_HTTP_CACHE_HOST: redis-ut
+    REDIS_PERSISTENT_HOST: redis-ut
+    REDIS_PORT: 6379
+    SOLR_TERM_SEARCH_URL: http://solr-ut:8983/solr/term_search_core1
+    SOLR_PROP_SEARCH_URL: http://solr-ut:8983/solr/prop_search_core1
+    MGREP_HOST: mgrep-ut
+    MGREP_PORT: 55555
+  stdin_open: true
+  tty: true
+  command: "bundle exec rackup -o 0.0.0.0 --port 9393"
+  ports:
+    - 9393:9393
+  volumes:
+    # bundle volume for hosting gems installed by bundle; it helps in local development with gem udpates
+    - bundle:/srv/ontoportal/bundle
+    # api code
+    - .:/srv/ontoportal/ontologies_api
+    # mount directory containing development version of the gems if you need to use 'bundle config local'
+    #- /Users/alexskr/ontoportal:/Users/alexskr/ontoportal
+  depends_on: &depends_on
+    solr-ut:
+      condition: service_healthy
+    redis-ut:
+      condition: service_healthy
+    mgrep-ut:
+      condition: service_healthy
 
 services:
   api:
@@ -50,10 +54,9 @@ services:
     profiles:
       - 4store
     depends_on:
-      - solr-ut
-      - redis-ut
-      - mgrep-ut
-      - 4store-ut
+      <<: *depends_on
+      4store-ut:
+        condition: service_started
 
   api-agraph:
     <<: *app
@@ -68,13 +71,17 @@ services:
     profiles:
       - agraph
     depends_on:
-      - solr-ut
-      - redis-ut
-      - mgrep-ut
-      - agraph-ut
+      <<: *depends_on
+      agraph-ut:
+        condition: service_healthy
 
   redis-ut:
     image: redis
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
   4store-ut:
     image: bde2020/4store
@@ -86,12 +93,23 @@ services:
     profiles:
       - 4store
 
-
   solr-ut:
     image: ontoportal/solr-ut:0.1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/term_search_core1/admin/ping?wt=json | grep -iq '\"status\":\"OK\"}' || exit 1"]
+      start_period: 3s
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mgrep-ut:
     image: ontoportal/mgrep-ncbo:0.1
+    healthcheck:
+      test: ["CMD", "nc", "-z", "-v", "localhost", "55555"]
+      start_period: 3s
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   agraph-ut:
     image: franzinc/agraph:v7.3.0
@@ -107,9 +125,14 @@ services:
        ; agtool users add anonymous
        ; agtool users grant anonymous root:bioportal_test:rw
        ; tail -f /agraph/data/agraph.log"
+    healthcheck:
+      test: ["CMD-SHELL", "agtool storage-report bioportal_test || exit 1"]
+      start_period: 10s
+      interval: 60s
+      timeout: 5s
+      retries: 3
     profiles:
       - agraph
 
 volumes:
   bundle:
-  #fourstore:

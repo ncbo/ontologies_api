@@ -19,7 +19,7 @@ jobs:
       # http://docs.codecov.io/docs/testing-with-docker
       run: |
         ci_env=`bash <(curl -s https://codecov.io/env)`
-        docker-compose run $ci_env -e CI --rm ${{ matrix.backend }} wait-for-it solr-ut:8983 -- bundle exec rake test TESTOPTS='-v'
+        docker-compose run $ci_env -e CI --rm ${{ matrix.backend }} bundle exec rake test TESTOPTS='-v'
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
