@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-puts "(API) >> Throttling enabled at #{LinkedData::OntologiesAPI.settings.req_per_second_per_ip} req/sec"
+limit_req_ip = LinkedData::OntologiesAPI.settings.req_per_second_per_ip
+limit_req_ip_heavy = limit_req_ip / 5
+puts "(API) >> Throttling enabled at #{limit_req_ip} req/sec"
 
 require 'rack/attack'
 require 'redis-activesupport'
@@ -28,11 +30,12 @@ Rack::Attack.safelist('mark administrators as safe') do |request|
   request.env['REMOTE_USER']&.admin?
 end
 
-Rack::Attack.throttle('requests by ip',
-  limit: LinkedData::OntologiesAPI.settings.req_per_second_per_ip,
-  period: 1.second
-) do |request|
-  request.ip
+Rack::Attack.throttle('req/ip/heavy', limit: limit_req_ip_heavy, period: 1.second) do |req|
+  req.ip if req.path.include?('/recommender') || req.path.include?('/annotator')
+end
+
+Rack::Attack.throttle('req/ip', limit: limit_req_ip, period: 1.second) do |req|
+  req.ip
 end
 
 Rack::Attack.throttled_responder = lambda do |request|
