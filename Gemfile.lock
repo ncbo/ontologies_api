@@ -107,7 +107,9 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     airbrussh (1.4.2)
       sshkit (>= 1.6.1, != 1.7.0)
+    ast (2.4.2)
     backports (3.24.1)
+    base64 (0.1.1)
     bcrypt (3.1.19)
     bcrypt_pbkdf (1.1.0)
     bigdecimal (1.4.2)
@@ -202,6 +204,7 @@ GEM
     json_pure (2.6.3)
     jwt (2.7.1)
     kgio (2.11.4)
+    language_server-protocol (3.17.0.3)
     libxml-ruby (4.1.1)
     logger (1.5.3)
     macaddr (1.7.2)
@@ -241,13 +244,18 @@ GEM
     omni_logger (0.1.4)
       logger
     os (1.1.4)
+    parallel (1.23.0)
     parseconfig (1.1.2)
+    parser (3.2.2.3)
+      ast (~> 2.4.1)
+      racc
     pony (1.13.1)
       mail (>= 2.0)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.3)
+    racc (1.7.1)
     rack (1.6.13)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -264,6 +272,7 @@ GEM
     rack-test (2.1.0)
       rack (>= 1.3)
     rack-timeout (0.6.3)
+    rainbow (3.1.1)
     raindrops (0.20.1)
     rake (10.5.0)
     rdf (1.0.8)
@@ -278,6 +287,7 @@ GEM
       redis-store (>= 1.6, < 2)
     redis-store (1.9.1)
       redis (>= 4, < 5)
+    regexp_parser (2.8.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -287,6 +297,21 @@ GEM
     rsolr (2.5.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
+    rubocop (1.56.2)
+      base64 (~> 0.1.1)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.2.2.3)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.29.0)
+      parser (>= 3.2.1.0)
+    ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
@@ -331,6 +356,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
+    unicode-display_width (2.4.2)
     unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
@@ -371,7 +397,6 @@ DEPENDENCIES
   oj (~> 3.0)
   ontologies_linked_data!
   parseconfig
-  pry
   rack
   rack-accept (~> 0.4)
   rack-attack (~> 6.6.1)
@@ -387,6 +412,7 @@ DEPENDENCIES
   redis-activesupport
   redis-rack-cache (~> 2.0)
   redis-store (= 1.9.1)
+  rubocop
   shotgun!
   simplecov
   simplecov-cobertura
