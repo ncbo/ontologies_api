@@ -31,7 +31,7 @@ gem 'redis-store', '1.9.1' # remove after https://github.com/redis-store/redis-s
 
 # Monitoring
 gem 'cube-ruby', require: 'cube'
-gem 'newrelic_rpm'
+gem 'newrelic_rpm', group: [:default, :deployment]
 
 # HTTP server
 gem 'unicorn'
@@ -51,14 +51,18 @@ gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'develop'
 
 group :development do
   # bcrypt_pbkdf and ed35519 is required for capistrano deployments when using ed25519 keys; see https://github.com/miloserdow/capistrano-deploy/issues/42
+  gem 'shotgun', github: 'palexander/shotgun', branch: 'ncbo'
+  gem 'rubocop'
+end
+
+group :deployment do
+  # bcrypt_pbkdf and ed35519 is required for capistrano deployments when using ed25519 keys; see https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false
   gem 'capistrano', '~> 3', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-locally', require: false
   gem 'capistrano-rbenv', require: false
   gem 'ed25519', '>= 1.2', '< 2.0', require: false
-  gem 'pry'
-  gem 'shotgun', github: 'palexander/shotgun', branch: 'ncbo'
 end
 
 group :profiling do
