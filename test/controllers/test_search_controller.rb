@@ -2,7 +2,8 @@ require_relative '../test_case'
 
 class TestSearchController < TestCase
 
-  def self.before_suite
+  def before_suite
+     self.backend_4s_delete
      count, acronyms, bro = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
       process_submission: true,
       acronym: "BROSEARCHTEST",
@@ -54,7 +55,7 @@ class TestSearchController < TestCase
     @@test_pc_child.save
   end
 
-  def self.after_suite
+  def after_suite
     @@test_pc_root.delete
     @@test_pc_child.delete
     LinkedData::SampleData::Ontology.delete_ontologies_and_submissions

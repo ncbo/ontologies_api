@@ -2,11 +2,11 @@ require 'webrick'
 require_relative '../test_case'
 
 class TestOntologiesController < TestCase
-  def self.before_suite
-    _set_vars
-    _delete
-    _create_user
-    _create_onts
+  def before_suite
+    self.class._set_vars
+    self.class._delete
+    self.class._create_user
+    self.class._create_onts
   end
 
   def teardown

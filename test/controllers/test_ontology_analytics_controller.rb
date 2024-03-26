@@ -196,7 +196,7 @@ class TestOntologyAnalyticsController < TestCase
     }
   }
 
-  def self.before_suite
+  def before_suite
     @@redis = Redis.new(:host => Annotator.settings.annotator_redis_host, :port => Annotator.settings.annotator_redis_port)
     db_size = @@redis.dbsize
     if db_size > MAX_TEST_REDIS_SIZE
@@ -212,9 +212,9 @@ class TestOntologyAnalyticsController < TestCase
         "SNOMEDCT" => "SNOMEDCT Ontology",
         "TST" => "TST Ontology"
     }
-    _delete
-    _create_user
-    _create_onts
+    self.class._delete
+    self.class._create_user
+    self.class._create_onts
   end
 
   def teardown

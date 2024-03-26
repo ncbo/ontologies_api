@@ -2,8 +2,8 @@ require_relative '../test_case'
 
 class TestMappingsController < TestCase
 
-  def self.before_suite
-
+  def before_suite
+    self.backend_4s_delete
     ["BRO-TEST-MAP-0","CNO-TEST-MAP-0","FAKE-TEST-MAP-0"].each do |acr|
       LinkedData::Models::OntologySubmission.where(ontology: [acronym: acr]).to_a.each do |s|
         s.delete

@@ -2,10 +2,11 @@ require_relative '../test_case'
 
 class TestOntologySubmissionsController < TestCase
 
-  def self.before_suite
-    _set_vars
-    _create_user
-    _create_onts
+  def before_suite
+    self.backend_4s_delete
+    self.class._set_vars
+    self.class._create_user
+    self.class._create_onts
   end
 
   def self._set_vars

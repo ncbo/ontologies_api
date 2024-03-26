@@ -2,7 +2,7 @@ require_relative '../test_case'
 
 class TestPropertiesController < TestCase
 
-  def self.before_suite
+  def before_suite
     count, acronyms, bro = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
                                                                                                   process_submission: true,
                                                                                                   acronym: "BROSEARCHTEST",
@@ -25,7 +25,7 @@ class TestPropertiesController < TestCase
     @@acronyms = @@ontologies.map { |ont| ont.bring_remaining; ont.acronym }
   end
 
-  def self.after_suite
+  def after_suite
     LinkedData::SampleData::Ontology.delete_ontologies_and_submissions
   end
 

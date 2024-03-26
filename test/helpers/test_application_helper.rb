@@ -3,7 +3,7 @@ require_relative '../test_case_helpers'
 
 class TestApplicationHelper < TestCaseHelpers
 
-  def self.before_suite
+  def before_suite
     @@ontologies = LinkedData::SampleData::Ontology.create_ontologies_and_submissions[2]
   end
 

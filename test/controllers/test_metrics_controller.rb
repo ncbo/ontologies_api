@@ -2,7 +2,7 @@ require_relative '../test_case'
 
 class TestMetricsController < TestCase
 
-  def self.before_suite
+  def before_suite
     if OntologySubmission.all.count > 100
       puts "this test is going to wipe out all submission and ontologies. probably this is not a test env."
       return

@@ -2,7 +2,7 @@ require_relative '../test_case'
 
 class TestAnnotatorController < TestCase
 
-  def self.before_suite
+  def before_suite
     @@redis = Redis.new(:host => Annotator.settings.annotator_redis_host, :port => Annotator.settings.annotator_redis_port)
     db_size = @@redis.dbsize
     if db_size > MAX_TEST_REDIS_SIZE
@@ -20,7 +20,7 @@ class TestAnnotatorController < TestCase
     annotator = Annotator::Models::NcboAnnotator.new
     annotator.init_redis_for_tests()
     annotator.create_term_cache_from_ontologies(@@ontologies, false)
-    mapping_test_set
+    self.class.mapping_test_set
   end
 
   def test_annotate

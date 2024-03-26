@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
-
-gem 'activesupport', '~> 3.2'
+gem 'activesupport', '~> 5'
 # see https://github.com/ncbo/ontologies_api/issues/69
-gem 'bigdecimal', '1.4.2'
+gem 'bigdecimal'
+gem 'faraday', '~> 1.9'
 gem 'json-schema', '~> 2.0'
-gem 'multi_json', '~> 1.0'
-gem 'oj', '~> 3.0'
+gem 'multi_json'
+gem 'oj'
 gem 'parseconfig'
 gem 'rack'
 gem 'rake', '~> 10.0'
@@ -69,9 +69,12 @@ group :profiling do
 end
 
 group :test do
-  gem 'minitest', '~> 4.0'
+  gem 'minitest', '~> 5.0'
   gem 'minitest-stub_any_instance'
   gem 'rack-test'
   gem 'simplecov', require: false
   gem 'simplecov-cobertura' # for codecov.io
+  gem 'crack', '0.4.5'
+  gem 'webmock'
+  gem "minitest-hooks", "~> 1.5"
 end

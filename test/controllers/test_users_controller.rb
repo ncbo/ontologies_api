@@ -1,7 +1,7 @@
 require_relative '../test_case'
 
 class TestUsersController < TestCase
-  def self.before_suite
+  def before_suite
     # Create a bunch of test users
     @@usernames = %w(fred goerge henry ben mark matt charlie)
 

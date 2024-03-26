@@ -2,13 +2,14 @@ require_relative '../test_case_helpers'
 
 class TestSlicesHelper < TestCaseHelpers
 
-  def self.before_suite
-    self.new("before_suite").delete_ontologies_and_submissions
+  def before_suite
+    self.backend_4s_delete
+
     @@orig_slices_setting = LinkedData.settings.enable_slices
     LinkedData.settings.enable_slices = true
     @@onts = LinkedData::SampleData::Ontology.create_ontologies_and_submissions(ont_count: 5, submission_count: 0)[2]
     @@group_acronym = "test-group"
-    @@group = _create_group
+    @@group = self.class._create_group
     @@onts[0..2].each do |o|
       o.bring_remaining
       o.group = [@@group]
@@ -28,6 +29,10 @@ class TestSlicesHelper < TestCaseHelpers
     @@group.bring(:ontologies)
 
     LinkedData::Models::Slice.synchronize_groups_to_slices
+  end
+
+  def after_suite
+    self.backend_4s_delete
   end
 
   def test_filtered_list

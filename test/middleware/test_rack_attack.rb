@@ -5,8 +5,8 @@ require_relative '../test_case'
 RACK_CONFIG = File.join([settings.root, "config.ru"])
 
 class TestRackAttack < TestCase
-
-  def self.before_suite
+  
+  def before_suite
     # Store app settings
     @@auth_setting = LinkedData.settings.enable_security
     @@throttling_setting = LinkedData.settings.enable_throttling
@@ -61,7 +61,7 @@ class TestRackAttack < TestCase
     sleep(5)
   end
 
-  def self.after_suite
+  def after_suite
     # Restore app settings
     LinkedData.settings.enable_security = @@auth_setting
     LinkedData::OntologiesAPI.settings.enable_throttling = @@throttling_setting

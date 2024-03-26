@@ -100,9 +100,11 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (3.2.22.5)
-      i18n (~> 0.6, >= 0.6.4)
-      multi_json (~> 1.0)
+    activesupport (5.2.8.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     airbrussh (1.5.1)
@@ -112,7 +114,7 @@ GEM
     base64 (0.2.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.0)
-    bigdecimal (1.4.2)
+    bigdecimal (3.1.7)
     builder (3.2.4)
     capistrano (3.18.1)
       airbrussh (>= 1.0.0)
@@ -129,19 +131,37 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
+    crack (0.4.5)
+      rexml
     cube-ruby (0.0.3)
     dante (0.2.0)
     date (3.3.4)
     docile (1.4.0)
     domain_name (0.6.20240107)
     ed25519 (1.3.0)
-    faraday (2.8.1)
-      base64
-      faraday-net_http (>= 2.0, < 3.1)
+    faraday (1.10.3)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
+      faraday-excon (~> 1.1)
+      faraday-httpclient (~> 1.0)
+      faraday-multipart (~> 1.0)
+      faraday-net_http (~> 1.0)
+      faraday-net_http_persistent (~> 1.0)
+      faraday-patron (~> 1.0)
+      faraday-rack (~> 1.0)
+      faraday-retry (~> 1.0)
       ruby2_keywords (>= 0.0.4)
-    faraday-net_http (3.0.2)
-    faraday-retry (2.2.0)
-      faraday (~> 2.0)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
+    faraday-excon (1.1.0)
+    faraday-httpclient (1.0.1)
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
+    faraday-net_http (1.0.1)
+    faraday-net_http_persistent (1.2.0)
+    faraday-patron (1.0.0)
+    faraday-rack (1.0.0)
+    faraday-retry (1.0.3)
     ffi (1.16.3)
     gapic-common (0.21.1)
       faraday (>= 1.9, < 3.a)
@@ -165,7 +185,6 @@ GEM
     google-cloud-env (2.1.1)
       faraday (>= 1.0, < 3.a)
     google-cloud-errors (1.4.0)
-    google-protobuf (3.25.3-aarch64-linux)
     google-protobuf (3.25.3-arm64-darwin)
     google-protobuf (3.25.3-x86_64-darwin)
     google-protobuf (3.25.3-x86_64-linux)
@@ -173,7 +192,7 @@ GEM
       google-protobuf (~> 3.18)
       googleapis-common-protos-types (~> 1.7)
       grpc (~> 1.41)
-    googleapis-common-protos-types (1.13.0)
+    googleapis-common-protos-types (1.14.0)
       google-protobuf (~> 3.18)
     googleauth (1.11.0)
       faraday (>= 1.0, < 3.a)
@@ -182,9 +201,6 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    grpc (1.62.0-aarch64-linux)
-      google-protobuf (~> 3.25)
-      googleapis-common-protos-types (~> 1.0)
     grpc (1.62.0-arm64-darwin)
       google-protobuf (~> 3.25)
       googleapis-common-protos-types (~> 1.0)
@@ -197,10 +213,11 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
+    hashdiff (1.1.0)
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
-    i18n (0.9.5)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     json (2.7.1)
     json-schema (2.8.1)
@@ -224,11 +241,14 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2024.0305)
     mini_mime (1.1.5)
-    minitest (4.7.5)
+    minitest (5.22.3)
+    minitest-hooks (1.5.1)
+      minitest (> 5.3)
     minitest-stub_any_instance (1.0.3)
     mlanett-redis-lock (0.2.7)
       redis
     multi_json (1.15.0)
+    multipart-post (2.4.0)
     mutex_m (0.2.0)
     net-http-persistent (2.9.4)
     net-imap (0.4.10)
@@ -247,7 +267,8 @@ GEM
     net-ssh (7.2.1)
     netrc (0.11.0)
     newrelic_rpm (9.7.1)
-    oj (3.16.1)
+    oj (3.16.3)
+      bigdecimal (>= 3.0)
     omni_logger (0.1.4)
       logger
     os (1.1.4)
@@ -357,10 +378,11 @@ GEM
       net-ssh (>= 2.8.0)
     systemu (2.6.5)
     temple (0.10.3)
+    thread_safe (0.3.6)
     tilt (2.3.0)
     timeout (0.4.1)
-    tzinfo (2.0.6)
-      concurrent-ruby (~> 1.0)
+    tzinfo (1.2.11)
+      thread_safe (~> 0.1)
     unicode-display_width (2.5.0)
     unicorn (6.1.0)
       kgio (~> 2.6)
@@ -370,38 +392,43 @@ GEM
       unicorn (>= 4, < 7)
     uuid (2.3.9)
       macaddr (~> 1.0)
+    webmock (3.23.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
 
 PLATFORMS
-  aarch64-linux
   arm64-darwin-22
-  arm64-darwin-23
   x86_64-darwin-18
   x86_64-darwin-21
   x86_64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
-  activesupport (~> 3.2)
+  activesupport (~> 5)
   bcrypt_pbkdf (>= 1.0, < 2.0)
-  bigdecimal (= 1.4.2)
+  bigdecimal
   capistrano (~> 3)
   capistrano-bundler
   capistrano-locally
   capistrano-rbenv
+  crack (= 0.4.5)
   cube-ruby
   ed25519 (>= 1.2, < 2.0)
+  faraday (~> 1.9)
   ffi
   goo!
   haml (~> 5.2.2)
   json-schema (~> 2.0)
-  minitest (~> 4.0)
+  minitest (~> 5.0)
+  minitest-hooks (~> 1.5)
   minitest-stub_any_instance
-  multi_json (~> 1.0)
+  multi_json
   ncbo_annotator!
   ncbo_cron!
   ncbo_ontology_recommender!
   newrelic_rpm
-  oj (~> 3.0)
+  oj
   ontologies_linked_data!
   parseconfig
   rack
@@ -428,6 +455,7 @@ DEPENDENCIES
   sparql-client!
   unicorn
   unicorn-worker-killer
+  webmock
 
 BUNDLED WITH
    2.4.22

@@ -1,9 +1,9 @@
 require_relative '../test_case'
 
 class TestProvisionalClassesController < TestCase
-  def self.before_suite
-    self.new("before_suite").delete_ontologies_and_submissions
-    @@ontology, classes = self.new("before_suite")._ontology_and_classes
+  def before_suite
+    self.delete_ontologies_and_submissions
+    @@ontology, classes = self._ontology_and_classes
 
     @@cls = classes[0]
     @@cls1 = classes[1]
@@ -32,7 +32,7 @@ class TestProvisionalClassesController < TestCase
     end
   end
 
-  def self.after_suite
+  def after_suite
     3.times do |i|
       @@pcs[i].delete
     end

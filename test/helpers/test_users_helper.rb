@@ -2,9 +2,10 @@ require_relative '../test_case_helpers'
 
 class TestUsersHelper < TestCaseHelpers
 
-  def self.before_suite
-    @@user = _create_user
-    @@non_custom_user = _create_user("notcustom")
+  def before_suite
+    self.backend_4s_delete
+    @@user = self.class._create_user
+    @@non_custom_user = self.class._create_user("notcustom")
 
     @@onts = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
       ont_count: 5,
@@ -29,7 +30,7 @@ class TestUsersHelper < TestCaseHelpers
     LinkedData.settings.enable_security = true
   end
 
-  def self.after_suite
+  def after_suite
     LinkedData.settings.enable_security = @@old_security_setting
   end
 

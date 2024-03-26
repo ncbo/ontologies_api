@@ -2,7 +2,7 @@ require_relative '../test_case'
 
 class TestInstancesController < TestCase
 
-  def self.before_suite
+  def before_suite
     LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
       process_submission: true,
       acronym: 'XCT-TEST-INST',

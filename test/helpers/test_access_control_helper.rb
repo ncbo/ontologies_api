@@ -2,8 +2,8 @@ require_relative '../test_case_helpers'
 
 class TestAccessControlHelper < TestCaseHelpers
 
-  def self.before_suite
-    self.new("before_suite").delete_ontologies_and_submissions
+  def before_suite
+    self.backend_4s_delete
 
     @@usernames = ["user1", "user2", "user3", "admin"]
     @@usernames.each do |username|
@@ -14,7 +14,7 @@ class TestAccessControlHelper < TestCaseHelpers
       )
       user.save
       user.bring_remaining
-      self.class_variable_set(:"@@#{username}", user)
+      self.class.class_variable_set(:"@@#{username}", user)
     end
 
     @@admin.role = [LinkedData::Models::Users::Role.find(LinkedData::Models::Users::Role::ADMIN).first]
@@ -42,8 +42,9 @@ class TestAccessControlHelper < TestCaseHelpers
     LinkedData.settings.enable_security = true
   end
 
-  def self.after_suite
-    LinkedData.settings.enable_security = @@old_security_setting if class_variable_defined?("@@old_security_setting")
+  def after_suite
+    self.backend_4s_delete
+    LinkedData.settings.enable_security = @@old_security_setting unless @@old_security_setting.nil?
   end
 
   def test_filtered_list

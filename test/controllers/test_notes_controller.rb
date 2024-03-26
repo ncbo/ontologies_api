@@ -3,9 +3,9 @@ require_relative '../test_case'
 
 class TestNotesController < TestCase
 
-  def self.before_suite
-    self.new("before_suite").delete_ontologies_and_submissions
-    @@ontology, @@cls = self.new("before_suite")._ontology_and_class
+  def before_suite
+    self.delete_ontologies_and_submissions
+    @@ontology, @@cls = self._ontology_and_class
 
     @@note_user = "test_note_user"
     @@user = LinkedData::Models::User.new(
