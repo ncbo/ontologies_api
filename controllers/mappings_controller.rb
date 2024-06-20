@@ -83,7 +83,7 @@ class MappingsController < ApplicationController
         mapping_id = RDF::URI.new(params[:mapping])
       else
         mapping_id =
-          "http://data.bioontology.org/rest_backup_mappings/#{mapping_id}"
+          "http://data.bioontology.org/rest_backup_mappings/#{params[:mapping]}"
         mapping_id = RDF::URI.new(mapping_id)
       end
       mapping = LinkedData::Mappings.get_rest_mapping(mapping_id)
