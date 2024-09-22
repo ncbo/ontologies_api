@@ -18,11 +18,12 @@ class TestMetricsController < TestCase
               "individuals"=>124,
               "properties"=>63,
               "maxDepth"=> 7 }
-    @@options = {ont_count: 2,
-               submission_count: 3,
-               submissions_to_process: [1, 2],
-               process_submission: true,
-               random_submission_count: false}
+    @@options = { ont_count: 2,
+                  submission_count: 3,
+                  submissions_to_process: [1, 2],
+                  process_submission: true,
+                  process_options: { process_rdf: true, extract_metadata: false, run_metrics: true, index_properties: true },
+                  random_submission_count: false }
     LinkedData::SampleData::Ontology.create_ontologies_and_submissions(@@options)
   end
 
@@ -78,18 +79,18 @@ class TestMetricsController < TestCase
     get '/metrics/missing'
     assert last_response.ok?
     ontologies = MultiJson.load(last_response.body)
-    assert_equal(0, ontologies.length, msg='Failure to detect 0 ontologies with missing metrics.')
+    assert_equal(0, ontologies.length, msg = 'Failure to detect 0 ontologies with missing metrics.')
     # create ontologies with latest submissions that have no metrics
     delete_ontologies_and_submissions
-    options = {ont_count: 2,
-               submission_count: 1,
-               process_submission: false,
-               random_submission_count: false}
+    options = { ont_count: 2,
+                submission_count: 1,
+                process_submission: false,
+                random_submission_count: false }
     create_ontologies_and_submissions(options)
     get '/metrics/missing'
     assert last_response.ok?
     ontologies = MultiJson.load(last_response.body)
-    assert_equal(2, ontologies.length, msg='Failure to detect 2 ontologies with missing metrics.')
+    assert_equal(2, ontologies.length, msg = 'Failure to detect 2 ontologies with missing metrics.')
     # recreate the before_suite data (this test might not be the last one to run in the suite)
     delete_ontologies_and_submissions
     create_ontologies_and_submissions(@@options)

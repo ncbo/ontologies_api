@@ -21,7 +21,9 @@ ENV['RACK_ENV'] = 'test'
 require_relative 'test_log_file'
 require_relative '../app'
 require 'minitest/unit'
+require 'webmock/minitest'
 MiniTest::Unit.autorun
+WebMock.allow_net_connect!
 require 'rack/test'
 require 'multi_json'
 require 'oj'
@@ -144,6 +146,9 @@ class TestCase < MiniTest::Unit::TestCase
   # @option options [TrueClass, FalseClass] :random_submission_count Use a random number of submissions between 1 and :submission_count
   # @option options [TrueClass, FalseClass] :process_submission Parse the test ontology file
   def create_ontologies_and_submissions(options = {})
+    if options[:process_submission] && options[:process_options].nil?
+      options[:process_options] =  { process_rdf: true, extract_metadata: false, generate_missing_labels: false }
+    end
     LinkedData::SampleData::Ontology.create_ontologies_and_submissions(options)
   end
 
@@ -212,6 +217,26 @@ class TestCase < MiniTest::Unit::TestCase
     user.bring_remaining
     user.role = [LinkedData::Models::Users::Role.find(LinkedData::Models::Users::Role::DEFAULT).first]
     user.save
+  end
+
+  def unused_port
+    max_retries = 5
+    retries = 0
+    server_port = Random.rand(55000..65535)
+    while port_in_use?(server_port)
+      retries += 1
+      break if retries >= max_retries
+      server_port = Random.rand(55000..65535)
+    end
+    server_port
+  end
+  private
+  def port_in_use?(port)
+    server = TCPServer.new(port)
+    server.close
+    false
+  rescue Errno::EADDRINUSE
+    true
   end
 
 end

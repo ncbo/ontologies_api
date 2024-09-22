@@ -18,14 +18,14 @@ class TestRackAttack < TestCase
     LinkedData::OntologiesAPI.settings.req_per_second_per_ip = 1
     LinkedData::OntologiesAPI.settings.safe_ips = Set.new(["1.2.3.4", "1.2.3.5"])
 
-    @@user = LinkedData::Models::User.new({username: "user", password: "test_password", email: "test_email@example.org"})
+    @@user = LinkedData::Models::User.new({username: "user", password: "test_password", email: "test_email1@example.org"})
     @@user.save
 
-    @@bp_user = LinkedData::Models::User.new({username: "ncbobioportal", password: "test_password", email: "test_email@example.org"})
+    @@bp_user = LinkedData::Models::User.new({username: "ncbobioportal", password: "test_password", email: "test_email2@example.org"})
     @@bp_user.save
 
     admin_role = LinkedData::Models::Users::Role.find("ADMINISTRATOR").first
-    @@admin = LinkedData::Models::User.new({username: "admin", password: "test_password", email: "test_email@example.org", role: [admin_role]})
+    @@admin = LinkedData::Models::User.new({username: "admin", password: "test_password", email: "test_email3@example.org", role: [admin_role]})
     @@admin.save
 
     # Redirect output or we get a bunch of noise from Rack (gets reset in the after_suite method).
@@ -34,8 +34,8 @@ class TestRackAttack < TestCase
     $stdout = File.open("/dev/null", "w")
     $stderr = File.open("/dev/null", "w")
 
-    # http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Dynamic.2C_private_or_ephemeral_ports
-    @@port1 = Random.rand(55000..65535)
+
+    @@port1 = self.new('').unused_port
 
     # Fork the process to create two servers. This isolates the Rack::Attack configuration, which makes other tests fail if included.
     @@pid1 = fork do
@@ -47,7 +47,7 @@ class TestRackAttack < TestCase
       Signal.trap("HUP") { Process.exit! }
     end
 
-    @@port2 = Random.rand(55000..65535) # http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Dynamic.2C_private_or_ephemeral_ports
+    @@port2 =  self.new('').unused_port
     @@pid2 = fork do
       require_relative '../../config/rack_attack'
       Rack::Server.start(

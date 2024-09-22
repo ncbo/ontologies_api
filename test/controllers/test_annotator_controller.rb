@@ -16,7 +16,12 @@ class TestAnnotatorController < TestCase
     end
 
     LinkedData::SampleData::Ontology.delete_ontologies_and_submissions
-    @@ontologies = LinkedData::SampleData::Ontology.sample_owl_ontologies
+    @@ontologies = LinkedData::SampleData::Ontology.sample_owl_ontologies(process_submission: true,
+                                                                          process_options: {
+                                                                            process_rdf: true,
+                                                                            extract_metadata: false,
+                                                                            index_search: true
+                                                                          })
     annotator = Annotator::Models::NcboAnnotator.new
     annotator.init_redis_for_tests()
     annotator.create_term_cache_from_ontologies(@@ontologies, false)
@@ -260,7 +265,7 @@ eos
     assert last_response.ok?
     annotations = MultiJson.load(last_response.body)
     assert_equal 9, annotations.length
-    annotations.sort! { |a,b| a["annotatedClass"]["prefLabel"].downcase <=> b["annotatedClass"]["prefLabel"].downcase }
+    annotations.sort! { |a,b| a["annotatedClass"]["prefLabel"].first.downcase <=> b["annotatedClass"]["prefLabel"].first.downcase }
     assert_equal "http://bioontology.org/ontologies/BiomedicalResourceOntology.owl#Aggregate_Human_Data", annotations.first["annotatedClass"]["@id"]
     assert_equal "Aggregate Human Data", annotations.first["annotatedClass"]["prefLabel"]
 
@@ -348,7 +353,7 @@ eos
         classes = []
         class_id = terms_a[i]
         ont_acr = onts_a[i]
-        sub = LinkedData::Models::Ontology.find(ont_acr).first.latest_submission
+        sub = LinkedData::Models::Ontology.find(ont_acr).first.latest_submission(status: :any)
         sub.bring(ontology: [:acronym])
         c = LinkedData::Models::Class.find(RDF::URI.new(class_id))
                                     .in(sub)
@@ -356,7 +361,7 @@ eos
         classes << c
         class_id = terms_b[i]
         ont_acr = onts_b[i]
-        sub = LinkedData::Models::Ontology.find(ont_acr).first.latest_submission
+        sub = LinkedData::Models::Ontology.find(ont_acr).first.latest_submission(status: :any)
         sub.bring(ontology: [:acronym])
         c = LinkedData::Models::Class.find(RDF::URI.new(class_id))
                                     .in(sub)

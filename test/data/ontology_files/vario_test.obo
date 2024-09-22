@@ -1,0 +1,3444 @@
+format-version: 1.2
+date: 23:11:2018 15:56
+saved-by: med-mnv
+auto-generated-by: OBO-Edit 2.3.1
+default-namespace: variation_ontology
+remark: A Variation Ontology
+ontology: vario
+owl-axioms: Prefix(owl:=<http://www.w3.org/2002/07/owl#>)\nPrefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)\nPrefix(xml:=<http://www.w3.org/XML/1998/namespace>)\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)\nPrefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)\n\n\nOntology(\nDeclaration(AnnotationProperty(<http://www.geneontology.org/formats/oboInOwl#hasExactSynonym>))\n\n\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> <http://purl.obolibrary.org/obo/VariO_0496> \"\")\n)
+
+[Term]
+id: VariO:0001
+name: variation
+def: "Alteration in DNA, RNA or protein." [VariO:mv]
+
+[Term]
+id: VariO:0002
+name: variation affecting protein
+def: "Effects of a variation on protein level." [VariO:mv]
+is_a: VariO:0001 ! variation
+
+[Term]
+id: VariO:0003
+name: variation affecting protein function
+def: "Effect of variation on protein function." [VariO:mv]
+is_a: VariO:0002 ! variation affecting protein
+
+[Term]
+id: VariO:0004
+name: effect on protein movement
+def: "Effect of variation on the movement of a protein along filament of a polymeric molecule." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0005
+name: effect on protein storage
+def: "Effect of variation on storage protein. Storage proteins are cellular sources of amino acids and metal ions." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0006
+name: effect on structural protein
+def: "Effect of variation on structural role of protein. Structural proteins are fibrous and involved in increasing rigidity and stiffness of biological systems." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0007
+name: effect on protein recognition
+def: "Effect of variation on selective non-covalent interaction of protein." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0008
+name: effect on catalytic protein function
+def: "Effect of variation on catalytic function of protein." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0009
+name: effect on transport function of protein
+def: "Effect of variation on transport function of protein in facilitating passage of an atom or molecule through membrane." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0010
+name: effect on RNA abundance
+def: "Variation affecting abundance of produced RNA molecules." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0011
+name: effect on protein information transfer
+def: "Effect of variation on information transfer by protein to control activity of specific processes in cells, tissues or organs." [VariO:mv]
+is_a: VariO:0003 ! variation affecting protein function
+
+[Term]
+id: VariO:0012
+name: protein variation type
+def: "Type of protein variation. Describes origin and classification of a variant." [VariO:mv]
+is_a: VariO:0002 ! variation affecting protein
+
+[Term]
+id: VariO:0013
+name: protein variation of genetic origin
+def: "Protein variation that has genetic origin." [VariO:mv]
+is_a: VariO:0323 ! protein variation origin
+
+[Term]
+id: VariO:0014
+name: amino acid deletion
+def: "Removal of one or more continuous amino acids from protein." [VariO:mv]
+is_a: VariO:0325 ! protein variation classification
+
+[Term]
+id: VariO:0015
+name: protein truncation
+def: "Shortening of protein sequence from terminus." [VariO:mv]
+is_a: VariO:0014 ! amino acid deletion
+
+[Term]
+id: VariO:0016
+name: sequence retaining amino acid deletion
+def: "Deletion of one or more amino acids from a protein, without affecting the sequence after deletion." [VariO:mv]
+is_a: VariO:0014 ! amino acid deletion
+
+[Term]
+id: VariO:0017
+name: nonsynonymous variation
+def: "mRNA variation leading to amino acid change in translated protein. The variant alters the codon so that it encodes another amino acid." [Vario:mv]
+is_a: VariO:0232 ! variation attribute
+created_by: med-mnv
+creation_date: 2015-06-04T13:23:24Z
+
+[Term]
+id: VariO:0018
+name: amino acid insertion
+def: "Addition of one or more amino acids to protein sequence." [VariO:mv]
+is_a: VariO:0325 ! protein variation classification
+
+[Term]
+id: VariO:0019
+name: amphigoric amino acid insertion
+def: "Insertion of one or more amino acids to protein with sequence completely changed after the insertion position. Caused by insertion of number of RNA nucleotides not divisible by three leading to frame shift of mRNA reading frame." [VariO:mv]
+is_a: VariO:0018 ! amino acid insertion
+
+[Term]
+id: VariO:0020
+name: sequence retaining amino acid insertion
+def: "Insertion of one or more amino acids to the protein without affecting the sequence after insertion." [VariO:mv]
+is_a: VariO:0018 ! amino acid insertion
+
+[Term]
+id: VariO:0021
+name: amino acid substitution
+def: "Substitution of an amino acid in protein." [VariO:mv]
+xref: SO:0001606
+is_a: VariO:0325 ! protein variation classification
+
+[Term]
+id: VariO:0022
+name: amino acid indel
+def: "A complex protein variation consisting of both amino acid insertion(s) and deletion(s)." [VariO:mv]
+is_a: VariO:0325 ! protein variation classification
+
+[Term]
+id: VariO:0023
+name: amphigoric amino acid indel
+def: "Amino acid indel with sequence completely changed after the indel position. Caused by indel of number of RNA nucleotides not divisible by three leading to frameshift of reading frame." [VariO:mv]
+is_a: VariO:0022 ! amino acid indel
+created_by: Mauno Vihinen
+creation_date: 2013-03-06T10:59:41Z
+
+[Term]
+id: VariO:0024
+name: variation emerging at protein level
+def: "Protein variation that does not have genetic origin being modified at protein level." [VariO:mv]
+is_a: VariO:0323 ! protein variation origin
+
+[Term]
+id: VariO:0025
+name: epigenetic protein variation
+def: "Heritable protein variation of non-genetic origin." [VariO:mv]
+is_a: VariO:0024 ! variation emerging at protein level
+
+[Term]
+id: VariO:0026
+name: protein structural inheritance
+def: "Inheritance of protein or protein complex structure without involvement of genetic information." [VariO:mv]
+is_a: VariO:0025 ! epigenetic protein variation
+
+[Term]
+id: VariO:0027
+name: proteinaceous infection
+def: "Protein conformation change induced by structurally modified protein." [VariO:mv]
+is_a: VariO:0025 ! epigenetic protein variation
+
+[Term]
+id: VariO:0028
+name: post translational modification
+def: "Protein molecule chemically modified after translation." [VariO:mv]
+is_a: VariO:0024 ! variation emerging at protein level
+
+[Term]
+id: VariO:0029
+name: sequence retaining amino acid indel
+def: "Amino acid indel without affecting the sequence after the indel position." [VariO:mv]
+is_a: VariO:0022 ! amino acid indel
+created_by: Mauno Vihinen
+creation_date: 2013-03-06T11:04:21Z
+
+[Term]
+id: VariO:0030
+name: in-frame indel
+def: "RNA indel not affecting reading frame after indel position." [VariO:mv]
+is_a: VariO:0311 ! RNA indel
+created_by: Mauno Vihinen
+creation_date: 2013-06-14T10:03:57Z
+
+[Term]
+id: VariO:0031
+name: out-of-frame indel
+def: "RNA indel containing a number of nucleotides not divisible by three and therefore causing change to reading frame." [VariO:mv]
+is_a: VariO:0311 ! RNA indel
+created_by: Mauno Vihinen
+creation_date: 2013-06-14T10:03:57Z
+
+[Term]
+id: VariO:0032
+name: variation affecting protein property
+def: "Variation affecting characteristic property of protein." [VariO:mv]
+is_a: VariO:0002 ! variation affecting protein
+
+[Term]
+id: VariO:0033
+name: effect on protein subcellular localization
+def: "Effect of variation on the targeting of a protein within a cell or cellular compartment." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0034
+name: effect on protein stability
+def: "Effect of variation on stability of protein." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0035
+name: effect on protein solubility
+def: "Effect of variation on the potential of protein to dissolve in a liquid." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0036
+name: effect on protein inclusion body formation
+def: "Variation affecting the formation of particles of aggregated proteins." [VariO:mv]
+xref: GO:0016234
+is_a: VariO:0035 ! effect on protein solubility
+
+[Term]
+id: VariO:0037
+name: covariant position
+def: "Variation at a covarying sequence position." [VariO:mv]
+is_a: VariO:0233 ! conservation
+created_by: Mauno Vihinen
+creation_date: 2014-01-16T14:03:51Z
+
+[Term]
+id: VariO:0038
+name: effect on protein aggregation
+def: "Variation affecting protein aggregation tendency." [VariO:mv]
+is_a: VariO:0035 ! effect on protein solubility
+
+[Term]
+id: VariO:0039
+name: protein function change
+def: "Type of protein function affecting variation." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0040
+name: protein gain of function
+def: "Effect of variation causing new or enhanced protein activity." [VariO:mv]
+is_a: VariO:0039 ! protein function change
+
+[Term]
+id: VariO:0041
+name: neomorphic protein variation
+def: "Variation generates new protein function." [VariO:mv]
+is_a: VariO:0040 ! protein gain of function
+
+[Term]
+id: VariO:0042
+name: antimorphic protein variation
+def: "Dominant variation that acts to opposite direction than the normal protein." [VariO:mv]
+synonym: "dominant negative protein variation" EXACT []
+is_a: VariO:0040 ! protein gain of function
+
+[Term]
+id: VariO:0043
+name: protein loss of function
+def: "Effect of variation reducing or abolishing protein activity." [VariO:mv]
+is_a: VariO:0039 ! protein function change
+
+[Term]
+id: VariO:0044
+name: effect on protein accessibility
+def: "Effect of variation to the accessibility of protein region to solvent." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0045
+name: variation exposing buried region
+def: "Variation exposing buried region." [VariO:mv]
+is_a: VariO:0044 ! effect on protein accessibility
+
+[Term]
+id: VariO:0046
+name: variation burying exposed region
+def: "Variation leading to burying of exposed region." [VariO:mv]
+is_a: VariO:0044 ! effect on protein accessibility
+
+[Term]
+id: VariO:0047
+name: association of protein variation to pathogenicity
+def: "Implication of a protein variant to pathogenicity." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0048
+name: effect on protein charge
+def: "Effect of variation on charge in protein." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0049
+name: effect on protein electrostatics
+def: "Variation affecting electrostatics of the protein surface." [VariO:mv]
+is_a: VariO:0048 ! effect on protein charge
+
+[Term]
+id: VariO:0050
+name: effect on protein isoelectric point
+def: "Variation changing protein isoelectric point." [VariO:mv]
+is_a: VariO:0048 ! effect on protein charge
+
+[Term]
+id: VariO:0051
+name: effect on protein degradation
+def: "Effect of variation on degradation of protein." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0052
+name: effect on protein abundance
+def: "Variation affecting abundance of produced protein molecules." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0053
+name: effect on protein activity
+def: "Effect of variation on activity of protein." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0054
+name: effect on protein affinity
+def: "Effect of variation on protein affinity to binding molecule(s)." [VariO:mv]
+is_a: VariO:0053 ! effect on protein activity
+
+[Term]
+id: VariO:0055
+name: effect on protein specificity
+def: "Effect of variation on substrate binding specificity of protein." [VariO:mv]
+is_a: VariO:0053 ! effect on protein activity
+
+[Term]
+id: VariO:0056
+name: effect on enzyme reaction kinetics
+def: "Effect of variation to enzyme reaction kinetics." [VariO:mv]
+is_a: VariO:0435 ! effect on protein reaction kinetics
+
+[Term]
+id: VariO:0057
+name: conservation of protein variation site
+def: "Conservation of the variant site in related protein sequences." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0058
+name: effect on protein interaction
+def: "Effect of variation on the interaction of protein with its partner." [VariO:mv]
+is_a: VariO:0032 ! variation affecting protein property
+
+[Term]
+id: VariO:0059
+name: effect on protein contact energy
+def: "Effect of variation on contact energy between interacting molecules." [VariO:mv]
+is_a: VariO:0058 ! effect on protein interaction
+
+[Term]
+id: VariO:0060
+name: variation affecting protein structure
+def: "Variation affecting structure of protein." [VariO:mv]
+is_a: VariO:0002 ! variation affecting protein
+
+[Term]
+id: VariO:0061
+name: epigenetic protein modification
+def: "Hereditary protein structure modification of non-genetic origin." [VariO:mv]
+is_a: VariO:0060 ! variation affecting protein structure
+
+[Term]
+id: VariO:0062
+name: prion formation
+def: "Variation affecting the formation of infectious protein having misfolded structure." [VariO:mv]
+is_a: VariO:0061 ! epigenetic protein modification
+
+[Term]
+id: VariO:0063
+name: epigenetic protein complex structure
+def: "Variation affecting heritable protein complex structure." [VariO:mv]
+is_a: VariO:0061 ! epigenetic protein modification
+
+[Term]
+id: VariO:0064
+name: effect on protein 3D structure
+def: "Variation affecting protein three dimensional structure." [VariO:mv]
+is_a: VariO:0060 ! variation affecting protein structure
+
+[Term]
+id: VariO:0065
+name: effect on protein dynamics
+def: "Variation affecting dynamics in protein structure." [VariO:mv]
+is_a: VariO:0064 ! effect on protein 3D structure
+
+[Term]
+id: VariO:0066
+name: effect on structural flexibility
+def: "Variation affecting protein structural flexibility." [VariO:mv]
+is_a: VariO:0065 ! effect on protein dynamics
+
+[Term]
+id: VariO:0067
+name: effect on induced fit
+def: "Variation affecting induced fit of protein binding to its partner." [VariO:mv]
+is_a: VariO:0065 ! effect on protein dynamics
+
+[Term]
+id: VariO:0068
+name: effect on structural disorder
+def: "Variation affecting protein structural disorder." [VariO:mv]
+is_a: VariO:0065 ! effect on protein dynamics
+
+[Term]
+id: VariO:0069
+name: effect on allosteric site
+def: "Variation in affecting protein allosteric site." [VariO:mv]
+is_a: VariO:0065 ! effect on protein dynamics
+
+[Term]
+id: VariO:0070
+name: effect on protein tertiary structure
+def: "Variation affecting protein three dimensional structure." [VariO:mv]
+is_a: VariO:0064 ! effect on protein 3D structure
+
+[Term]
+id: VariO:0071
+name: effect on protein folding rate
+def: "Variation affecting rate of protein folding." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0072
+name: extrachromosomal DNA affected
+def: "Variation effect on nonchromosomal DNA." [VariO:mv]
+is_a: VariO:0159 ! affected DNA level
+created_by: Mauno Vihinen
+creation_date: 2012-11-09T14:16:30Z
+
+[Term]
+id: VariO:0073
+name: effect to protein fold
+def: "Variation affecting protein tertiary structure." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0074
+name: protein conformational change
+def: "Variation changing protein conformation." [VariO:mv]
+is_a: VariO:0073 ! effect to protein fold
+
+[Term]
+id: VariO:0075
+name: global protein conformation change
+def: "Variation causing large overall protein conformational change." [VariO:mv]
+is_a: VariO:0074 ! protein conformational change
+
+[Term]
+id: VariO:0076
+name: local protein conformation change
+def: "Variation causing local and minor conformational change." [VariO:mv]
+is_a: VariO:0074 ! protein conformational change
+
+[Term]
+id: VariO:0077
+name: changed domain orientation
+def: "Variation affecting protein structure due to alteration to domain orientation." [VariO:mv]
+is_a: VariO:0073 ! effect to protein fold
+
+[Term]
+id: VariO:0078
+name: effect on protein disulphide formation
+def: "Variation affecting formation of intramolecular disulphide bonds." [VariO:mv]
+is_a: VariO:0073 ! effect to protein fold
+
+[Term]
+id: VariO:0079
+name: effect on protein secondary structural element
+def: "Variation affecting protein secondary structural element of local ordered structure." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0080
+name: effect on protein helix
+def: "Variation affecting secondary structure conformation where the peptide backbone forms a coil." [VariO:mv]
+is_a: VariO:0079 ! effect on protein secondary structural element
+
+[Term]
+id: VariO:0081
+name: effect on left handed protein helix
+def: "Variation affecting protein left handed helix turning anticlockwise." [VariO:mv]
+is_a: VariO:0080 ! effect on protein helix
+
+[Term]
+id: VariO:0082
+name: effect on right handed protein helix
+def: "Variation affecting protein right handed helix where the coiled conformation turns in a clockwise, right handed screw." [VariO:mv]
+is_a: VariO:0080 ! effect on protein helix
+
+[Term]
+id: VariO:0083
+name: effect on pi helix
+def: "Variation affecting protein helix having 4.1 residues per turn. The N-H group of an amino acid forms a hydrogen bond with the C=O group of the amino acid five residues earlier." [VariO:mv]
+is_a: VariO:0082 ! effect on right handed protein helix
+
+[Term]
+id: VariO:0084
+name: effect on three ten helix
+def: "Variation affecting protein helix having 3 residues per turn. The N-H group of an amino acid forms a hydrogen bond with the C=O group of the amino acid three residues earlier." [VariO:mv]
+is_a: VariO:0082 ! effect on right handed protein helix
+
+[Term]
+id: VariO:0085
+name: effect on alpha helix
+def: "Variation affecting protein helix having 3.6 residues per turn. Every backbone N-H group donates a hydrogen bond to the backbone C=O group of the amino acid four residues earlier." [VariO:mv]
+is_a: VariO:0082 ! effect on right handed protein helix
+
+[Term]
+id: VariO:0086
+name: effect on protein beta strand
+def: "Variation affecting extended protein backbone structure." [VariO:mv]
+is_a: VariO:0079 ! effect on protein secondary structural element
+
+[Term]
+id: VariO:0087
+name: effect on protein antiparallel beta strand
+def: "Variation affecting beta strand forming part of antiparallel beta sheet. Hydrogen bonds are formed with another region of protein running in the opposite direction. The peptide backbone dihedral angles (phi, psi) are about (-140 degrees, 135 degrees)." [VariO:mv]
+comment: Range.
+is_a: VariO:0086 ! effect on protein beta strand
+
+[Term]
+id: VariO:0088
+name: effect on protein parallel beta strand
+def: "Variation affecting beta strand forming part of parallel beta sheet. Hydrogen bonds are formed with another region of protein running in the same direction. The dihedral angles (phi, psi) are about (-120 degrees, 115 degrees)." [VariO:mv]
+comment: Range.
+is_a: VariO:0086 ! effect on protein beta strand
+
+[Term]
+id: VariO:0089
+name: effect on protein turn motif
+def: "Variation affecting protein backbone turn motif." [VariO:mv]
+is_a: VariO:0079 ! effect on protein secondary structural element
+
+[Term]
+id: VariO:0090
+name: effect on protein alpha beta motif
+def: "Variation affecting protein motif of five consecutive residues and two H-bonds in which: H-bond between CO of residue(i) and NH of residue(i+4), H-bond between CO of residue(i) and NH of residue(i+3),Phi angles of residues(i+1), (i+2) and (i+3) are negative." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0091
+name: effect on protein beta turn
+def: "Variation affecting protein motif of four consecutive residues that may contain one H-bond, which, if present, is between the main-chain CO of the first residue and the main-chain NH of the fourth. It is characterized by the dihedral angles of the second and third residues, which is used to sub-categorize the turns." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0092
+name: effect on protein st motif
+def: "Variation affecting protein motif of five consecutive residues and two H-bonds, where residue(i) is either serine or threonine. Side chain O of residue(i) is H-bonded to the main chain NH of residue(i+2) or (i+3), and main chain CO or residue(i) is H-bonded to the main chain NH or residue(i+3) or (i+4)." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0093
+name: effect on protein st staple
+def: "Variation affecting protein motif of four or five consecutive residues and one H-bond in which residue(i) is serine or threonine, the side chain OH of residue(i) is H-bonded to the main chain CO or residue(i-3) or (i-4), and phi angles of residues(i-1), (i-2) and (i-3) are negative." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0094
+name: effect on protein gamma turn
+def: "Variation affecting protein turn defined for 3 residues i, i+1, i+2 if a hydrogen bond exists between residues i and i+2 and the phi and psi angles of residue i+1 fall within 40 degrees." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0095
+name: effect on protein st turn
+def: "Variation affecting protein motif of three consecutive residues and one H-bond in which: residue(i) is serine or threonine, the side-chain O of residue(i) is H-bonded to the main-chain NH of residue(i+2)." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0096
+name: effect on protein schellman loop
+def: "Variation affecting protein motif of six or seven consecutive residues that contains two H-bonds." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0097
+name: effect on protein nest motif
+def: "Variation affecting protein motif of two consecutive residues. Dihedral angles are used to sub-categorise the nests. Nest does not contain proline." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0098
+name: effect on protein niche motif
+def: "Variation affecting a protein motif of three consecutive residues. Dihedral angles are used to sub-categorise the niche motifs." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0099
+name: effect on protein asx motif
+def: "Variation affecting protein motif of five consecutive residues and two H-bonds in which: Residue(i) is aspartate or asparagine (Asx), side-chain O of residue(i) is H-bonded to the main-chain NH of residue(i+2) or (i+3), main-chain CO of residue(i) is H-bonded to the main-chain NH of residue(i+3) or (i+4)." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0100
+name: effect on protein beta bulge
+def: "Variation affecting protein motif of three residues within a beta-sheet in which the main chains of two consecutive residues are H-bonded to that of the third, and in which the dihedral angles are as follows: Residue(i): -140 degrees < phi(l) -20 degrees , -90 degrees < psi(l) < 40 degrees. Residue (i+1): -180 degrees < phi < -25 degrees or +120 degrees < phi < +180 degrees, +40 degrees < psi < +180 degrees or -180 degrees < psi < -120 degrees." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0101
+name: effect on protein asx turn
+def: "Variation affecting protein motif of three consecutive residues and one H-bond in which: residue(i) is aspartate or asparagine (Asx), the side-chain O of residue(i) is H-bonded to the main-chain NH of residue(i+2)." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0102
+name: effect on protein beta bulge loop
+def: "Variation affecting protein motif of three residues within a beta-sheet consisting of two H-bonds." [VariO:mv]
+is_a: VariO:0089 ! effect on protein turn motif
+
+[Term]
+id: VariO:0103
+name: effect on protein coil
+def: "Variation affecting irregular, unstructured region of protein." [VariO:mv]
+is_a: VariO:0079 ! effect on protein secondary structural element
+
+[Term]
+id: VariO:0104
+name: effect on transmembrane polypeptide
+def: "Variation altering membrane spanning protein." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0105
+name: effect on membrane protein extramembrane region
+def: "Variation affecting region not traversing the lipid bilayer in a membrane protein." [VariO:mv]
+is_a: VariO:0104 ! effect on transmembrane polypeptide
+
+[Term]
+id: VariO:0106
+name: effect on membrane protein intramembrane region
+def: "Variation affecting region present in the lipid bilayer in a membrane protein." [VariO:mv]
+is_a: VariO:0104 ! effect on transmembrane polypeptide
+
+[Term]
+id: VariO:0107
+name: effect on protein post translational modification
+def: "Variation affecting the covalent alteration of protein amino acid by post translational process." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0108
+name: deletion of a post translational modification site
+def: "Variation causing deletion of a post translational modification site." [VariO:mv]
+is_a: VariO:0107 ! effect on protein post translational modification
+
+[Term]
+id: VariO:0109
+name: effect on protein processing
+def: "Variation affecting site of protein maturation by cleavage of peptide bond(s)." [VariO:mv]
+is_a: VariO:0107 ! effect on protein post translational modification
+
+[Term]
+id: VariO:0110
+name: effect on protein splicing
+def: "Variation affecting post-translational removal of peptide sequences from within a protein sequence." [VariO:mv]
+is_a: VariO:0109 ! effect on protein processing
+
+[Term]
+id: VariO:0111
+name: variation generating a novel protein processing site
+def: "Variation that generates a novel protein processing site." [VariO:mv]
+is_a: VariO:0109 ! effect on protein processing
+
+[Term]
+id: VariO:0112
+name: variation preventing polypeptide processing
+def: "Variation causing prevention of polypeptide processing." [VariO:mv]
+is_a: VariO:0109 ! effect on protein processing
+
+[Term]
+id: VariO:0113
+name: generation of a novel post translational modification site
+def: "Variation generating a novel post translational modification site." [VariO:mv]
+is_a: VariO:0107 ! effect on protein post translational modification
+
+[Term]
+id: VariO:0114
+name: effect on amino acid size
+def: "Variation affecting amino acid side chain size." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0115
+name: effect on protein packing
+def: "Variation affecting amino acid packing in folded protein." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0116
+name: protein cavity formation
+def: "Variation causing formation of a cavity to protein core due to replacement of a side chain by a smaller one." [VariO:mv]
+is_a: VariO:0115 ! effect on protein packing
+
+[Term]
+id: VariO:0117
+name: protein overpacking
+def: "Variation causing over packing of amino acids due to replacement by larger amino acid side chain." [VariO:mv]
+is_a: VariO:0115 ! effect on protein packing
+
+[Term]
+id: VariO:0118
+name: effect on protein interaction site
+def: "Variation affecting ligand binding amino acid(s) in protein." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0119
+name: effect on protein binding site
+def: "Variation affecting region on the surface of a protein that interacts with another molecule." [VariO:mv]
+is_a: VariO:0118 ! effect on protein interaction site
+
+[Term]
+id: VariO:0120
+name: effect on protein catalytic site
+def: "Variation affecting amino acid(s) in protein catalytic site." [VariO:mv]
+is_a: VariO:0118 ! effect on protein interaction site
+
+[Term]
+id: VariO:0121
+name: effect on protein quaternary structure
+def: "Variation affecting three dimensional structure of a protein complex." [VariO:mv]
+is_a: VariO:0064 ! effect on protein 3D structure
+
+[Term]
+id: VariO:0122
+name: effect on protein quaternary structure forming interaction
+def: "Variation affecting interaction between protein subunits in quaternary structure." [VariO:mv]
+is_a: VariO:0121 ! effect on protein quaternary structure
+
+[Term]
+id: VariO:0123
+name: complex 3D structural change
+def: "Complex change of protein three dimensional structure." [VariO:mv]
+is_a: VariO:0064 ! effect on protein 3D structure
+
+[Term]
+id: VariO:0124
+name: protein elongation
+def: "Variation prolonging protein chain at an end." [VariO:mv]
+is_a: VariO:0070 ! effect on protein tertiary structure
+
+[Term]
+id: VariO:0125
+name: C-terminal protein elongation
+def: "Addition of one or more amino acids to protein C-terminus." [VariO:mv]
+is_a: VariO:0124 ! protein elongation
+
+[Term]
+id: VariO:0126
+name: N-terminal protein elongation
+def: "Addition of one or more amino acids to protein N-terminus." [VariO:mv]
+is_a: VariO:0124 ! protein elongation
+
+[Term]
+id: VariO:0127
+name: DNA variation origin
+def: "Origin of DNA variation." [VariO:mv]
+is_a: VariO:0129 ! DNA variation type
+created_by: Mauno Vihinen
+creation_date: 2013-10-11T08:46:32Z
+
+[Term]
+id: VariO:0128
+name: variation affecting DNA
+def: "Effects of a variation on DNA level." [VariO:mv]
+is_a: VariO:0001 ! variation
+
+[Term]
+id: VariO:0129
+name: DNA variation type
+def: "Type of DNA variation. Describes origin and classification of a variant." [VariO:mv]
+is_a: VariO:0128 ! variation affecting DNA
+
+[Term]
+id: VariO:0130
+name: DNA variation of genetic origin
+def: "DNA variation that has genetic origin." [VariO:mv]
+is_a: VariO:0127 ! DNA variation origin
+
+[Term]
+id: VariO:0131
+name: genomic variation
+def: "Variation of genomic level." [VariO:mv]
+is_a: VariO:0322 ! DNA variation classification
+
+[Term]
+id: VariO:0132
+name: chromosomal variation
+def: "Variation at chromosomal level." [VariO:mv]
+is_a: VariO:0322 ! DNA variation classification
+
+[Term]
+id: VariO:0133
+name: variation of chromosome number
+def: "Variation affecting chromosome number." [VariO:mv]
+synonym: "aneuploidy" RELATED []
+is_a: VariO:0132 ! chromosomal variation
+
+[Term]
+id: VariO:0134
+name: variation of chromosome structure
+def: "Variation affecting structure of chromosome." [VariO:mv]
+is_a: VariO:0132 ! chromosomal variation
+
+[Term]
+id: VariO:0135
+name: DNA chain variation
+def: "Variation at DNA chain." [VariO:mv]
+is_a: VariO:0322 ! DNA variation classification
+
+[Term]
+id: VariO:0136
+name: DNA substitution
+def: "Substitution of a DNA nucleotide." [VariO:mv]
+is_a: VariO:0135 ! DNA chain variation
+
+[Term]
+id: VariO:0137
+name: effect on RNA tertiary structure
+def: "Variation affecting RNA tertiary structure." [VariO:mv]
+is_a: VariO:0338 ! variation affecting RNA structure
+created_by: med-mnv
+creation_date: 2018-04-26T12:45:52Z
+
+[Term]
+id: VariO:0138
+name: variant
+def: "A genetic character, organism or individual with a difference to reference state." [VariO:mv]
+is_a: VariO:0232 ! variation attribute
+created_by: Mauno Vihinen
+creation_date: 2012-11-11T19:43:00Z
+
+[Term]
+id: VariO:0139
+name: mutation
+def: "Any process generating variation." [VariO:mv]
+is_a: VariO:0232 ! variation attribute
+created_by: Mauno Vihinen
+creation_date: 2012-11-11T19:43:39Z
+
+[Term]
+id: VariO:0140
+name: not changed
+def: "The observed feature is not changed in relation to the wild type form." [VariO:mv]
+is_a: VariO:0289 ! quantity change
+created_by: Mauno Vihinen
+creation_date: 2012-11-11T19:46:40Z
+
+[Term]
+id: VariO:0141
+name: DNA deletion
+def: "Removal of one or more continuous nucleotides from DNA sequence." [VariO:mv]
+synonym: "nucleotide deletion" EXACT []
+is_a: VariO:0135 ! DNA chain variation
+
+[Term]
+id: VariO:0142
+name: DNA insertion
+def: "Addition of one or more nucleotides between two adjacent nucleotides in the DNA sequence." [VariO:mv]
+synonym: "nucleotide insertion" EXACT []
+is_a: VariO:0135 ! DNA chain variation
+
+[Term]
+id: VariO:0143
+name: DNA indel
+def: "A complex DNA variation consisting of both nucleotide insertion(s) and deletion(s)." [VariO:mv]
+is_a: VariO:0135 ! DNA chain variation
+
+[Term]
+id: VariO:0144
+name: DNA translocation
+def: "A continuous stretch of DNA sequence moved to a new position within a chromosome." [VariO:mv]
+xref: MI:0593
+xref: SO:0000199
+is_a: VariO:0135 ! DNA chain variation
+
+[Term]
+id: VariO:0145
+name: DNA inversion
+def: "A continuous stretch of DNA sequence inserted to the same position in reverse orientation." [VariO:mv]
+xref: SO:1000036
+is_a: VariO:0144 ! DNA translocation
+
+[Term]
+id: VariO:0146
+name: DNA variation of non-genetic origin
+def: "DNA variation that does not have genetic origin." [VariO:mv]
+is_a: VariO:0127 ! DNA variation origin
+
+[Term]
+id: VariO:0147
+name: epigenetic DNA variation
+def: "Heritable DNA variation of non-genetic origin." [VariO:mv]
+is_a: VariO:0146 ! DNA variation of non-genetic origin
+
+[Term]
+id: VariO:0148
+name: variation affecting DNA function
+def: "Variation having effect on DNA function and usage." [VariO:mv]
+is_a: VariO:0128 ! variation affecting DNA
+
+[Term]
+id: VariO:0149
+name: effect on transcription
+def: "Variation affecting transcription, synthesis of either RNA on a template of DNA or DNA on a template of RNA." [VariO:mv]
+is_a: VariO:0148 ! variation affecting DNA function
+
+[Term]
+id: VariO:0150
+name: effect on DNA information transfer
+def: "Variation affecting information transfer of DNA." [VariO:mv]
+is_a: VariO:0148 ! variation affecting DNA function
+
+[Term]
+id: VariO:0151
+name: effect on DNA repair
+def: "Variation affecting the process of restoring DNA after damage." [VariO:mv]
+xref: GO:0006281
+xref: Wikipedia:DNA_repair
+is_a: VariO:0148 ! variation affecting DNA function
+
+[Term]
+id: VariO:0152
+name: effect on regulatory function of DNA
+def: "Variation affecting regulatory function of DNA." [VariO:mv]
+is_a: VariO:0148 ! variation affecting DNA function
+
+[Term]
+id: VariO:0153
+name: chromatin variation
+def: "Variation affecting chromatin." [VariO:mv]
+is_a: VariO:0322 ! DNA variation classification
+created_by: med-mnv
+creation_date: 2018-03-05T16:05:29Z
+
+[Term]
+id: VariO:0154
+name: effect on DNA replication
+def: "Variation originating from semi conservative DNA strand synthesis. The template for replication is either DNA or RNA molecule." [VariO:mv]
+is_a: VariO:0148 ! variation affecting DNA function
+
+[Term]
+id: VariO:0155
+name: variation affecting DNA structure
+def: "Variation affecting structure of DNA." [VariO:mv]
+is_a: VariO:0128 ! variation affecting DNA
+
+[Term]
+id: VariO:0156
+name: epigenetic DNA modification
+def: "Hereditary variation of DNA not affecting primary sequence." [VariO:mv]
+is_a: VariO:0155 ! variation affecting DNA structure
+
+[Term]
+id: VariO:0157
+name: epigenetic DNA methylation
+def: "Inheritable cytosine or adenosine pyrimidine ring methylation regulating gene expression." [VariO:mv]
+is_a: VariO:0156 ! epigenetic DNA modification
+
+[Term]
+id: VariO:0158
+name: nucleosome positioning
+def: "Positioning of nucleosomes to DNA strand." [VariO:mv]
+synonym: "chromatin modeling" EXACT [GO:0006338]
+synonym: "chromatin remodelling" EXACT [GO:0006338]
+is_a: VariO:0156 ! epigenetic DNA modification
+is_a: VariO:0226 ! chromatin structure variation
+relationship: part_of VariO:0156 ! epigenetic DNA modification
+relationship: part_of VariO:0226 ! chromatin structure variation
+
+[Term]
+id: VariO:0159
+name: affected DNA level
+def: "Affected level of DNA." [VariO:mv]
+is_a: VariO:0155 ! variation affecting DNA structure
+
+[Term]
+id: VariO:0160
+name: DNA chain affected
+def: "Variation effect on DNA level." [VariO:mv]
+is_a: VariO:0159 ! affected DNA level
+
+[Term]
+id: VariO:0161
+name: variation in intron
+def: "Variation located in intron." [VariO:mv]
+xref: SO:0001627
+is_a: VariO:0160 ! DNA chain affected
+
+[Term]
+id: VariO:0162
+name: variation in exon
+def: "Variation located in exon." [VariO:mv]
+is_a: VariO:0160 ! DNA chain affected
+
+[Term]
+id: VariO:0163
+name: variation at intergenic DNA
+def: "Variation located in intergenic DNA." [VariO:mv]
+xref: SO:0001628
+is_a: VariO:0160 ! DNA chain affected
+
+[Term]
+id: VariO:0164
+name: chromosome affected
+def: "Variation effect on chromosome level." [VariO:mv]
+is_a: VariO:0159 ! affected DNA level
+
+[Term]
+id: VariO:0165
+name: genome affected
+def: "Variation effect on genome level." [VariO:mv]
+is_a: VariO:0159 ! affected DNA level
+
+[Term]
+id: VariO:0166
+name: immunological receptor gene rearrangement
+def: "Somatic recombination combining gene segments in antibody, immunoglobulin B and T cell receptor and MCH coding genes." [VariO:mv]
+is_a: VariO:0447 ! immunological recognition molecule diversification
+created_by: med-mnv
+creation_date: 2015-09-22T19:10:52Z
+
+[Term]
+id: VariO:0167
+name: effect on DNA form
+def: "Variation affecting DNA structural form." [VariO:mv]
+is_a: VariO:0171 ! effect on DNA tertiary structure
+created_by: med-mnv
+creation_date: 2017-01-16T12:52:26Z
+
+[Term]
+id: VariO:0168
+name: somatic hypermutation
+def: "Immunoglobulin diversification mechanism by producing variations to antigen variable regions." [VariO:mv]
+is_a: VariO:0447 ! immunological recognition molecule diversification
+created_by: med-mnv
+creation_date: 2015-09-22T19:12:51Z
+
+[Term]
+id: VariO:0169
+name: class switch recombination
+def: "Switching of immunoglobulin M to other isotype by changing a portion of a region coding for heavy chain." [VariO:mv]
+is_a: VariO:0447 ! immunological recognition molecule diversification
+created_by: med-mnv
+creation_date: 2015-09-22T19:12:51Z
+
+[Term]
+id: VariO:0170
+name: immunological receptor gene conversion
+def: "Secondary immunological receptor diversification by replacing a DNA stretch by a homologous sequence." [VariO:mv]
+is_a: VariO:0447 ! immunological recognition molecule diversification
+created_by: med-mnv
+creation_date: 2015-09-22T19:12:51Z
+
+[Term]
+id: VariO:0171
+name: effect on DNA tertiary structure
+def: "Variation affecting DNA tertiary structure." [VariO:mv]
+is_a: VariO:0155 ! variation affecting DNA structure
+
+[Term]
+id: VariO:0172
+name: artificial DNA variation
+def: "Variation generated on purpose by e.g. chemical or physical treatment or artificial modification of DNA." [VariO:mv]
+is_a: VariO:0146 ! DNA variation of non-genetic origin
+created_by: Mauno Vihinen
+creation_date: 2012-11-16T08:44:55Z
+
+[Term]
+id: VariO:0173
+name: effect on nucleic acid G-quadruplex
+def: "Variation affecting G-quadruplex of four stranded nucleic acid structure. The structure can be intramolecular, bimolecular or tetramolecular." [VariO:mv]
+is_a: VariO:0420 ! effect on four-stranded DNA
+is_a: VariO:0426 ! effect on four-stranded RNA
+relationship: part_of VariO:0420 ! effect on four-stranded DNA
+relationship: part_of VariO:0426 ! effect on four-stranded RNA
+
+[Term]
+id: VariO:0174
+name: effect on i motif
+def: "Variation affecting cytosine rich DNA domain where strands associate both inter- and intramolecularly." [VariO:mv]
+is_a: VariO:0420 ! effect on four-stranded DNA
+
+[Term]
+id: VariO:0175
+name: effect on DNA triple helix
+def: "Variation affecting DNA helix formed of three strands." [VariO:mv]
+is_a: VariO:0167 ! effect on DNA form
+
+[Term]
+id: VariO:0176
+name: chromosome variation
+def: "Variation affecting chromosome." [VariO:mv]
+xref: SO:0000240
+is_a: VariO:0155 ! variation affecting DNA structure
+
+[Term]
+id: VariO:0177
+name: telomere length change
+def: "Variation affecting length of telomere sequence." [VariO:mv]
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0178
+name: telomere shortening
+def: "Variation shortening length of telomere sequence." [VariO:mv]
+is_a: VariO:0177 ! telomere length change
+
+[Term]
+id: VariO:0179
+name: telomere extension
+def: "Variation extending length of telomere sequence." [VariO:mv]
+is_a: VariO:0177 ! telomere length change
+
+[Term]
+id: VariO:0180
+name: chromosome structure variation
+def: "Variation affecting structure of chromosome." [VariO:mv]
+xref: SO:1000183
+is_a: VariO:0176 ! chromosome variation
+
+[Term]
+id: VariO:0181
+name: isochromosome
+def: "Chromosome lacking one arm with duplication of the other arm." [VariO:mv]
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0182
+name: ring chromosome
+def: "Circular chromosome with ends joined." [VariO:mv]
+xref: SO:1000045
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0183
+name: chromosomal amplification
+def: "Increase in the frequency of a chromosomal region." [VariO:mv]
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0184
+name: interspersed repeat
+def: "Copies of a chromosomal region of length greater than one scattered to genome sequence." [VariO:mv]
+xref: SO:0000658
+is_a: VariO:0427 ! type of chromosomal amplification
+
+[Term]
+id: VariO:0185
+name: tandem repeat
+def: "Adjacent copies of a chromosomal region of length greater than 1." [VariO:mv]
+xref: SO:0000705
+is_a: VariO:0427 ! type of chromosomal amplification
+
+[Term]
+id: VariO:0186
+name: minisatellite
+def: "Tandem repetitive sequence consisting of units in length from seven to few tens of base pairs." [VariO:mv]
+is_a: VariO:0430 ! nucleotide expansion
+
+[Term]
+id: VariO:0187
+name: copy number variation
+def: "Increase or decrease of the number of copies of a chromosomal region. Sizes of copy number variations range from about 1 kilobase to several megabases." [VariO:mv]
+xref: SO:0001019
+is_a: VariO:0183 ! chromosomal amplification
+is_a: VariO:0193 ! chromosomal deletion
+relationship: part_of VariO:0183 ! chromosomal amplification
+relationship: part_of VariO:0193 ! chromosomal deletion
+
+[Term]
+id: VariO:0188
+name: microsatellite
+def: "Tandem repetitive sequence consisting of units of two to six base pair." [VariO:mv]
+is_a: VariO:0430 ! nucleotide expansion
+
+[Term]
+id: VariO:0189
+name: trinucleotide expansion
+def: "Tandem repetitive sequence consisting of three nucleotide units." [VariO:mv]
+is_a: VariO:0188 ! microsatellite
+
+[Term]
+id: VariO:0190
+name: mononucleotide expansion
+def: "Tandem repetitive sequence consisting of one nucleotide type." [VariO:mv]
+is_a: VariO:0188 ! microsatellite
+
+[Term]
+id: VariO:0191
+name: tetranucleotide expansion
+def: "Tandem repetitive sequence consisting of four nucleotide units." [VariO:mv]
+is_a: VariO:0188 ! microsatellite
+
+[Term]
+id: VariO:0192
+name: DNA mobile genetic element insertion
+def: "Mobile genetic element incorporated into chromosome." [VariO:mv]
+is_a: VariO:0183 ! chromosomal amplification
+
+[Term]
+id: VariO:0193
+name: chromosomal deletion
+def: "Deletion of chromosomal region." [VariO:mv]
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0194
+name: interstitial deletion
+def: "Deletion of chromosomal region not including terminus." [VariO:mv]
+is_a: VariO:0193 ! chromosomal deletion
+
+[Term]
+id: VariO:0195
+name: terminal deletion
+def: "Deletion of chromosomal region from the end of chromosome arm." [VariO:mv]
+is_a: VariO:0193 ! chromosomal deletion
+
+[Term]
+id: VariO:0196
+name: complex chromosomal variation
+def: "Chromosome structure variation with four or more breakpoints." [SO:ke, VariO:mv]
+xref: SO:1000146
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0197
+name: chromosomal translocation
+def: "Translocation of chromosomal region." [VariO:mv]
+xref: SO:0000199
+is_a: VariO:0180 ! chromosome structure variation
+
+[Term]
+id: VariO:0198
+name: intrachromosomal translocation
+def: "Translocation of chromosomal region within a chromosome." [VariO:mv]
+is_a: VariO:0197 ! chromosomal translocation
+
+[Term]
+id: VariO:0199
+name: chromosomal inversion
+def: "Intrachromosomal variation where a chromosomal region is inserted in reverse direction." [VariO:mv]
+is_a: VariO:0198 ! intrachromosomal translocation
+
+[Term]
+id: VariO:0200
+name: paracentric inversion
+def: "Chromosomal inversion within a chromosome arm." [VariO:mv]
+xref: SO:1000047
+is_a: VariO:0199 ! chromosomal inversion
+
+[Term]
+id: VariO:0201
+name: pericentric inversion
+def: "Chromosomal inversion including centromere." [VariO:mv]
+xref: SO:1000046
+is_a: VariO:0199 ! chromosomal inversion
+
+[Term]
+id: VariO:0202
+name: interchromosomal translocation
+def: "Translocation of chromosomal region to another chromosome." [VariO:mv]
+is_a: VariO:0197 ! chromosomal translocation
+
+[Term]
+id: VariO:0203
+name: reciprocal chromosomal translocation
+def: "Switching of chromosomal regions between nonhomologous chromosomes." [VariO:mv]
+xref: SO:1000048
+is_a: VariO:0202 ! interchromosomal translocation
+
+[Term]
+id: VariO:0204
+name: Robertsonian translocation
+def: "Fusion of long arms of two acrocentric chromosomes having very short p arms." [VariO:mv]
+xref: SO:1000043
+is_a: VariO:0202 ! interchromosomal translocation
+
+[Term]
+id: VariO:0205
+name: dinucleotide expansion
+def: "Tandem repetitive sequence consisting of two nucleotide units." [VariO:mv]
+is_a: VariO:0188 ! microsatellite
+created_by: med-mnv
+creation_date: 2015-09-17T10:53:06Z
+
+[Term]
+id: VariO:0206
+name: chromosome number variation
+def: "Variation affecting the number of chromosomes." [VariO:mv]
+synonym: "aneuploidy" EXACT []
+is_a: VariO:0176 ! chromosome variation
+
+[Term]
+id: VariO:0207
+name: trisomy
+def: "Three copies of a chromosome in a cell or organism." [VariO:mv]
+is_a: VariO:0206 ! chromosome number variation
+
+[Term]
+id: VariO:0208
+name: disomy
+def: "Two copies of a chromosome in a cell or organism ." [VariO:mv]
+is_a: VariO:0206 ! chromosome number variation
+
+[Term]
+id: VariO:0209
+name: uniparental disomy
+def: "Both copies of a chromosome or a part of it in diploid cell or organism are from one parent." [VariO:mv]
+is_a: VariO:0208 ! disomy
+
+[Term]
+id: VariO:0210
+name: isodisomy
+def: "Uniparental disomy with duplication of a single chromosome from one parent." [VariO:mv]
+is_a: VariO:0208 ! disomy
+
+[Term]
+id: VariO:0211
+name: heterodisomy
+def: "Pair of non-identical chromosomes inherited from one parent." [VariO:mv]
+is_a: VariO:0208 ! disomy
+
+[Term]
+id: VariO:0212
+name: nullisomy
+def: "No copies of a chromosome in a cell or organism." [VariO:mv]
+is_a: VariO:0206 ! chromosome number variation
+
+[Term]
+id: VariO:0213
+name: tetrasomy
+def: "Four copies of a chromosome in a cell or organism." [VariO:mv]
+is_a: VariO:0206 ! chromosome number variation
+
+[Term]
+id: VariO:0214
+name: monosomy
+def: "One copy of a chromosome in a cell or organism." [VariO:mv]
+is_a: VariO:0206 ! chromosome number variation
+
+[Term]
+id: VariO:0215
+name: chromosome set number variation
+def: "Variation affecting number of entire chromosome sets." [VariO:mv]
+synonym: "euploidy" EXACT []
+is_a: VariO:0428 ! genome variation
+
+[Term]
+id: VariO:0216
+name: diploidy
+def: "Variation with two sets of chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0217
+name: tetraploidy
+def: "Variation with four sets of chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+created_by: Mauno
+creation_date: 2011-03-04T12:19:35Z
+
+[Term]
+id: VariO:0218
+name: polyploidy
+def: "Variation with several sets of chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0219
+name: autopolyploidy
+def: "Variation with several sets of chromosomes originating from the same organism." [VariO:mv]
+is_a: VariO:0218 ! polyploidy
+
+[Term]
+id: VariO:0220
+name: allopolyploidy
+def: "Variation with several sets of chromosomes originating from a different organism." [VariO:mv]
+is_a: VariO:0218 ! polyploidy
+
+[Term]
+id: VariO:0221
+name: nulliploidy
+def: "Variation without chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0222
+name: triploidy
+def: "Variation with three sets of chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0223
+name: pentaploidy
+def: "Variation with five sets of chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0224
+name: hexaploidy
+def: "Variation with six sets of chromosomes." [VariO:mv]
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0225
+name: monoploidy
+def: "Variation with a single set of chromosomes." [VariO:mv]
+synonym: "haploidy" EXACT []
+is_a: VariO:0215 ! chromosome set number variation
+
+[Term]
+id: VariO:0226
+name: chromatin structure variation
+def: "Variation affecting structure of chromatin the complex of chromosomal DNA and histone proteins." [VariO:mv]
+is_a: VariO:0155 ! variation affecting DNA structure
+
+[Term]
+id: VariO:0227
+name: variation affecting DNA property
+def: "Variation affecting characteristic property of DNA." [VariO:mv]
+is_a: VariO:0128 ! variation affecting DNA
+
+[Term]
+id: VariO:0228
+name: protein fusion
+def: "Fusion of two protein chains. Produced from fusion gene of two joined genes." [VariO:mv]
+is_a: VariO:0124 ! protein elongation
+created_by: Mauno Vihinen
+creation_date: 2012-12-11T08:59:44Z
+
+[Term]
+id: VariO:0229
+name: association of DNA variation to pathogenicity
+def: "Implication of a DNA variant to pathogenicity." [VariO:mv]
+is_a: VariO:0227 ! variation affecting DNA property
+
+[Term]
+id: VariO:0230
+name: effect on DNA interaction
+def: "Variation affecting interaction of DNA with its partner." [VariO:mv]
+is_a: VariO:0227 ! variation affecting DNA property
+
+[Term]
+id: VariO:0231
+name: conservation of DNA variation site
+def: "Conservation of the variation site in related DNA sequences." [VariO:mv]
+is_a: VariO:0227 ! variation affecting DNA property
+
+[Term]
+id: VariO:0232
+name: variation attribute
+def: "Attributes define and modulate terms at other levels." [VariO:mv]
+is_a: VariO:0001 ! variation
+
+[Term]
+id: VariO:0233
+name: conservation
+def: "Sequence conservation attribute." [VariO:mv]
+is_a: VariO:0232 ! variation attribute
+
+[Term]
+id: VariO:0234
+name: conserved region
+def: "Variation at a region of sequence similarity in multiple sequence alignment of related sequences." [VariO:mv]
+is_a: VariO:0233 ! conservation
+
+[Term]
+id: VariO:0235
+name: invariant region
+def: "Variation at invariant sequence region in multiple sequence alignment of related sequences." [VariO:mv]
+is_a: VariO:0233 ! conservation
+
+[Term]
+id: VariO:0236
+name: interaction
+def: "Mutual or reciprocal action or influence that happens at a given place and time between participating molecules." [src_code:NR, VariO:mv]
+is_a: VariO:0232 ! variation attribute
+
+[Term]
+id: VariO:0237
+name: genetic interaction
+def: "Two genes A and B \"genetically interact\" when the phenotype generated as the result of variations in both genes (double variant ab) is unexpectedly not just a combination of the phenotypes of the two single variants a and b." [PMID:16527956, VariO:mv]
+xref: MI:0208
+is_a: VariO:0236 ! interaction
+
+[Term]
+id: VariO:0238
+name: genetic interaction defined by inequality
+def: "Two genes A and B present a genetic interaction defined by inequality if the phenotypes of the two single variants a and b, the double variant ab and the wild-type can be measured quantitatively and described relative to each other by an inequality relationship." [PMID:14755292, VariO:mv]
+synonym: "genetic inequality" EXACT [MI:0931]
+xref: MI:0931
+is_a: VariO:0237 ! genetic interaction
+
+[Term]
+id: VariO:0239
+name: single nonmonotonic genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation of B shows opposing effects in the WT and a backgrounds (for example, b > WT and ab < a); or, a shows opposing effects in the WT and b backgrounds, but not both. E.g. WT > a > ab > b." [PMID:15833125]
+synonym: "single nonmonotonic" EXACT [MI:0800]
+synonym: "single nonmonotonic genetic interaction (sensu inequality)" EXACT [MI:0800]
+xref: MI:0800
+is_a: VariO:0238 ! genetic interaction defined by inequality
+
+[Term]
+id: VariO:0240
+name: missing protein
+def: "Variation preventing protein translation because of e. g. initiation codon variation or mRNA surveillance mechanism." [VariO:mv]
+is_a: VariO:0325 ! protein variation classification
+created_by: Mauno Vihinen
+creation_date: 2012-12-11T13:07:02Z
+
+[Term]
+id: VariO:0241
+name: RNA translocation
+def: "A continuous stretch of RNA sequence moved to a new position." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+created_by: Mauno Vihinen
+creation_date: 2012-12-18T16:17:33Z
+
+[Term]
+id: VariO:0242
+name: conditional genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation of A has an effect only in the b background, or the b variant has an effect only in the a background. A has an effect only in the b background, or the b variant has an effect only in the a background. E. g., WT = a > ab > b or WT > a > b > ab." [PMID:15833125, VariO:mv]
+synonym: "conditional" EXACT [MI:0798]
+synonym: "conditional genetic interaction (sensu inequality)" EXACT [MI:0798]
+xref: MI:0798
+is_a: VariO:0238 ! genetic interaction defined by inequality
+
+[Term]
+id: VariO:0243
+name: additive genetic interaction defined by inequality
+def: "Single-variant phenotype effects combine to give a double-variant effect different from the wild type and different from single variant effect. For instance, WT < a = b < ab, b < WT = ab < a, WT < a < b < ab, b < WT < ab < a, and all additional inequalities obtained by interchanging a and b, or reversing the effect of both a and b." [PMID:15833125, VariO:mv]
+synonym: "additive" EXACT [MI:0799]
+synonym: "additive genetic interaction (sensu inequality)" EXACT [MI:0799]
+xref: MI:0799
+is_a: VariO:0238 ! genetic interaction defined by inequality
+
+[Term]
+id: VariO:0244
+name: RNA inversion
+def: "A continuous stretch of RNA sequence inserted to the same position in reverse orientation." [VriO:mv]
+is_a: VariO:0241 ! RNA translocation
+created_by: Mauno Vihinen
+creation_date: 2012-12-18T16:17:33Z
+
+[Term]
+id: VariO:0245
+name: missing RNA
+def: "Variation preventing transcription e. g. because of impaired transcription machinery or variation in the transcription regulation or start site." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+created_by: Mauno Vihinen
+creation_date: 2013-01-04T09:23:09Z
+
+[Term]
+id: VariO:0246
+name: artificial protein variation
+def: "Protein variation generated on purpose." [VariO:mv]
+is_a: VariO:0024 ! variation emerging at protein level
+created_by: gerard
+creation_date: 2013-02-01T11:24:30Z
+
+[Term]
+id: VariO:0247
+name: artificial RNA variation
+def: "RNA variation generated on purpose." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+created_by: gerard
+creation_date: 2013-02-01T11:27:07Z
+
+[Term]
+id: VariO:0248
+name: positive genetic interaction
+def: "The phenotype of the double variant ab is weaker than expected from the combination of the individual effects of a and b." [PMID:14755292, VariO:mv]
+synonym: "positive gent int" EXACT [MI:0935]
+xref: MI:0935
+is_a: VariO:0237 ! genetic interaction
+
+[Term]
+id: VariO:0249
+name: double nonmonotonic genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation of both A and B show opposing effects in the WT background and the background with the other variant gene. E.g. WT >= ab > a >= b." [PMID:15833125, VariO:mv]
+synonym: "double nonmonotonic" EXACT [MI:0801]
+synonym: "double nonmonotonic genetic interaction (sensu inequality)" EXACT [MI:0801]
+xref: MI:0801
+is_a: VariO:0238 ! genetic interaction defined by inequality
+is_a: VariO:0248 ! positive genetic interaction
+
+[Term]
+id: VariO:0250
+name: epistatic genetic interaction
+def: "The genetic interaction between a group of genes, in which the effects of an allele of one member gene of the group hide the effects of alleles of other genes in the group." [PMID:11988766]
+synonym: "epistatis" EXACT [MI:0930]
+xref: MI:0930
+is_a: VariO:0248 ! positive genetic interaction
+
+[Term]
+id: VariO:0251
+name: epistatic genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation of A and B have different effects (in terms of direction or magnitude) on the wild-type background and the double variant has the same phenotype as either A or B (for example, A < WT < B = AB)." [PMID:15833125, VariO:mv]
+synonym: "epistatic" EXACT [MI:0797]
+synonym: "epistatic genetic interaction (sensu inequality)" EXACT [MI:0797]
+xref: MI:0797
+is_a: VariO:0238 ! genetic interaction defined by inequality
+is_a: VariO:0250 ! epistatic genetic interaction
+
+[Term]
+id: VariO:0252
+name: asynthetic genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation of A alone, B alone and AB combined have the same effect on the WT background. E. g., WT > a = b = ab." [PMID:15833125]
+synonym: "asynthetic" EXACT [MI:0795]
+synonym: "asynthetic genetic interaction (sensu inequality)" EXACT [MI:0795]
+xref: MI:0795
+is_a: VariO:0238 ! genetic interaction defined by inequality
+is_a: VariO:0250 ! epistatic genetic interaction
+
+[Term]
+id: VariO:0253
+name: suppressive genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation of A has an effect on WT, but that effect is abolished by adding the suppressor b, which itself shows no single-variant effect. E. g., WT = b = ab > a." [PMID:15833125, VariO:mv]
+synonym: "suppression" EXACT [MI:0796]
+synonym: "suppressive genetic interaction (sensu inequality)" EXACT [MI:0796]
+xref: MI:0796
+is_a: VariO:0238 ! genetic interaction defined by inequality
+is_a: VariO:0250 ! epistatic genetic interaction
+
+[Term]
+id: VariO:0254
+name: neutral genetic interaction
+def: "The phenotype of the double variant ab is equal to the phenotype expected from the combination of the individual effects of a and b." [PMID:14755292, VariO:mv]
+synonym: "neutral gent int" EXACT [MI:0934]
+xref: MI:0934
+is_a: VariO:0237 ! genetic interaction
+
+[Term]
+id: VariO:0255
+name: noninteractive genetic interaction defined by inequality
+def: "Variation that has no effect in the WT and b backgrounds, or b has no effect in the a and WT backgrounds, or both hold true. E. g., WT = a > b = ab." [PMID:15833125, VariO:mv]
+synonym: "noninteractive" EXACT [MI:0932]
+synonym: "noninteractive genetic interaction (sensu inequality)" EXACT [MI:0932]
+xref: MI:0932
+is_a: VariO:0238 ! genetic interaction defined by inequality
+is_a: VariO:0254 ! neutral genetic interaction
+
+[Term]
+id: VariO:0256
+name: negative genetic interaction
+def: "The phenotype of the double variant ab is stronger than expected from the combination of the individual effects of a and b." [PMID:14755292, VariO:mv]
+synonym: "negative gen int" EXACT [MI:0933]
+xref: MI:0933
+is_a: VariO:0237 ! genetic interaction
+
+[Term]
+id: VariO:0257
+name: synthetic genetic interaction defined by inequality
+def: "The phenotype resulting from genetic perturbation a and the phenotype resulting from genetic perturbation b have no effect on the WT background, but the combined genetic perturbation of A and B has a phenotypic effect. E. g., WT = a = b > ab." [PMID:15833125]
+synonym: "synthetic" EXACT [MI:0794]
+synonym: "synthetic genetic interaction (sensu inequality)" EXACT [MI:0794]
+xref: MI:0794
+is_a: VariO:0238 ! genetic interaction defined by inequality
+is_a: VariO:0256 ! negative genetic interaction
+
+[Term]
+id: VariO:0258
+name: structural level of interaction
+def: "Molecular structural level of interaction." [VariO:mv]
+is_a: VariO:0236 ! interaction
+
+[Term]
+id: VariO:0259
+name: intermolecular interaction
+def: "Interaction between molecules." [VariO:mv]
+is_a: VariO:0258 ! structural level of interaction
+
+[Term]
+id: VariO:0260
+name: intramolecular interaction
+def: "Interaction within a molecule." [VariO:mv]
+is_a: VariO:0258 ! structural level of interaction
+
+[Term]
+id: VariO:0261
+name: colocalization
+def: "Coincident occurrence of molecules in a given subcellular fraction observed with a low resolution methodology from which a physical interaction among those molecules cannot be inferred." [PMID:14755292]
+xref: MI:0403
+is_a: VariO:0236 ! interaction
+
+[Term]
+id: VariO:0262
+name: interactor
+def: "Entity participating in a physical or functional interaction." [SBO:0000336]
+xref: SBO:0000336
+is_a: VariO:0236 ! interaction
+
+[Term]
+id: VariO:0263
+name: small molecule
+def: "Molecule not part of or directly encoded by the genome, encompasses any constitutionally or isotopically distinct atom, molecule, ion, ion pair, radical, radical ion, complex, conformer, etc., identifiable as a separately distinguishable entity." [PMID:14755292]
+xref: MI:0328
+is_a: VariO:0262 ! interactor
+
+[Term]
+id: VariO:0264
+name: metal
+def: "Metal atom." [CHEBI:33521]
+xref: CHEBI:33521
+is_a: VariO:0263 ! small molecule
+
+[Term]
+id: VariO:0265
+name: solvent
+def: "A liquid that can dissolve other substances (solutes) without any change in their chemical composition." [CHEBI:46787]
+xref: CHEBI:46787
+is_a: VariO:0263 ! small molecule
+
+[Term]
+id: VariO:0266
+name: water
+def: "An inorganic hydroxy compound that has formula H2O." [CHEBI:15377]
+xref: CHEBI:15377
+is_a: VariO:0265 ! solvent
+
+[Term]
+id: VariO:0267
+name: complex
+def: "Set of interacting molecules that can be copurified." [PMID:14755292]
+xref: MI:0314
+is_a: VariO:0262 ! interactor
+
+[Term]
+id: VariO:0268
+name: ribonucleoprotein complex
+def: "A macromolecular complex containing both protein and RNA molecules." [PMID:14755292]
+synonym: "ribonucleoprot compl" EXACT [MI:0316]
+xref: MI:0316
+is_a: VariO:0267 ! complex
+
+[Term]
+id: VariO:0269
+name: protein complex
+def: "A stable set of interacting proteins that can be copurified and operate as a functional unit." [PMID:14755292]
+synonym: "protein-protein complex" EXACT [GO:0043234]
+xref: GO:0043234
+xref: MI:0315
+is_a: VariO:0267 ! complex
+
+[Term]
+id: VariO:0270
+name: protein dna complex
+def: "A stable set of interacting protein and DNA that can be copurified and operate as a functional unit." [PMID:14755292]
+xref: MI:0233
+is_a: VariO:0267 ! complex
+
+[Term]
+id: VariO:0271
+name: unknown participant
+def: "Any type of molecule, including complexes, that may be observed but not identified." [PMID:14755292]
+xref: MI:0329
+is_a: VariO:0262 ! interactor
+
+[Term]
+id: VariO:0272
+name: gene
+def: "Interactor of genetic interaction." [MI:0000704]
+xref: MI:0250
+is_a: VariO:0262 ! interactor
+
+[Term]
+id: VariO:0273
+name: biopolymer
+def: "Molecule consisting of a specific sequence of amino acidic or nucleotidic monomers strung together through chemical bonds." [PMID:14577292]
+xref: MI:0383
+is_a: VariO:0262 ! interactor
+
+[Term]
+id: VariO:0274
+name: nucleic acid
+def: "Linear polymer of nucleotides, linked by 3',5' phosphodiester linkages." [PMID:14755292]
+xref: GO:0005561
+xref: MI:0318
+is_a: VariO:0273 ! biopolymer
+
+[Term]
+id: VariO:0275
+name: peptide
+def: "Chains of amino acids joined by peptide bonds. Distinction between peptides, oligopeptides and polypeptides is arbitrarily by length; a polypeptide is perhaps more than 15 residues." [PMID:14755292]
+synonym: "oligopeptide" EXACT [MI:0327]
+synonym: "polypeptide" EXACT [MI:0327]
+xref: MI:0327
+is_a: VariO:0273 ! biopolymer
+
+[Term]
+id: VariO:0276
+name: polysaccharide
+def: "A polysaccharide is a complex polymer of carbohydrate monomers. They are polymers made up of many monosaccharides joined together by glycosidic bonds. They are therefore very large, often branched, macromolecules." [PMID:14755292]
+xref: MI:0904
+is_a: VariO:0273 ! biopolymer
+
+[Term]
+id: VariO:0277
+name: protein
+def: "A linear polymer of amino acids joined by peptide bonds in a specific sequence." [PMID:14755292]
+xref: GO:0003675
+xref: MI:0326
+is_a: VariO:0273 ! biopolymer
+
+[Term]
+id: VariO:0278
+name: association
+def: "Molecules that are experimentally shown to be associated potentially by sharing just one interactor. Often associated molecules are co-purified by a pull-down or coimmunoprecipitation and share the same bait molecule." [PMID:14755292]
+xref: MI:0914
+is_a: VariO:0236 ! interaction
+
+[Term]
+id: VariO:0279
+name: interaction physical force
+def: "Interaction physical force." [VariO:mv]
+is_a: VariO:0236 ! interaction
+
+[Term]
+id: VariO:0280
+name: covalent bond
+def: "A chemical link between two atoms in which electrons are shared between them." [http://chemistry.about.com/od/chemistryglossary/a/covalentbonddef.htm]
+is_a: VariO:0279 ! interaction physical force
+
+[Term]
+id: VariO:0281
+name: disulphide bridge
+def: "The covalent bond between sulfur atoms that binds two peptide chains or different parts of one peptide chain." [EBIBS:GAR, UniProt:curation_manual, VariO:mv]
+xref: SO:0001088
+is_a: VariO:0280 ! covalent bond
+
+[Term]
+id: VariO:0282
+name: non covalent bond
+def: "Interaction between biochemical entities that results in the formation of a non-covalent bond." [VariO:mv]
+xref: SBO:0000177
+is_a: VariO:0279 ! interaction physical force
+
+[Term]
+id: VariO:0283
+name: hydrogen bond
+def: "Attractive interaction between an electronegative atom and a hydrogen atom bonded to another electronegative atom." [VariO:mv]
+synonym: "H-bond" RELATED [FIX:0000503]
+xref: FIX:0000503
+xref: http://chemistry.about.com/od/chemistryglossary/g/hbond.htm
+is_a: VariO:0282 ! non covalent bond
+
+[Term]
+id: VariO:0284
+name: hydrogen bond network
+def: "Network of interactions formed by several hydrogen bonds." [VariO:mv]
+is_a: VariO:0283 ! hydrogen bond
+
+[Term]
+id: VariO:0285
+name: hydrophobic interaction
+def: "Interaction of nonpolar (un-ionizable) hydrocarbon molecules forced together because of stronger water-water interaction." [http://medical-dictionary.thefreedictionary.com/Hydrophobic+Interaction]
+is_a: VariO:0282 ! non covalent bond
+
+[Term]
+id: VariO:0286
+name: salt bridge
+def: "Interaction between charged groups." [VariO:mv]
+is_a: VariO:0282 ! non covalent bond
+
+[Term]
+id: VariO:0287
+name: van der Waals interaction
+def: "Weak attractive electrical force between neutral groups or molecules." [VariO:mv]
+xref: FIX:0000506
+is_a: VariO:0282 ! non covalent bond
+
+[Term]
+id: VariO:0288
+name: electrostatic interaction
+def: "Attraction between two electrically charged groups or molecules." [VariO:mv]
+is_a: VariO:0282 ! non covalent bond
+
+[Term]
+id: VariO:0289
+name: quantity change
+def: "Quantity attribute." [VariO:mv]
+is_a: VariO:0232 ! variation attribute
+
+[Term]
+id: VariO:0290
+name: decreased
+def: "The observed feature is decreased compared to that in the wild type (slower, weaker, lower, smaller, etc.)." [SGD:curators]
+xref: APO:0000003
+is_a: VariO:0289 ! quantity change
+
+[Term]
+id: VariO:0291
+name: increased
+def: "The observed feature is increased compared to that in the wild type (faster, stronger, higher, larger, etc.)." [SGD:curators]
+xref: APO:0000004
+is_a: VariO:0289 ! quantity change
+
+[Term]
+id: VariO:0292
+name: missing
+def: "The observed feature is missing compared to that in the wild type." [VariO:mv]
+is_a: VariO:0289 ! quantity change
+
+[Term]
+id: VariO:0293
+name: pathogenicity association
+def: "Pathogenicity attribute." [VariO:mv]
+is_a: VariO:0232 ! variation attribute
+
+[Term]
+id: VariO:0294
+name: disease causing
+def: "Variation is causative of disease." [VariO:mv]
+is_a: VariO:0293 ! pathogenicity association
+
+[Term]
+id: VariO:0295
+name: not related to clinical phenotype
+def: "Variation is not related to clinical phenotype." [VariO:mv]
+is_a: VariO:0293 ! pathogenicity association
+
+[Term]
+id: VariO:0296
+name: disease associated
+def: "Variation is disease related." [VariO:mv]
+is_a: VariO:0293 ! pathogenicity association
+
+[Term]
+id: VariO:0297
+name: variation affecting RNA
+def: "Effects of a variation on RNA level." [VariO:mv]
+is_a: VariO:0001 ! variation
+
+[Term]
+id: VariO:0298
+name: variation affecting RNA property
+def: "Variation affecting characteristic property of RNA." [VariO:mv]
+is_a: VariO:0297 ! variation affecting RNA
+
+[Term]
+id: VariO:0299
+name: effect on RNA degradation
+def: "Variation affecting degradation of RNA." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0300
+name: effect on RNA folding
+def: "Variation affecting folding of RNA." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0301
+name: effect on RNA stability
+def: "Variation affecting stability of transcript." [VariO:mv]
+xref: SO:0001546
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0302
+name: conservation of RNA variation site
+def: "Conservation of the variation site in related RNA sequences." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0303
+name: polysomy
+def: "An excess of a particular chromosome in a cell or organism." [VariO:mv]
+is_a: VariO:0206 ! chromosome number variation
+created_by: gerard
+creation_date: 2013-02-01T11:30:39Z
+
+[Term]
+id: VariO:0304
+name: association of RNA variation to pathogenicity
+def: "Implication of an RNA variant to pathogenicity." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0305
+name: effect on RNA interaction
+def: "Variation affecting interaction of RNA with its partner." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+
+[Term]
+id: VariO:0306
+name: RNA variation type
+def: "Type of RNA variation. Describes origin and classification of a variant." [VariO:mv]
+is_a: VariO:0297 ! variation affecting RNA
+
+[Term]
+id: VariO:0307
+name: RNA variation of genetic origin
+def: "RNA variation that has genetic origin." [VariO:mv]
+is_a: VariO:0324 ! RNA variation origin
+
+[Term]
+id: VariO:0308
+name: missense variation
+def: "Nucleotide change in the mRNA triplet codon codes for another amino acid." [VariO:mv]
+is_a: VariO:0312 ! RNA substitution
+
+[Term]
+id: VariO:0309
+name: termination codon change
+def: "RNA nucleotide change in termination codon." [VariO:mv]
+xref: SO:0001590
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0310
+name: nonsense variation
+def: "Nucleotide change in the mRNA codon triplet creates a terminator codon." [VariO:mv]
+is_a: VariO:0312 ! RNA substitution
+
+[Term]
+id: VariO:0311
+name: RNA indel
+def: "A complex RNA variation consisting of both nucleotide insertion(s) and deletion(s)." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0312
+name: RNA substitution
+def: "Substitution of RNA nucleotide." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0313
+name: transition
+def: "Change of a pyrimidine nucleotide, C or T (or U), into an other pyrimidine nucleotide, or change of a purine nucleotide, A or G, into an other purine nucleotide." [VariO:mv]
+is_a: VariO:0136 ! DNA substitution
+is_a: VariO:0312 ! RNA substitution
+relationship: owl:topObjectProperty VariO:0312 ! RNA substitution
+relationship: part_of VariO:0136 ! DNA substitution
+
+[Term]
+id: VariO:0314
+name: pyrimidine transition
+def: "A substitution of a pyrimidine, C or T (or U), for another pyrimidine." [VariO:mv]
+is_a: VariO:0313 ! transition
+
+[Term]
+id: VariO:0315
+name: purine transition
+def: "A substitution of a purine, A or G, for another purine." [VariO:mv]
+is_a: VariO:0313 ! transition
+
+[Term]
+id: VariO:0316
+name: transversion
+def: "Change of a pyrimidine nucleotide, C or T (or U), into a purine nucleotide, A or G, or vice versa." [VariO:mv]
+xref: http://en.wikipedia.org/wiki/Transversion "wiki"
+is_a: VariO:0136 ! DNA substitution
+is_a: VariO:0312 ! RNA substitution
+relationship: part_of VariO:0136 ! DNA substitution
+relationship: part_of VariO:0312 ! RNA substitution
+
+[Term]
+id: VariO:0317
+name: initiation codon change
+def: "RNA nucleotide change in the initiation codon." [VariO:mv]
+xref: SO:0001582
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0318
+name: silent variation
+def: "RNA variation that does not change the encoded amino acid." [VariO:mv]
+is_a: VariO:0312 ! RNA substitution
+
+[Term]
+id: VariO:0319
+name: RNA deletion
+def: "One or more continuous nucleotides are missing from RNA sequence." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0320
+name: in-frame deletion
+def: "Deletion of nucleotides in multiples of three so that the mRNA coding sequence frame is retained." [VariO:mv]
+is_a: VariO:0319 ! RNA deletion
+
+[Term]
+id: VariO:0321
+name: out-of-frame deletion
+def: "Deletion of nucleotide(s) causing alteration of mRNA coding sequence frame." [VariO:mv]
+is_a: VariO:0319 ! RNA deletion
+
+[Term]
+id: VariO:0322
+name: DNA variation classification
+def: "Classification of DNA variation." [VariO:mv]
+is_a: VariO:0129 ! DNA variation type
+created_by: Mauno Vihinen
+creation_date: 2013-10-11T08:46:32Z
+
+[Term]
+id: VariO:0323
+name: protein variation origin
+def: "Origin of protein variation." [VariO:mv]
+is_a: VariO:0012 ! protein variation type
+created_by: Mauno Vihinen
+creation_date: 2013-10-11T08:53:23Z
+
+[Term]
+id: VariO:0324
+name: RNA variation origin
+def: "Origin of RNA variation." [VariO:mv]
+is_a: VariO:0306 ! RNA variation type
+creation_date: 2013-10-11T09:04:23Z
+
+[Term]
+id: VariO:0325
+name: protein variation classification
+def: "Classification of protein variation." [VariO:mv]
+is_a: VariO:0012 ! protein variation type
+created_by: Mauno Vihinen
+creation_date: 2013-10-11T08:59:04Z
+
+[Term]
+id: VariO:0326
+name: RNA insertion
+def: "Addition of one or more nucleotides between adjacent nucleotides in RNA sequence." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0327
+name: out-of-frame insertion
+def: "Insertion of nucleotide(s) causing alteration of mRNA reading frame." [VariO:mv]
+is_a: VariO:0326 ! RNA insertion
+
+[Term]
+id: VariO:0328
+name: RNA variation classification
+def: "Classification of RNA variation." [VariO:mv]
+is_a: VariO:0306 ! RNA variation type
+created_by: Mauno Vihinen
+creation_date: 2013-10-11T09:05:02Z
+
+[Term]
+id: VariO:0329
+name: alternative RNA form
+def: "RNA variation due to defective fidelity of transcription." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+creation_date: 2014-10-23T00:29:53Z
+
+[Term]
+id: VariO:0330
+name: mistranslated protein
+def: "Protein variation due to defective fidelity of translation." [VariO:mv]
+is_a: VariO:0024 ! variation emerging at protein level
+created_by: Mauno Vihinen
+creation_date: 2014-10-23T00:31:56Z
+
+[Term]
+id: VariO:0331
+name: alternative form of mRNA
+def: "Alternative form of mRNA molecule." [VariO:mv]
+is_a: VariO:0351 ! protein coding RNA
+created_by: med-mnv
+creation_date: 2018-04-26T14:47:12Z
+
+[Term]
+id: VariO:0332
+name: in-frame insertion
+def: "Insertion of nucleotides in multiples of three so that the reading frame is retained." [VariO:mv]
+is_a: VariO:0326 ! RNA insertion
+
+[Term]
+id: VariO:0333
+name: RNA variation of non-genetic origin
+def: "RNA variation that does not have genetic origin being modified at RNA level." [VariO:mv]
+is_a: VariO:0324 ! RNA variation origin
+
+[Term]
+id: VariO:0334
+name: RNA splicing change
+def: "Change to RNA splicing." [VariO:mv]
+is_a: VariO:0328 ! RNA variation classification
+
+[Term]
+id: VariO:0335
+name: decayed RNA
+def: "RNA molecule destroyed due to appearance of a premature termination codon." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+
+[Term]
+id: VariO:0336
+name: modified RNA
+def: "Post transcriptionally modified RNA." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+
+[Term]
+id: VariO:0337
+name: modified DNA
+def: "DNA variation due to biological, chemical, physical or other modification." [VariO:mv]
+is_a: VariO:0146 ! DNA variation of non-genetic origin
+created_by: Mauno Vihinen
+creation_date: 2014-10-23T00:42:47Z
+
+[Term]
+id: VariO:0338
+name: variation affecting RNA structure
+def: "Variation affecting structure of RNA." [VariO:mv]
+is_a: VariO:0297 ! variation affecting RNA
+
+[Term]
+id: VariO:0343
+name: synonymous variation
+def: "mRNA variation not affecting the sequence of the translated protein." [VariO:mv]
+is_a: VariO:0232 ! variation attribute
+created_by: med-mnv
+creation_date: 2015-06-04T13:23:24Z
+
+[Term]
+id: VariO:0349
+name: affected RNA type
+def: "Affected type of RNA." [VariO:mv]
+is_a: VariO:0338 ! variation affecting RNA structure
+
+[Term]
+id: VariO:0350
+name: non-protein coding RNA
+def: "Variation affecting RNA not coding for protein." [VariO:mv]
+synonym: "ncRNA" EXACT []
+synonym: "non-coding RNA\nncRNA" EXACT []
+is_a: VariO:0349 ! affected RNA type
+
+[Term]
+id: VariO:0351
+name: protein coding RNA
+def: "RNA coding for protein." [VariO:mv]
+is_a: VariO:0349 ! affected RNA type
+
+[Term]
+id: VariO:0352
+name: coding region of mRNA
+def: "Variation affecting region coding for protein in protein coding RNA." [VariO:mv]
+is_a: VariO:0351 ! protein coding RNA
+
+[Term]
+id: VariO:0353
+name: non-coding region of mRNA
+def: "Variation affecting region not coding for protein in protein coding mRNA." [VariO:mv]
+is_a: VariO:0350 ! non-protein coding RNA
+
+[Term]
+id: VariO:0354
+name: effect on post transcriptional RNA modification
+def: "Variation affecting post transcriptional RNA modification." [VariO:mv]
+is_a: VariO:0338 ! variation affecting RNA structure
+
+[Term]
+id: VariO:0356
+name: alternatively polyadenylated mRNA
+def: "Polyadenylation of mRNA molecule at alternative site." [VariO:mv]
+is_a: VariO:0331 ! alternative form of mRNA
+
+[Term]
+id: VariO:0361
+name: RNA sugar variation
+def: "Post transcriptional modification of RNA nucleoside sugar." [VariO:mv]
+is_a: VariO:0338 ! variation affecting RNA structure
+
+[Term]
+id: VariO:0362
+name: effect on RNA splicing
+def: "Effect to process where introns in mRNA are cut away from exons." [VariO:mv]
+xref: SO:0001568
+is_a: VariO:0354 ! effect on post transcriptional RNA modification
+
+[Term]
+id: VariO:0363
+name: effect on RNA localization
+def: "Variation affecting cellular localization of RNA." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+created_by: med-mnv
+creation_date: 2018-05-07T11:20:14Z
+
+[Term]
+id: VariO:0364
+name: effect on RNA aggregation
+def: "Variation affecting aggregation tendency of RNA." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+created_by: med-mnv
+creation_date: 2018-05-07T11:20:14Z
+
+[Term]
+id: VariO:0365
+name: effect on cis splicing
+def: "Intronic splicing within an RNA molecule." [VariO:mv]
+is_a: VariO:0362 ! effect on RNA splicing
+
+[Term]
+id: VariO:0366
+name: variation at recursive splice site
+def: "Variation affecting splicing at recursive splice site which subdivides a large intron." [VariO:mv]
+is_a: VariO:0508 ! affected splice site
+
+[Term]
+id: VariO:0367
+name: variation at five prime splice site
+def: "Variation affecting intronic region bordering exon or retained RNA region, at the five prime end of the intron." [VariO:mv]
+is_a: VariO:0508 ! affected splice site
+
+[Term]
+id: VariO:0368
+name: variation at canonical five prime splice site
+def: "Variation affecting canonical prime splice site at five prime end." [VariO:mv]
+is_a: VariO:0367 ! variation at five prime splice site
+
+[Term]
+id: VariO:0369
+name: variation at non canonical five prime splice site
+def: "Variation affecting non canonical splice site at five prime end." [VariO:mv]
+is_a: VariO:0367 ! variation at five prime splice site
+
+[Term]
+id: VariO:0370
+name: variation at three prime splice site
+def: "Variation affecting intronic region bordering the exon or retained RNA region, at the 3' edge of the intron." [VariO:mv]
+is_a: VariO:0508 ! affected splice site
+
+[Term]
+id: VariO:0371
+name: variation at non canonical three prime splice site
+def: "Variation affecting non canonical splice site at three prime end." [VariO:mv]
+is_a: VariO:0370 ! variation at three prime splice site
+
+[Term]
+id: VariO:0372
+name: variation at canonical three prime splice site
+def: "Variation affecting canonical splice site at three prime end." [VariO:mv]
+is_a: VariO:0370 ! variation at three prime splice site
+
+[Term]
+id: VariO:0373
+name: cryptic splice site activation
+def: "Activation of new splice site." [VariO:mv]
+xref: SO:0001569
+is_a: VariO:0504 ! inclusion of cryptic exon
+
+[Term]
+id: VariO:0374
+name: cryptic splice donor activation
+def: "Activation of new splice donor site." [VariO:mv]
+xref: SO:0001571
+is_a: VariO:0373 ! cryptic splice site activation
+
+[Term]
+id: VariO:0375
+name: cryptic splice acceptor activation
+def: "Activation of new splice acceptor site." [VariO:mv]
+xref: SO:0001570
+is_a: VariO:0373 ! cryptic splice site activation
+
+[Term]
+id: VariO:0376
+name: effect on trans splicing
+def: "Variation affecting splicing and ligation different RNA molecules." [VariO:mv]
+is_a: VariO:0362 ! effect on RNA splicing
+
+[Term]
+id: VariO:0377
+name: retrotransposon insertion
+def: "Insertion of retrotransposon into chromosome. Retrotransposon is transcribed from DNA to RNA, and then reverse transcribed to DNA." [VariO:mv]
+is_a: VariO:0192 ! DNA mobile genetic element insertion
+created_by: med-mnv
+creation_date: 2015-08-26T12:50:29Z
+
+[Term]
+id: VariO:0378
+name: DNA transposon
+def: "Insertion of a DNA transposable element into chromosome." [VariO:mv]
+is_a: VariO:0192 ! DNA mobile genetic element insertion
+created_by: med-mnv
+creation_date: 2015-08-26T12:50:29Z
+
+[Term]
+id: VariO:0379
+name: LINE
+def: "Long interspersed nuclear element generated by retrotransposition." [VariO:mv]
+is_a: VariO:0377 ! retrotransposon insertion
+created_by: med-mnv
+creation_date: 2015-08-26T12:51:03Z
+
+[Term]
+id: VariO:0380
+name: SINE
+def: "Short interspersed nuclear element generated by retrotransposition. Length below 500 bp." [VariO:mv]
+is_a: VariO:0377 ! retrotransposon insertion
+created_by: med-mnv
+creation_date: 2015-08-26T12:51:03Z
+
+[Term]
+id: VariO:0381
+name: effect on RNA double helix
+def: "Variation affecting RNA double helix." [VariO:mv]
+is_a: VariO:0137 ! effect on RNA tertiary structure
+created_by: med-mnv
+creation_date: 2018-05-07T11:22:31Z
+
+[Term]
+id: VariO:0382
+name: effect on RNA secondary structure
+def: "Variation affecting RNA secondary structure." [VariO:mv]
+is_a: VariO:0338 ! variation affecting RNA structure
+
+[Term]
+id: VariO:0383
+name: effect on RNA multiloop
+def: "Variation affecting closed RNA structure in which at least two double stranded regions meet." [VariO:mv]
+is_a: VariO:0382 ! effect on RNA secondary structure
+
+[Term]
+id: VariO:0384
+name: effect on RNA bulge
+def: "Variation affecting RNA structure in which nucleotides in one strand do not form base pairs." [VariO:mv]
+is_a: VariO:0382 ! effect on RNA secondary structure
+
+[Term]
+id: VariO:0385
+name: effect on RNA interior loop
+def: "Variation affecting RNA structure in which both the strands do not form base pairs." [VariO:mv]
+is_a: VariO:0382 ! effect on RNA secondary structure
+
+[Term]
+id: VariO:0386
+name: effect on RNA stem
+def: "Variation effecting hydrogen bonding in contiguous nested base pairs in RNA." [VariO:mv]
+is_a: VariO:0382 ! effect on RNA secondary structure
+
+[Term]
+id: VariO:0387
+name: effect on RNA hairpin loop
+def: "Variation affecting loop connecting adjacent regions forming helix in RNA." [VariO:mv]
+is_a: VariO:0382 ! effect on RNA secondary structure
+
+[Term]
+id: VariO:0388
+name: LTR
+def: "Retrotransposon that has long terminal repeat sequences. Sizes from about 100 bp to over 5 kb." [VariO:mv]
+is_a: VariO:0377 ! retrotransposon insertion
+created_by: med-mnv
+creation_date: 2015-08-26T12:51:03Z
+
+[Term]
+id: VariO:0389
+name: pentanucleotide expansion
+def: "Tandem repetitive sequence consisting of five nucleotide units." [VariO:mv]
+is_a: VariO:0188 ! microsatellite
+created_by: med-mnv
+creation_date: 2015-09-17T10:55:04Z
+
+[Term]
+id: VariO:0390
+name: effect on DNA double helix
+def: "Variation affecting DNA double helical structure." [VariO:mv]
+is_a: VariO:0167 ! effect on DNA form
+created_by: med-mnv
+creation_date: 2017-01-16T12:53:57Z
+
+[Term]
+id: VariO:0391
+name: plasmid affected
+def: "Variation effect on independently replicating small DNA molecule." [VariO:mv]
+is_a: VariO:0072 ! extrachromosomal DNA affected
+created_by: med-mnv
+creation_date: 2015-09-18T20:15:22Z
+
+[Term]
+id: VariO:0392
+name: insertion sequence
+def: "Simple, relatively short transposable element. IS elements contain only transposition related genes." [VariO:mv]
+is_a: VariO:0192 ! DNA mobile genetic element insertion
+created_by: med-mnv
+creation_date: 2015-09-18T20:28:19Z
+
+[Term]
+id: VariO:0393
+name: epigenetic RNA variation
+def: "RNA variation of epigenetic origin." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+created_by: med-mnv
+creation_date: 2018-05-07T11:43:50Z
+
+[Term]
+id: VariO:0394
+name: effect on DNA cruciform
+def: "Variation affecting double stranded DNA structure that contains in both strands at corresponding positions a single stranded base pairing forming stem and a connecting loop." [VariO:mv]
+is_a: VariO:0420 ! effect on four-stranded DNA
+created_by: med-mnv
+creation_date: 2015-09-18T20:44:08Z
+
+[Term]
+id: VariO:0396
+name: variation affecting RNA function
+def: "Variation having effect on RNA function and usage." [VariO:mv]
+is_a: VariO:0297 ! variation affecting RNA
+
+[Term]
+id: VariO:0397
+name: effect on RNA splicing function
+def: "Variation affecting splicing function of RNA." [VariO:mv]
+is_a: VariO:0396 ! variation affecting RNA function
+
+[Term]
+id: VariO:0398
+name: effect on catalytic RNA activity
+def: "Variation affecting catalytic function of RNA." [VariO:mv]
+is_a: VariO:0396 ! variation affecting RNA function
+
+[Term]
+id: VariO:0399
+name: effect on translation
+def: "Variation affecting translation of protein." [VariO:mv]
+is_a: VariO:0396 ! variation affecting RNA function
+
+[Term]
+id: VariO:0400
+name: effect on regulatory function of RNA
+def: "Variation affecting regulatory function of RNA." [VariO:mv]
+is_a: VariO:0396 ! variation affecting RNA function
+
+[Term]
+id: VariO:0401
+name: effect on amino acid transfer of RNA
+def: "Variation affecting RNA function in amino acid transfer." [VariO:mv]
+is_a: VariO:0396 ! variation affecting RNA function
+
+[Term]
+id: VariO:0402
+name: effect on RNA information transfer
+def: "Variation affecting information transfer by RNA." [VariO:mv]
+is_a: VariO:0396 ! variation affecting RNA function
+
+[Term]
+id: VariO:0403
+name: group I intron
+def: "Transposable element coding for self-splicing ribozyme when transcribed. Splicing is initiated by nucleophilic attack of an exogenous GTP or guanosine." [VariO:mv]
+is_a: VariO:0472 ! self-splicing intron
+created_by: med-mnv
+creation_date: 2015-09-21T10:06:37Z
+
+[Term]
+id: VariO:0404
+name: group II intron
+def: "Transposable element coding for a self-splicing ribozyme when transcribed. Intron excision does not require GTP." [VariO:mv]
+is_a: VariO:0472 ! self-splicing intron
+created_by: med-mnv
+creation_date: 2015-09-21T10:06:37Z
+
+[Term]
+id: VariO:0405
+name: dicentric translocation
+def: "Fusion of two chromosome segments both containing a centromere." [VariO:mv]
+is_a: VariO:0202 ! interchromosomal translocation
+created_by: med-mnv
+creation_date: 2015-09-22T19:15:03Z
+
+[Term]
+id: VariO:0407
+name: edited DNA
+def: "Variation generated by chromosome editing." [VariO:mv]
+is_a: VariO:0146 ! DNA variation of non-genetic origin
+created_by: med-mnv
+creation_date: 2015-09-22T19:20:45Z
+
+[Term]
+id: VariO:0408
+name: RNA chimera
+def: "Fusion transcript of exons from two or more genes." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+created_by: med-mnv
+creation_date: 2015-09-24T13:21:02Z
+
+[Term]
+id: VariO:0409
+name: frameshifted RNA
+def: "Transcript with -1 or +1 frameshift due to slipping back or skipping a nucleotide on a ribosome." [VariO:mv]
+is_a: VariO:0333 ! RNA variation of non-genetic origin
+created_by: med-mnv
+creation_date: 2015-09-24T13:21:02Z
+
+[Term]
+id: VariO:0410
+name: effect on single stranded DNA structure
+def: "Variation affecting single stranded DNA structure." [VariO:mv]
+is_a: VariO:0167 ! effect on DNA form
+created_by: med-mnv
+creation_date: 2018-11-08T10:04:23Z
+
+[Term]
+id: VariO:0411
+name: alternatively spliced RNA
+def: "mRNA molecule matured by splicing at an alternative site." [VariO:mv]
+is_a: VariO:0331 ! alternative form of mRNA
+created_by: med-mnv
+creation_date: 2015-10-13T19:36:23Z
+
+[Term]
+id: VariO:0412
+name: effect on catalytic DNA activity
+def: "Variation affecting catalytic function of DNA." [VariO:mv]
+is_a: VariO:0148 ! variation affecting DNA function
+created_by: med-mnv
+creation_date: 2016-11-29T11:11:11Z
+
+[Term]
+id: VariO:0413
+name: effect on A DNA
+def: "Variation affecting A form of right-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T12:55:40Z
+
+[Term]
+id: VariO:0414
+name: effect on B DNA
+def: "Variation affecting B form of right-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T12:55:40Z
+
+[Term]
+id: VariO:0415
+name: effect on C DNA
+def: "Variation affecting C form of right-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T12:55:40Z
+
+[Term]
+id: VariO:0416
+name: effect on L DNA
+def: "Variation affecting L form of right-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T12:55:40Z
+
+[Term]
+id: VariO:0417
+name: effect on S DNA
+def: "Variation affecting S form of right-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T12:55:40Z
+
+[Term]
+id: VariO:0418
+name: effect on D DNA
+def: "Variation affecting D form of right-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T13:10:01Z
+
+[Term]
+id: VariO:0419
+name: effect on H DNA
+def: "Variation affecting H form of intramolecular triple helical DNA." [VariO:mv]
+is_a: VariO:0422 ! effect on intramolecular DNA triple helix
+created_by: med-mnv
+creation_date: 2017-01-16T13:14:56Z
+
+[Term]
+id: VariO:0420
+name: effect on four-stranded DNA
+def: "Variation affecting four-stranded DNA." [VariO:mv]
+is_a: VariO:0167 ! effect on DNA form
+created_by: med-mnv
+creation_date: 2017-01-16T13:17:51Z
+
+[Term]
+id: VariO:0421
+name: effect on Z DNA
+def: "Variation affecting Z form of left-handed DNA." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-16T13:20:36Z
+
+[Term]
+id: VariO:0422
+name: effect on intramolecular DNA triple helix
+def: "Variation affecting triple helical DNA structure where the third strand is provided by one of the strands forming the duplex." [VariO:mv]
+is_a: VariO:0175 ! effect on DNA triple helix
+created_by: med-mnv
+creation_date: 2017-01-16T13:22:35Z
+
+[Term]
+id: VariO:0423
+name: effect on intermolecular DNA triple helix
+def: "Variation affecting triple helical DNA structure where the third strand is from a second DNA molecule." [VariO:mv]
+is_a: VariO:0175 ! effect on DNA triple helix
+created_by: med-mnv
+creation_date: 2017-01-16T13:24:18Z
+
+[Term]
+id: VariO:0424
+name: effect on DNA-RNA hybrid
+def: "Variation affecting DNA-RNA hybrid." [VariO:mv]
+is_a: VariO:0137 ! effect on RNA tertiary structure
+is_a: VariO:0167 ! effect on DNA form
+created_by: med-mnv
+creation_date: 2017-01-16T13:29:46Z
+
+[Term]
+id: VariO:0425
+name: effect on RNA triple helix
+def: "Variation affecting RNA helix formed of three strands." [VariO:mv]
+is_a: VariO:0137 ! effect on RNA tertiary structure
+created_by: med-mnv
+creation_date: 2017-01-16T13:48:49Z
+
+[Term]
+id: VariO:0426
+name: effect on four-stranded RNA
+def: "Variation affecting four-stranded RNA." [VariO:mv]
+is_a: VariO:0137 ! effect on RNA tertiary structure
+created_by: med-mnv
+creation_date: 2017-01-16T13:48:49Z
+
+[Term]
+id: VariO:0427
+name: type of chromosomal amplification
+def: "Classification of chromosomal amplification type." [VariO:mv]
+is_a: VariO:0183 ! chromosomal amplification
+created_by: med-mnv
+creation_date: 2017-01-17T09:34:30Z
+
+[Term]
+id: VariO:0428
+name: genome variation
+def: "Variation affecting genome." [VariO:mv]
+is_a: VariO:0155 ! variation affecting DNA structure
+created_by: med-mnv
+creation_date: 2017-01-23T09:01:36Z
+
+[Term]
+id: VariO:0429
+name: complex genomic variation
+def: "Chromosome structure variation due to several breakpoints." [VariO:mv]
+is_a: VariO:0428 ! genome variation
+created_by: med-mnv
+creation_date: 2017-01-23T09:03:57Z
+
+[Term]
+id: VariO:0430
+name: nucleotide expansion
+def: "Repetitive sequence consisting of one more nucleotide units." [VariO:mv]
+is_a: VariO:0183 ! chromosomal amplification
+created_by: med-mnv
+creation_date: 2017-01-23T09:09:22Z
+
+[Term]
+id: VariO:0431
+name: effect on R loop
+def: "Effect on DNA-RNA R loop structure of short RNA-DNA hybrid and the displaced single stranded DNA." [VariO:mv]
+is_a: VariO:0424 ! effect on DNA-RNA hybrid
+created_by: med-mnv
+creation_date: 2017-01-23T09:32:22Z
+
+[Term]
+id: VariO:0432
+name: effect on T loop
+def: "Effect on DNA-RNA T loop structure formed by single-stranded 3' strand looping back to anneal with double-stranded repeats. Appears in telomere end-replication." [VariO:mv]
+is_a: VariO:0390 ! effect on DNA double helix
+created_by: med-mnv
+creation_date: 2017-01-23T09:34:30Z
+
+[Term]
+id: VariO:0433
+name: effect on D loop
+def: "Effect on DNA displacement loop where two double-stranded DNA molecules are separated locally by a third strand of DNA or RNA." [VariO:mv]
+is_a: VariO:0423 ! effect on intermolecular DNA triple helix
+relationship: part_of VariO:0423 ! effect on intermolecular DNA triple helix
+relationship: part_of VariO:0424 ! effect on DNA-RNA hybrid
+created_by: med-mnv
+creation_date: 2017-01-23T09:45:49Z
+
+[Term]
+id: VariO:0434
+name: DNA sugar variation
+def: "Replacement of the deoxyribonucleoside monophosphate by ribonucleoside monophosphate in the DNA backbone." [VariO:mv]
+is_a: VariO:0155 ! variation affecting DNA structure
+created_by: med-mnv
+creation_date: 2017-03-23T10:54:09Z
+
+[Term]
+id: VariO:0435
+name: effect on protein reaction kinetics
+def: "Effect of variation to protein reaction kinetics." [VariO:mv]
+is_a: VariO:0053 ! effect on protein activity
+created_by: med-mnv
+creation_date: 2017-04-28T14:52:51Z
+
+[Term]
+id: VariO:0436
+name: mature RNA
+def: "Completely processed RNA molecule." [VariO:mv]
+is_a: VariO:0336 ! modified RNA
+created_by: med-mnv
+creation_date: 2017-04-28T14:58:30Z
+
+[Term]
+id: VariO:0437
+name: alternatively initiated mRNA
+def: "RNA variation causing alternative translation initiation." [VariO:mv]
+is_a: VariO:0331 ! alternative form of mRNA
+created_by: med-mnv
+creation_date: 2017-04-28T16:01:26Z
+
+[Term]
+id: VariO:0438
+name: epigenetic RNA modification
+def: "Epigenetic modification of RNA." [VariO:mv]
+is_a: VariO:0338 ! variation affecting RNA structure
+created_by: med-mnv
+creation_date: 2018-05-07T14:40:53Z
+
+[Term]
+id: VariO:0439
+name: effect on RNA activity
+def: "Effect of variation on RNA activity." [VariO:mv]
+is_a: VariO:0298 ! variation affecting RNA property
+created_by: med-mnv
+creation_date: 2017-04-28T16:23:47Z
+
+[Term]
+id: VariO:0440
+name: effect on RNA reaction kinetics
+def: "Effect of variation on RNA reaction kinetics." [VariO:mv]
+is_a: VariO:0439 ! effect on RNA activity
+created_by: med-mnv
+creation_date: 2017-04-28T16:26:01Z
+
+[Term]
+id: VariO:0441
+name: effect on RNA affinity
+def: "Effect of variation on  RNA affinity to binding molecule(s)." [VariO:mv]
+is_a: VariO:0439 ! effect on RNA activity
+created_by: med-mnv
+creation_date: 2017-04-28T16:26:01Z
+
+[Term]
+id: VariO:0442
+name: effect on RNA specificity
+def: "Effect of variation on substrate binding specificity of RNA." [VariO:mv]
+is_a: VariO:0439 ! effect on RNA activity
+created_by: med-mnv
+creation_date: 2017-04-28T16:26:01Z
+
+[Term]
+id: VariO:0443
+name: alternatively initiated protein
+def: "Protein variant originating from alternative translation initiation." [VariO:mv]
+is_a: VariO:0024 ! variation emerging at protein level
+created_by: med-mnv
+creation_date: 2017-05-03T09:09:05Z
+
+[Term]
+id: VariO:0444
+name: de novo variation
+def: "Variation that has emerged in a germ cell on one of the parents or in the fertilized egg during early embryogenesis." [VariO:mv]
+is_a: VariO:0130 ! DNA variation of genetic origin
+created_by: med-mnv
+creation_date: 2018-01-08T11:31:50Z
+
+[Term]
+id: VariO:0445
+name: germinal variation
+def: "Variation that has been inherited from a germline cell." [VariO:mv]
+synonym: "germline variation" RELATED []
+is_a: VariO:0130 ! DNA variation of genetic origin
+created_by: med-mnv
+creation_date: 2017-12-15T09:58:57Z
+
+[Term]
+id: VariO:0446
+name: somatic variation
+def: "Variation that has its origin in a cell in soma." [VariO:mv]
+is_a: VariO:0130 ! DNA variation of genetic origin
+created_by: med-mnv
+creation_date: 2017-12-15T09:58:57Z
+
+[Term]
+id: VariO:0447
+name: immunological recognition molecule diversification
+def: "Processes that recombine and modify genes coding for immunological recognition molecules (antigens, B- and T-cell receptors, MCH type I and II molecules)." [VariO:mv]
+is_a: VariO:0180 ! chromosome structure variation
+created_by: med-mnv
+creation_date: 2017-12-15T10:47:27Z
+
+[Term]
+id: VariO:0448
+name: organellar DNA affected
+def: "Variation effect on DNA within cellular compartment." [VariO:mv]
+is_a: VariO:0072 ! extrachromosomal DNA affected
+created_by: med-mnv
+creation_date: 2018-02-01T12:42:12Z
+
+[Term]
+id: VariO:0449
+name: extrachromosomal circular DNA
+def: "Circular DNA molecule not part of the chromosomes." [VariO:mv]
+is_a: VariO:0072 ! extrachromosomal DNA affected
+created_by: med-mnv
+creation_date: 2018-02-01T12:47:35Z
+
+[Term]
+id: VariO:0450
+name: mitochondrial DNA affected
+def: "Variation affecting DNA within mitochondria." [VariO:mv]
+is_a: VariO:0448 ! organellar DNA affected
+created_by: med-mnv
+creation_date: 2018-02-01T12:52:27Z
+
+[Term]
+id: VariO:0451
+name: plastid DNA affected
+def: "Variation affecting DNA within plastids e.g. chloroplasts." [VariO:mv]
+is_a: VariO:0448 ! organellar DNA affected
+created_by: med-mnv
+creation_date: 2018-02-01T12:53:15Z
+
+[Term]
+id: VariO:0452
+name: heptanucleotide expansion
+def: "Tandem repetitive sequence consisting of six nucleotide units." [VariO:mv]
+is_a: VariO:0188 ! microsatellite
+created_by: med-mnv
+creation_date: 2018-02-01T14:49:25Z
+
+[Term]
+id: VariO:0453
+name: histone modification
+def: "Epigenetic modification of histone." [VariO:mv]
+is_a: VariO:0156 ! epigenetic DNA modification
+created_by: med-mnv
+creation_date: 2018-02-06T09:08:59Z
+
+[Term]
+id: VariO:0454
+name: variation at topology associating domain
+def: "Variation affecting topology associating domain (TAD)." [VariO:mv]
+is_a: VariO:0226 ! chromatin structure variation
+created_by: med-mnv
+creation_date: 2018-03-05T16:55:07Z
+
+[Term]
+id: VariO:0455
+name: effect on A motif
+is_a: VariO:0410 ! effect on single stranded DNA structure
+created_by: med-mnv
+creation_date: 2018-11-08T10:05:56Z
+
+[Term]
+id: VariO:0456
+name: RNA genome
+def: "Genome composed of RNA molecule." []
+is_a: VariO:0351 ! protein coding RNA
+
+[Term]
+id: VariO:0457
+name: RNA virus genome
+def: "Genome for a RNA virus." []
+is_a: VariO:0456 ! RNA genome
+
+[Term]
+id: VariO:0458
+name: viroid genome
+def: "Genome for an infectious particle." []
+is_a: VariO:0456 ! RNA genome
+
+[Term]
+id: VariO:0459
+name: satelletite genome
+def: "Genome for a subviral agent." []
+is_a: VariO:0456 ! RNA genome
+
+[Term]
+id: VariO:0460
+name: pre-mRNA
+def: "Unprocessed mRNA." []
+is_a: VariO:0351 ! protein coding RNA
+
+[Term]
+id: VariO:0461
+name: mRNA
+def: "Mature mRNA." []
+is_a: VariO:0460 ! pre-mRNA
+
+[Term]
+id: VariO:0462
+name: circular RNA
+def: "Covalently closed single-stranded RNA chain." []
+synonym: "circRNA" EXACT []
+is_a: VariO:0351 ! protein coding RNA
+
+[Term]
+id: VariO:0463
+name: antisense RNA
+def: "Single-stranded non-coding RNA compelementary to a mRNA or part of it." []
+is_a: VariO:0477 ! regulatory RNA
+
+[Term]
+id: VariO:0464
+name: non-coding sense RNA
+def: "Single-stranded noncoding RNA overlapping with mRNA but not coding for a protein." []
+is_a: VariO:0477 ! regulatory RNA
+
+[Term]
+id: VariO:0465
+name: functional non-coding RNA
+def: "Non-coding RNA with a function." []
+is_a: VariO:0350 ! non-protein coding RNA
+
+[Term]
+id: VariO:0466
+name: retrotransposon RNA intermediate
+def: "RNA intermediate of a retrotransposon." []
+synonym: "class I transposable element\ntransposon via RNA intermediate" EXACT []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0467
+name: translation related non-coding RNA
+def: "RNA involved in protein synthesis." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0468
+name: transfer RNA
+def: "Transfer RNA involved in protein synthesis. Modiefied tRNA contains amino acid and carries it to ribosome." []
+synonym: "tRNA" EXACT []
+is_a: VariO:0467 ! translation related non-coding RNA
+
+[Term]
+id: VariO:0469
+name: large subunit ribosomal RNA
+def: "Non-coding RNA that is a constituent of the large ribosomal subunit." []
+synonym: "LSU RNA" EXACT []
+is_a: VariO:0493 ! ribosomal RNA
+
+[Term]
+id: VariO:0470
+name: small subunit ribosomal RNA
+def: "Non-coding RNA that is a constituent of the small ribosomal unit." []
+synonym: "SSU RNA" EXACT []
+is_a: VariO:0493 ! ribosomal RNA
+
+[Term]
+id: VariO:0471
+name: intron
+synonym: "Intervening region ithat is spliced off during RNA maturation." EXACT []
+is_a: VariO:0467 ! translation related non-coding RNA
+
+[Term]
+id: VariO:0472
+name: self-splicing intron
+def: "Intron with an intrinsic splicing activity." []
+is_a: VariO:0471 ! intron
+
+[Term]
+id: VariO:0473
+name: spliceosomal intron
+def: "Intron removed by spliceosome." []
+is_a: VariO:0471 ! intron
+
+[Term]
+id: VariO:0474
+name: intron retention
+def: "Inclusion intron sequence to mRNA." []
+is_a: VariO:0365 ! effect on cis splicing
+property_value: owl:backwardCompatibleWith "targeting RNA" xsd:string
+
+[Term]
+id: VariO:0475
+name: telomerase RNA
+def: "Non-coding RNA component of telomerase." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0476
+name: catalytic RNA
+def: "RNA with catalytic activity." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0477
+name: regulatory RNA
+def: "RNA with regulatory activity." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0478
+name: microRNA
+def: "Short non-coding RNA that binds to complementary region in mRNA and silences and regulates gene expression." []
+synonym: "miRNA" EXACT []
+is_a: VariO:0477 ! regulatory RNA
+
+[Term]
+id: VariO:0479
+name: small intervening RNA
+def: "Short double-stranded non-coding RNA regulating gene expresion by causing degration of mRNA with complementary sequence." []
+synonym: "siRNA" EXACT []
+is_a: VariO:0477 ! regulatory RNA
+
+[Term]
+id: VariO:0480
+name: piwi-interacting RNA
+def: "Non-coding RNA binding to piwi-superfamily Argonaute proteins to silence transposons, repeat-derived transcripts and genetic elements." []
+synonym: "piRNA" EXACT []
+is_a: VariO:0477 ! regulatory RNA
+
+[Term]
+id: VariO:0481
+name: signal recognition particle RNA
+def: "Non-coding RNA component of signal recognition particle." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0482
+name: X-chromosome inactivation center RNA
+def: "Non-coding RNA component of X-inactivation center." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0483
+name: RNA editing related RNA
+def: "Non-coding RNA component of editosome complex." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0484
+name: DNA editing related RNA
+def: "Non-coding RNA component of DNA editing complex." []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0485
+name: spliceosomal RNA
+synonym: "Non-coding RNA component of spliceosome." EXACT []
+is_a: VariO:0465 ! functional non-coding RNA
+
+[Term]
+id: VariO:0486
+name: location or origin of non-coding RNA
+is_a: VariO:0350 ! non-protein coding RNA
+
+[Term]
+id: VariO:0487
+name: nuclear non-coding RNA
+def: "Non-coding RNA in nucleus." []
+is_a: VariO:0486 ! location or origin of non-coding RNA
+
+[Term]
+id: VariO:0488
+name: mitochondrial non-coding RNA
+def: "Non-coding RNA in mitochondrion." []
+is_a: VariO:0486 ! location or origin of non-coding RNA
+
+[Term]
+id: VariO:0489
+name: chromatin related non-coding RNA
+def: "Non-coding RNA related to chromatin." []
+is_a: VariO:0486 ! location or origin of non-coding RNA
+
+[Term]
+id: VariO:0490
+name: centromeric non-coding RNA
+def: "Non-coding RNA related to centromere." []
+is_a: VariO:0486 ! location or origin of non-coding RNA
+
+[Term]
+id: VariO:0491
+name: size of non-coding RNA
+def: "Classification of non-coding RNA based on the length." []
+is_a: VariO:0350 ! non-protein coding RNA
+
+[Term]
+id: VariO:0492
+name: short non-coding RNA
+def: "Non-coding RNA shorter than 200 nucleotides or base pairs." []
+synonym: "small non-coding RNA\nsRNA" EXACT []
+is_a: VariO:0491 ! size of non-coding RNA
+
+[Term]
+id: VariO:0493
+name: ribosomal RNA
+def: "Non-coding RNA constituent of ribosome." []
+synonym: "rRNA" EXACT []
+is_a: VariO:0467 ! translation related non-coding RNA
+
+[Term]
+id: VariO:0494
+name: long non-coding RNA
+def: "Non-coding RNA longer than 200 nucleotides or base pairs." []
+synonym: "large non-coding RNA\nlncRNA" EXACT []
+is_a: VariO:0491 ! size of non-coding RNA
+
+[Term]
+id: VariO:0495
+name: very long non-coding RNA
+def: "Non-coding RNA longer than 10 kb." []
+synonym: "vlnicRNA" EXACT []
+is_a: VariO:0491 ! size of non-coding RNA
+
+[Term]
+id: VariO:0496
+name: exon
+def: "Transcript region that is part in mature mRNA." []
+is_a: VariO:0461 ! mRNA
+
+[Term]
+id: VariO:0497
+name: alternatively terminated mRNA
+def: "Variation causing alternative mRNA termination." []
+is_a: VariO:0331 ! alternative form of mRNA
+
+[Term]
+id: VariO:0498
+name: effect on RNA modification
+def: "Variation affecting post transcriptional RNA modification." []
+is_a: VariO:0354 ! effect on post transcriptional RNA modification
+
+[Term]
+id: VariO:0499
+name: modified mRNA nucleotide
+def: "Post transcriptionally modified nucleotide in mRNA." []
+is_a: VariO:0331 ! alternative form of mRNA
+
+[Term]
+id: VariO:0500
+name: effect on RNA pseudoknot
+def: "Variation affecting RNA stucture containing at teast two stem loops where part of one stem is intercalated to the other stem." []
+is_a: VariO:0382 ! effect on RNA secondary structure
+
+[Term]
+id: VariO:0501
+name: RNA fragment
+def: "RNA produced by degradation of processing of an RNA molecule." []
+is_a: VariO:0486 ! location or origin of non-coding RNA
+
+[Term]
+id: VariO:0502
+name: exon skipping
+def: "Variation where an exon is completele cleaved out from a mature transcript." []
+is_a: VariO:0365 ! effect on cis splicing
+
+[Term]
+id: VariO:0503
+name: loss of exon fragment
+def: "Transcript from which part of an exon is missing." []
+is_a: VariO:0365 ! effect on cis splicing
+
+[Term]
+id: VariO:0504
+name: inclusion of cryptic exon
+def: "Transcript that includes a cryptic exon from the middle of intron." []
+is_a: VariO:0365 ! effect on cis splicing
+
+[Term]
+id: VariO:0505
+name: inclusion of intron fragment
+def: "Transcript that contains and additional stretch from intron." []
+is_a: VariO:0365 ! effect on cis splicing
+
+[Term]
+id: VariO:0508
+name: affected splice site
+def: "Type of variation affecting splice site." []
+is_a: VariO:0365 ! effect on cis splicing
+
+[Term]
+id: VariO:0509
+name: effect on mode of splicing
+def: "Variation affecting the type of RNA splicing." []
+is_a: VariO:0362 ! effect on RNA splicing
+
+[Term]
+id: VariO:0510
+name: effect on co-transcriptional splicing
+def: "Variation affecting splicing occurring simultnaeously with transcription." []
+is_a: VariO:0509 ! effect on mode of splicing
+
+[Term]
+id: VariO:0511
+name: effect on non-sequential splicing
+def: "Variation affecting splicing that does not occur in sequential order." []
+is_a: VariO:0509 ! effect on mode of splicing
+
+[Term]
+id: VariO:0512
+name: effect on recursive splicing
+def: "Variation affecting intron splicing that occurs in several splicing events." []
+is_a: VariO:0509 ! effect on mode of splicing
+
+[Term]
+id: VariO:0513
+name: mutually exclusive exon
+def: "Only one of two exons is incluided into mRNA." []
+synonym: "snoRNA" EXACT []
+is_a: VariO:0365 ! effect on cis splicing
+
+[Typedef]
+id: adjacent_to
+name: adjacent_to
+def: "A geometric operator, specified in Egenhofer 1989. Two features meet if they share a junction on the sequence." [SO:ke]
+
+[Typedef]
+id: associated_with
+name: associated_with
+comment: This relationship is vague and up for discussion.
+
+[Typedef]
+id: complete_evidence_for_feature
+name: complete_evidence_for_feature
+def: "B is complete_evidence_for_feature A if the extent (5' and 3' boundaries) and internal boundaries of B fully support the extent and internal boundaries of A." [SO:ke]
+comment: If A is a feature with multiple regions such as a multi exon transcript, the supporting EST evidence is complete if each of the regions is supported by an equivalent region in B. Also there must be no extra regions in B that are not represented in A. This relationship was requested by jeltje on the SO term tracker. The thread for the discussion is available can be accessed via tracker ID:1917222.
+is_transitive: true
+
+[Typedef]
+id: contains
+name: contains
+def: "'Entity A' contains 'Entity B' implies that 'Entity B' is a part of the structure of 'Entity A'." [PSI-MOD:ref]
+comment: The inverse relationship to "part of".
+is_transitive: true
+
+[Typedef]
+id: derives_from
+name: derives_from
+is_transitive: true
+
+[Typedef]
+id: evidence_for_feature
+name: evidence_for_feature
+def: "B is evidence_for_feature A, if an instance of B supports the existence of A." [SO:ke]
+comment: This relationship was requested by nlw on the SO term tracker. The thread for the discussion is available can be accessed via tracker ID:1917222.
+is_transitive: true
+
+[Typedef]
+id: genome_of
+name: genome_of
+
+[Typedef]
+id: has_functional_parent
+name: has functional parent
+def: "'Entity A' has_functional_parent 'Entity B' implies that 'Entity B' has at least one chacteristic group from which 'Entity A' can be derived by functional modification." [PSI-MOD:ref]
+comment: This relationship indicates that the formula and mass of the child are not inherited from the mass of the parent.
+is_transitive: true
+
+[Typedef]
+id: has_origin
+name: has_origin
+
+[Typedef]
+id: has_part
+name: has_part
+
+[Typedef]
+id: has_quality
+name: has_quality
+comment: The relationship between a feature and an attribute.
+
+[Typedef]
+id: member_of
+name: member_of
+comment: A subtype of part_of. Inverse is collection_of. Winston, M, Chaffin, R, Herrmann: A taxonomy of part-whole relations. Cognitive Science 1987, 11:417-444.
+is_transitive: true
+
+[Typedef]
+id: negatively_regulates
+name: negatively_regulates
+
+[Typedef]
+id: non_functional_homolog_of
+name: non_functional_homolog_of
+def: "A relationship between a pseudogenic feature and its functional ancestor." [SO:ke]
+
+[Typedef]
+id: part_of
+name: part_of
+is_transitive: true
+
+[Typedef]
+id: partial_evidence_for_feature
+name: partial_evidence_for_feature
+def: "B is partial_evidence_for_feature A if the extent of B supports part_of but not all of A." [SO:ke]
+
+[Typedef]
+id: position_of
+name: position_of
+
+[Typedef]
+id: positively_regulates
+name: positively_regulates
+
+[Typedef]
+id: regulates
+name: regulates
+transitive_over: part_of ! part_of
+
+[Typedef]
+id: sequence_of
+name: sequence_of
+
+[Typedef]
+id: variant_of
+name: variant_of
+def: "A' is a variant (mutation) of A = definition every instance of A' is either an immediate mutation of some instance of A, or there is a chain of immediate mutation processes linking A' to some instance of A." [SO:immuno_workshop]
+comment: Added to SO during the immunology workshop, June 2007.  This relationship was approved by Barry Smith.
+

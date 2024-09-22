@@ -14,7 +14,7 @@ class TestRecommenderController < TestCase
       @@redis.del(mappings)
     end
     LinkedData::SampleData::Ontology.delete_ontologies_and_submissions
-    @@ontologies = LinkedData::SampleData::Ontology.sample_owl_ontologies
+    @@ontologies = LinkedData::SampleData::Ontology.sample_owl_ontologies(process_submission: true)
     annotator = Annotator::Models::NcboAnnotator.new
     annotator.init_redis_for_tests()
     annotator.create_term_cache_from_ontologies(@@ontologies, false)

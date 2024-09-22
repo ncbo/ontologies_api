@@ -18,7 +18,10 @@ class TestOntologySubmissionsController < TestCase
       administeredBy: "tim",
       "file" => Rack::Test::UploadedFile.new(@@test_file, ""),
       released: DateTime.now.to_s,
-      contact: [{name: "test_name", email: "test@example.org"}]
+      contact: [{name: "test_name", email: "test3@example.org"}],
+      URI: 'https://test.com/test',
+      status: 'production',
+      description: 'ontology description'
     }
     @@status_uploaded = "UPLOADED"
     @@status_rdf = "RDF"
@@ -32,6 +35,12 @@ class TestOntologySubmissionsController < TestCase
   end
 
   def self._create_onts
+    ont = Ontology.new(acronym: @@acronym, name: @@name, administeredBy: [@@user])
+    ont.save
+  end
+
+  def setup
+    delete_ontologies_and_submissions
     ont = Ontology.new(acronym: @@acronym, name: @@name, administeredBy: [@@user])
     ont.save
   end
@@ -156,13 +165,13 @@ class TestOntologySubmissionsController < TestCase
     begin
       allowed_user = User.new({
         username: "allowed",
-        email: "test@example.org",
+        email: "test4@example.org",
         password: "12345"
       })
       allowed_user.save
       blocked_user = User.new({
         username: "blocked",
-        email: "test@example.org",
+        email: "test5@example.org",
         password: "12345"
       })
       blocked_user.save
@@ -235,5 +244,4 @@ class TestOntologySubmissionsController < TestCase
       del.delete if del
     end
   end
-
 end

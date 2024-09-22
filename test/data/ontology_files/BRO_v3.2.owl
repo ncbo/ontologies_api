@@ -631,7 +631,11 @@
 
     <owl:Class rdf:about="&activity;Activity">
         <core:prefLabel rdf:datatype="&xsd;string">Activity</core:prefLabel>
-        <desc:definition rdf:datatype="&xsd;string">Activity of interest that may be related to a BRO:Resource.</desc:definition>
+         <core:prefLabel rdf:datatype="&xsd;string">Activity</core:prefLabel>
+         <core:prefLabel xml:lang="en">ActivityEnglish</core:prefLabel>
+         <core:prefLabel xml:lang="fr">Activité</core:prefLabel>
+        <desc:definition xml:lang="en">Activity of interest that may be related to a BRO:Resource.</desc:definition>
+        <desc:definition xml:lang="fr">Activité d’intérêt pouvant être liée à un BRO:Resource.</desc:definition>
         <core:altLabel>activities</core:altLabel>
     </owl:Class>
     
@@ -641,8 +645,10 @@
 
     <owl:Class rdf:about="&activity;Biospecimen_Management">
         <rdfs:subClassOf rdf:resource="&activity;Activity"/>
-        <desc:definition rdf:datatype="&xsd;string">Activity related to the creation, use, or maintenance of a biorepository (http://en.wikipedia.org/wiki/Biorepository)</desc:definition>
-        <core:prefLabel rdf:datatype="&xsd;string">Biospecimen Management</core:prefLabel>
+            <desc:definition xml:lang="en">Activity related to the creation, use, or maintenance of a biorepository (http://en.wikipedia.org/wiki/Biorepository)</desc:definition>
+        <desc:definition xml:lang="fr">Activité liée à la création, à l&apos;utilisation ou à la maintenance d&apos;un bioréférentiel (http://en.wikipedia.org/wiki/Biorepository)</desc:definition>
+        <core:prefLabel xml:lang="en">Biospecimen Management</core:prefLabel>
+        <core:prefLabel xml:lang="fr">Gestion des échantillons biologiques</core:prefLabel>
     </owl:Class>
     
 

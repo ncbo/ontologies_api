@@ -5,6 +5,7 @@ class TestPropertiesController < TestCase
   def self.before_suite
     count, acronyms, bro = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
                                                                                                   process_submission: true,
+                                                                                                  process_options:{process_rdf: true, extract_metadata: false},
                                                                                                   acronym: "BROSEARCHTEST",
                                                                                                   name: "BRO Search Test",
                                                                                                   file_path: "./test/data/ontology_files/BRO_v3.2.owl",
@@ -15,6 +16,7 @@ class TestPropertiesController < TestCase
 
     count, acronyms, mccl = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
                                                                                                    process_submission: true,
+                                                                                                   process_options:{process_rdf: true, extract_metadata: true},
                                                                                                    acronym: "MCCLSEARCHTEST",
                                                                                                    name: "MCCL Search Test",
                                                                                                    file_path: "./test/data/ontology_files/CellLine_OWL_BioPortal_v1.0.owl",

@@ -55,8 +55,6 @@ test/data/ontology_files/repo/**/*
 
 *.swp
 
-.ruby-version
-
 config/environments/console.rb
 
 config/environments/stage.rb

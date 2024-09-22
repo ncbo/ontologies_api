@@ -4,7 +4,7 @@
 # server in each group is considered to be the first
 # unless any hosts have the primary property set.
 # Don't declare `role :all`, it's a meta role
-ole :app, %w{api1.prd.ontoportal.org api2.prd.ontoportal.org/}
+pole :app, %w{api1.prd.ontoportal.org api2.prd.ontoportal.org/}
 
 # Extended Server Syntax
 # ======================

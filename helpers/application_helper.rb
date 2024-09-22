@@ -21,9 +21,10 @@ module Sinatra
 
         # Make sure everything is loaded
         if obj.is_a?(LinkedData::Models::Base)
-          obj.bring_remaining unless !obj.exist?
+          obj.bring_remaining if obj.exist?
+          no_writable_attributes = obj.class.attributes(:all) - obj.class.attributes
+          params = params.reject  {|k,v| no_writable_attributes.include? k.to_sym}
         end
-
         params.each do |attribute, value|
           next if value.nil?
 
@@ -346,8 +347,7 @@ module Sinatra
       # If the setting is enabled, replace the URL prefix with the proper id prefix
       # EX: http://stagedata.bioontology.org/ontologies/BRO would become http://data.bioontology.org/ontologies/BRO
       def replace_url_prefix(id)
-        id = id.sub(LinkedData.settings.rest_url_prefix, LinkedData.settings.id_url_prefix) if LinkedData.settings.replace_url_prefix && id.start_with?(LinkedData.settings.rest_url_prefix)
-        id
+        LinkedData::Models::Base.replace_url_prefix_to_id(id)
       end
 
       def retrieve_latest_submissions(options = {})
@@ -396,19 +396,13 @@ module Sinatra
         else
           submission = ont.latest_submission(status: [:RDF])
         end
-        if submission.nil?
-          error 404,  "Ontology #{@params["ontology"]} submission not found."
-        end
+        error 404, "Ontology #{@params["ontology"]} submission not found." if submission.nil?
         if !submission.ready?(status: [:RDF])
-          error(404,
-                "Ontology #{@params["ontology"]} submission i"+
-                "#{submission.submissionId} has not been parsed.")
+          error 404, "Ontology #{@params["ontology"]} submission #{submission.submissionId} has not been parsed."
         end
-        if submission.nil?
-          if submission.nil?
-            error 404, "Ontology #{@params["acronym"]} does not have any submissions"
-          end
-        end
+
+        save_submission_language(submission)
+
         return ont, submission
       end
 
@@ -436,6 +430,22 @@ module Sinatra
         return if object.nil?
         return if Time.now > object[:timeout]
         return object[:object]
+      end
+
+
+      def save_submission_language(submission, language_property = :naturalLanguage)
+        request_lang = RequestStore.store[:requested_lang]
+
+        return if submission.nil? || !request_lang.blank?
+
+        submission.bring(language_property) if submission.bring?(language_property)
+        collection_natural_language = submission.send(language_property) rescue nil
+        return [] if collection_natural_language.blank?
+
+        collection_natural_language = collection_natural_language.values.flatten if collection_natural_language.is_a?(Hash)
+        submissions_language = collection_natural_language.map { |natural_language| natural_language.to_s.split('/').last[0..1] }.compact.first
+
+        RequestStore.store[:requested_lang] =  submissions_language if submissions_language
       end
 
     end

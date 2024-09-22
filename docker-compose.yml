@@ -95,10 +95,18 @@ services:
       - 4store
 
   solr-ut:
-    image: ontoportal/solr-ut:0.0.2
+    image: solr:8
+    volumes:
+      - ./test/solr/configsets:/configsets:ro
+    ports:
+      - "8983:8983"
+    command: >
+      bash -c "precreate-core term_search_core1 /configsets/term_search
+      && precreate-core prop_search_core1 /configsets/property_search
+      && solr-foreground"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/term_search_core1/admin/ping?wt=json | grep -iq '\"status\":\"OK\"}' || exit 1"]
-      start_period: 3s
+      test: [ "CMD-SHELL", "curl -sf http://localhost:8983/solr/term_search_core1/admin/ping?wt=json | grep -iq '\"status\":\"OK\"}' || exit 1" ]
+      start_period: 5s
       interval: 10s
       timeout: 5s
       retries: 5
@@ -107,14 +115,14 @@ services:
     image: ontoportal/mgrep:0.0.2
     platform: linux/amd64
     healthcheck:
-      test: ["CMD", "nc", "-z", "-v", "localhost", "55556"]
+      test: ["CMD", "nc", "-z", "-v", "127.0.0.1", "55556"]
       start_period: 3s
       interval: 10s
       timeout: 5s
       retries: 5
 
   agraph-ut:
-    image: franzinc/agraph:v8.0.1
+    image: franzinc/agraph:v8.1.0
     platform: linux/amd64
     environment:
       - AGRAPH_SUPER_USER=test
