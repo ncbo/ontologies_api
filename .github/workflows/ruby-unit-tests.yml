@@ -14,13 +14,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build docker-compose
-      run: docker-compose --profile 4store build #profile flag is set in order to build all containers in this step
+      run: docker compose --profile 4store build #profile flag is set in order to build all containers in this step
     - name: Run unit tests
       # unit tests are run inside a container
       # http://docs.codecov.io/docs/testing-with-docker
       run: |
         ci_env=`bash <(curl -s https://codecov.io/env)`
-        docker-compose run $ci_env -e CI --rm ${{ matrix.backend }} bundle exec rake test TESTOPTS='-v'
+        docker compose run $ci_env -e CI --rm ${{ matrix.backend }} bundle exec rake test TESTOPTS='-v'
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
       with:
