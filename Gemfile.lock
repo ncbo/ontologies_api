@@ -432,6 +432,7 @@ DEPENDENCIES
   redis
   redis-rack-cache (~> 2.0)
   redis-store (~> 1.10)
+  rexml
   rubocop
   shotgun!
   simplecov
