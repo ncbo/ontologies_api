@@ -115,6 +115,7 @@ GEM
     base64 (0.2.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.1)
+    bcrypt_pbkdf (1.1.1-arm64-darwin)
     bcrypt_pbkdf (1.1.1-x86_64-darwin)
     bigdecimal (1.4.2)
     builder (3.3.0)
@@ -152,8 +153,7 @@ GEM
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
-    ffi (1.17.0-aarch64-linux-gnu)
-    ffi (1.17.0-x86_64-darwin)
+    ffi (1.17.0)
     gapic-common (0.22.0)
       faraday (>= 1.9, < 3.a)
       faraday-retry (>= 1.0, < 3.a)
@@ -177,7 +177,9 @@ GEM
       faraday (>= 1.0, < 3.a)
     google-cloud-errors (1.4.0)
     google-protobuf (3.25.5-aarch64-linux)
+    google-protobuf (3.25.5-arm64-darwin)
     google-protobuf (3.25.5-x86_64-darwin)
+    google-protobuf (3.25.5-x86_64-linux)
     googleapis-common-protos (1.6.0)
       google-protobuf (>= 3.18, < 5.a)
       googleapis-common-protos-types (~> 1.7)
@@ -194,7 +196,13 @@ GEM
     grpc (1.66.0-aarch64-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
+    grpc (1.66.0-arm64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
     grpc (1.66.0-x86_64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.66.0-x86_64-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     haml (5.2.2)
@@ -386,7 +394,9 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  arm64-darwin-22
   x86_64-darwin-23
+  x86_64-linux
 
 DEPENDENCIES
   activesupport (~> 3.2)
@@ -440,4 +450,4 @@ DEPENDENCIES
   webrick
 
 BUNDLED WITH
-   2.4.22
+   2.4.18
