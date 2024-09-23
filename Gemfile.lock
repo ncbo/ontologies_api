@@ -379,7 +379,10 @@ GEM
     webrick (1.8.1)
 
 PLATFORMS
+  x86_64-linux
   aarch64-linux
+  arm64-darwin-23
+  x86_64-darwin-23
 
 DEPENDENCIES
   activesupport (~> 3.2)
