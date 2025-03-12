@@ -16,6 +16,7 @@ logs/**
 .tags*
 cache/**
 vendor/bundle/*
+ontologies_api.iml
 
 # YARD artifacts
 .yardoc
