@@ -1,5 +1,4 @@
 require_relative '../test_case'
-
 class TestOntologySubmissionsController < TestCase
 
   def before_suite
@@ -45,6 +44,7 @@ class TestOntologySubmissionsController < TestCase
     ont = Ontology.new(acronym: @@acronym, name: @@name, administeredBy: [@@user])
     ont.save
   end
+
 
   def test_submissions_for_given_ontology
     num_onts_created, created_ont_acronyms = create_ontologies_and_submissions(ont_count: 1)
@@ -96,6 +96,20 @@ class TestOntologySubmissionsController < TestCase
     get "/ontologies/#{submission.ontology.acronym}/submissions/#{submission.submissionId}"
     submission = MultiJson.load(last_response.body)
     assert submission["description"].eql?("Testing new description changes")
+  end
+
+  def test_reject_system_controlled_submission_attributes_on_post
+    bad_params = @@file_params.merge({
+      uploadFilePath: "/should/not/be/allowed",
+      diffFilePath: "/also/not/allowed"
+    })
+
+    post "/ontologies/#{@@acronym}/submissions", bad_params
+    assert_equal(400, last_response.status, msg=get_errors(last_response))
+
+    body = MultiJson.load(last_response.body)
+    assert_includes body["errors"].join, "uploadFilePath"
+    assert_includes body["errors"].join, "diffFilePath"
   end
 
   def test_delete_ontology_submission
