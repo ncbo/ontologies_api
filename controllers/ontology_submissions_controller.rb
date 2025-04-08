@@ -8,6 +8,7 @@ class OntologySubmissionsController < ApplicationController
   ##
   # Create a new submission for an existing ontology
   post "/submissions" do
+    reject_restricted_params!(params, LinkedData::Models::OntologySubmission)
     ont = Ontology.find(uri_as_needed(params["ontology"])).include(Ontology.goo_attrs_to_load).first
     error 422, "You must provide a valid `acronym` to create a new submission" if ont.nil?
     reply 201, create_submission(ont)
@@ -34,6 +35,7 @@ class OntologySubmissionsController < ApplicationController
 
     # Create a new submission for an existing ontology
     post do
+      reject_restricted_params!(params, LinkedData::Models::OntologySubmission) if request.post? || request.patch?
       ont = Ontology.find(params["acronym"]).include(Ontology.attributes).first
       error 422, "You must provide a valid `acronym` to create a new submission" if ont.nil?
       reply 201, create_submission(ont)
@@ -56,6 +58,7 @@ class OntologySubmissionsController < ApplicationController
     # Update an existing submission of an ontology
     REQUIRES_REPROCESS = ["prefLabelProperty", "definitionProperty", "synonymProperty", "authorProperty", "classType", "hierarchyProperty", "obsoleteProperty", "obsoleteParent"]
     patch '/:ontology_submission_id' do
+      reject_restricted_params!(params, LinkedData::Models::OntologySubmission) if request.post? || request.patch?
       ont = Ontology.find(params["acronym"]).first
       error 422, "You must provide an existing `acronym` to patch" if ont.nil?
 
