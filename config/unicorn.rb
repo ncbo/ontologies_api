@@ -68,11 +68,11 @@ after_fork do |server, worker|
   # Unicorn master loads the app then forks off workers - because of the way
   # Unix forking works, we need to make sure we aren't using any of the parent's
   # sockets, e.g. db connection
+  #
+  # the following is highly recomended for Rails + "preload_app true"
+  # as there's no need for the master process to hold a connection
+  defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
 
   # Redis and Memcached would go here but their connections are established
   # on demand, so the master never opens a socket
-end
-
-if settings.enable_unicorn_workerkiller && defined?(Unicorn)
-  require_relative './config/unicorn_workerkiller'
 end
