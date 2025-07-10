@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: c3f9a7f789bf2f52ed31f0272d2725117d3ac04e
-  branch: develop
+  revision: 592f837899e55e0639397eee0bf4b165cb302b60
+  branch: feature/improve-email-validator
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -56,8 +56,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 76c1c82e09fab6acd33617cc0de3fd99a144835c
-  branch: develop
+  revision: e64d54dc600062bc56237a74c2bca0c0b89acf68
+  branch: feature/improve-email-validator
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
