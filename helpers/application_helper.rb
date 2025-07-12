@@ -13,12 +13,9 @@ module Sinatra
         Rack::Utils.escape_html(text)
       end
 
-     ##
-      # Populate +obj+ using values from +params+
-      # Will also try to find related objects using a Goo lookup.
-      # TODO: Currently, this allows for mass-assignment of everything, which will permit
-      # users to overwrite any attribute, including things like passwords.
-      def populate_from_params(obj, params)
+
+
+      def populate_from_params1(obj, params)
         return if obj.nil?
 
         # Make sure everything is loaded
@@ -81,6 +78,235 @@ module Sinatra
             else
               retrieved_values = attr_cls.where(value.to_h.symbolize_keys).to_a
               retrieved_values ||= populate_from_params(attr_cls.new, e.symbolize_keys).save
+            end
+            value = retrieved_values
+          elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:date_time)
+            # TODO: Remove this awful hack when obj.class.model_settings[:range][attribute] contains DateTime class
+            is_array = value.is_a?(Array)
+            value = Array(value).map { |v| DateTime.parse(v) }
+            value = value.first unless is_array
+            value
+          elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:uri) && attribute_settings[:enforce].include?(:list)
+            # in case its a list of URI, convert all value to IRI
+            value = Array(value).map { |v| RDF::IRI.new(v) }
+          elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:uri)
+            # TODO: Remove this awful hack when obj.class.model_settings[:range][attribute] contains RDF::IRI class
+            unless value.nil?
+              # If pass an empty string for an URI : set it as nil.
+              value = RDF::IRI.new(value)
+            end
+          end
+          # Don't populate naming attributes if they exist
+          if obj.class.model_settings[:name_with] != attribute || obj.send(attribute).nil?
+            obj.send("#{attribute}=", value) if obj.respond_to?("#{attribute}=")
+          end
+        end
+        obj
+      end
+
+
+
+
+
+      def populate_from_params2(obj, params)
+        return if obj.nil?
+
+        # Make sure everything is loaded
+        if obj.is_a?(LinkedData::Models::Base)
+          obj.bring_remaining if obj.exist?
+          no_writable_attributes = obj.class.attributes(:all) - obj.class.attributes
+          params = params.reject { |k, v| no_writable_attributes.include? k.to_sym }
+        end
+        params.each do |attribute, value|
+          next if value.nil?
+
+          # Deal with empty strings for String and URI
+          empty_string = value.is_a?(String) && value.empty?
+          old_string_value_exists = obj.respond_to?(attribute) && (obj.send(attribute).is_a?(String) || obj.send(attribute).is_a?(RDF::URI))
+          old_string_value_exists = old_string_value_exists || (obj.respond_to?(attribute) && obj.send(attribute).is_a?(LinkedData::Models::Base))
+          if old_string_value_exists && empty_string
+            value = nil
+          elsif empty_string
+            next
+          end
+
+          attribute = attribute.to_sym
+          attr_cls = obj.class.range(attribute)
+          attribute_settings = obj.class.attribute_settings(attribute)
+
+          not_hash_or_array = !value.is_a?(Hash) && !value.is_a?(Array)
+          not_array_of_hashes = value.is_a?(Array) && !value.first.is_a?(Hash)
+
+          if attr_cls == LinkedData::Models::Class
+            # Try to find dependent Goo objects, but only if the naming is not done via Proc
+            # If naming is done via Proc, then try to lookup the Goo object using a hash of attributes
+            is_arr = value.is_a?(Array)
+            value = is_arr ? value : [value]
+            new_value = []
+            value.each do |cls|
+              if uri_as_needed(cls["ontology"]).nil?
+                new_value << cls
+                next
+              end
+              sub = LinkedData::Models::Ontology.find(uri_as_needed(cls["ontology"])).first.latest_submission
+              new_value << LinkedData::Models::Class.find(cls["class"]).in(sub).first
+            end
+            value = is_arr ? new_value : new_value[0]
+          elsif attr_cls && not_hash_or_array || (attr_cls && not_array_of_hashes)
+            # Replace the initial value with the object, handling Arrays as appropriate
+            if value.is_a?(Array)
+              value = value.map { |e| attr_cls.find(uri_as_needed(e)).include(attr_cls.attributes).first }
+            elsif !value.nil?
+              value = attr_cls.find(uri_as_needed(value)).include(attr_cls.attributes).first
+            end
+          elsif attr_cls
+            # Check to see if the resource exists in the triplestore
+            if value.is_a?(Array)
+              retrieved_values = []
+              value.each do |e|
+                e = e.to_h
+                retrieved_value = attr_cls.where(e.symbolize_keys).first
+                if retrieved_value
+                  retrieved_values << retrieved_value
+                else
+                  retrieved_values << populate_from_params(attr_cls.new, e.symbolize_keys).save
+                end
+              end
+            else
+              retrieved_values = attr_cls.where(value.to_h.symbolize_keys).to_a
+              unless retrieved_values
+                retrieved_values = populate_from_params(attr_cls.new, e.symbolize_keys).save
+              end
+            end
+            value = retrieved_values
+          elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:date_time)
+            # TODO: Remove this awful hack when obj.class.model_settings[:range][attribute] contains DateTime class
+            is_array = value.is_a?(Array)
+            value = Array(value).map { |v| DateTime.parse(v) }
+            value = value.first unless is_array
+            value
+          elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:uri) && attribute_settings[:enforce].include?(:list)
+            # in case its a list of URI, convert all value to IRI
+            value = value.map { |v| RDF::IRI.new(v) }
+          elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:uri)
+            # TODO: Remove this awful hack when obj.class.model_settings[:range][attribute] contains RDF::IRI class
+            if !value.nil?
+              # If pass an empty string for an URI : set it as nil.
+              value = RDF::IRI.new(value)
+            end
+          end
+
+          # Don't populate naming attributes if they exist
+          if obj.class.model_settings[:name_with] != attribute || obj.send(attribute).nil?
+            obj.send("#{attribute}=", value) if obj.respond_to?("#{attribute}=")
+          end
+        end
+        obj
+      end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ##
+      # Populate +obj+ using values from +params+
+      # Will also try to find related objects using a Goo lookup.
+      # TODO: Currently, this allows for mass-assignment of everything, which will permit
+      # users to overwrite any attribute, including things like passwords.
+      def populate_from_params(obj, params)
+        return if obj.nil?
+
+        # Make sure everything is loaded
+        if obj.is_a?(LinkedData::Models::Base)
+          obj.bring_remaining if obj.exist?
+          no_writable_attributes = obj.class.attributes(:all) - obj.class.attributes
+          params = params.reject { |k, v| no_writable_attributes.include? k.to_sym }
+        end
+        params.each do |attribute, value|
+          next if value.nil?
+
+          # Deal with empty strings for String and URI
+          empty_string = value.is_a?(String) && value.empty?
+          old_string_value_exists = obj.respond_to?(attribute) && (obj.send(attribute).is_a?(String) || obj.send(attribute).is_a?(RDF::URI))
+          old_string_value_exists ||= obj.respond_to?(attribute) && obj.send(attribute).is_a?(LinkedData::Models::Base)
+          if old_string_value_exists && empty_string
+            value = nil
+          elsif empty_string
+            next
+          end
+
+          attribute = attribute.to_sym
+          attr_cls = obj.class.range(attribute)
+          attribute_settings = obj.class.attribute_settings(attribute)
+
+          not_hash_or_array = !value.is_a?(Hash) && !value.is_a?(Array)
+          not_array_of_hashes = value.is_a?(Array) && !value.first.is_a?(Hash)
+
+          if attr_cls == LinkedData::Models::Class
+            # Try to find dependent Goo objects, but only if the naming is not done via Proc
+            # If naming is done via Proc, then try to lookup the Goo object using a hash of attributes
+            is_arr = value.is_a?(Array)
+            value = is_arr ? value : [value]
+            new_value = []
+            value.each do |cls|
+              if uri_as_needed(cls["ontology"]).nil?
+                new_value << cls
+                next
+              end
+              sub = LinkedData::Models::Ontology.find(uri_as_needed(cls["ontology"])).first.latest_submission
+              new_value << LinkedData::Models::Class.find(cls["class"]).in(sub).first
+            end
+            value = is_arr ? new_value : new_value[0]
+          elsif attr_cls && not_hash_or_array || (attr_cls && not_array_of_hashes)
+            # Replace the initial value with the object, handling Arrays as appropriate
+            if value.is_a?(Array)
+              value = value.map { |e| attr_cls.find(uri_as_needed(e)).include(attr_cls.attributes).first }
+            elsif !value.nil?
+              value = attr_cls.find(uri_as_needed(value)).include(attr_cls.attributes).first
+            end
+          elsif attr_cls
+            # Check to see if the resource exists in the triplestore
+            if value.is_a?(Array)
+              retrieved_values = []
+              value.each do |e|
+                e = e.to_h
+                retrieved_value = attr_cls.where(e.symbolize_keys).first
+
+                if retrieved_value
+                  retrieved_values << retrieved_value
+                else
+                  val = populate_from_params(attr_cls.new, e.symbolize_keys)
+
+                  if val.valid?
+                    val.save
+                    retrieved_values << val
+                  end
+                end
+              end
+            else
+              retrieved_values = attr_cls.where(value.to_h.symbolize_keys).to_a
+
+              unless retrieved_values
+                val = populate_from_params(attr_cls.new, e.symbolize_keys)
+
+                if val.valid?
+                  val.save
+                  retrieved_values = val
+                end
+              end
             end
             value = retrieved_values
           elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:date_time)
