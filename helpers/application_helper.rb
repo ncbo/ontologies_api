@@ -24,8 +24,14 @@ module Sinatra
         # Make sure everything is loaded
         if obj.is_a?(LinkedData::Models::Base)
           obj.bring_remaining if obj.exist?
+
+          # Strip out attributes that aren't explicitly declared in the model
           no_writable_attributes = obj.class.attributes(:all) - obj.class.attributes
           params = params.reject { |k, v| no_writable_attributes.include? k.to_sym }
+
+          # Strip out system-controlled attributes
+          restricted = obj.class.hypermedia_settings[:system_controlled]
+          params = params.reject { |k, _| restricted&.include?(k.to_sym) }
         end
         params.each do |attribute, value|
           next if value.nil?

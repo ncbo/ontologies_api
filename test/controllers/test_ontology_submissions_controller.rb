@@ -98,19 +98,36 @@ class TestOntologySubmissionsController < TestCase
     assert submission["description"].eql?("Testing new description changes")
   end
 
-  def test_reject_system_controlled_submission_attributes_on_post
-    bad_params = @@file_params.merge({
-      uploadFilePath: "/should/not/be/allowed",
-      diffFilePath: "/also/not/allowed"
-    })
+  def test_patch_submission_ignores_system_controlled_attributes
+    _, acronyms = create_ontologies_and_submissions(ont_count: 1)
+    acronym = acronyms.first
+    ontology = Ontology.find(acronym).include(submissions: [:submissionId, ontology: :acronym]).first
+    assert !ontology.submissions.empty?
+    submission = ontology.submissions.first
 
-    post "/ontologies/#{@@acronym}/submissions", bad_params
-    assert_equal(400, last_response.status, msg=get_errors(last_response))
+    patch_payload = {
+      description: "Updated description",
+      uploadFilePath: "/malicious/path",
+      diffFilePath: "/another/bad/path"
+    }
 
-    body = MultiJson.load(last_response.body)
-    assert_includes body["errors"].join, "uploadFilePath"
-    assert_includes body["errors"].join, "diffFilePath"
+    patch "/ontologies/#{acronym}/submissions/#{submission.submissionId}",
+          MultiJson.dump(patch_payload),
+          "CONTENT_TYPE" => "application/json"
+    assert_equal 204, last_response.status
+
+    get "/ontologies/#{acronym}/submissions/#{submission.submissionId}"
+    updated_submission = MultiJson.load(last_response.body)
+
+    # Confirm description was updated
+    assert_equal "Updated description", updated_submission["description"]
+
+    # Confirm restricted fields were ignored
+    refute_includes updated_submission, "uploadFilePath"
+    refute_includes updated_submission, "diffFilePath"
+    refute_includes updated_submission, "missingImports"
   end
+
 
   def test_delete_ontology_submission
     num_onts_created, created_ont_acronyms = create_ontologies_and_submissions(ont_count: 1, random_submission_count: false, submission_count: 5)

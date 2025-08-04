@@ -41,18 +41,6 @@ module Sinatra
         (includes_param && includes_param.include?(:all))
       end
 
-      def reject_restricted_params!(params, model_class)
-        return unless model_class.respond_to?(:hypermedia_settings)
-
-        restricted = model_class.hypermedia_settings[:system_controlled]
-        return if restricted.nil? || restricted.empty?
-
-        forbidden = params.keys.map(&:to_sym) & restricted
-        return if forbidden.empty?
-
-        error 400, "Invalid request: You cannot set restricted attributes: #{forbidden.join(', ')}"
-      end
-
       private
       def sort_order_item(param, order)
         [param.to_sym, order.to_sym]

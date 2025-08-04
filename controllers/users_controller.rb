@@ -1,10 +1,5 @@
 class UsersController < ApplicationController
   namespace "/users" do
-    # Reject any incoming params that attempt to set restricted (system-controlled) attributes.
-    # This ensures clients can't override internal fields like :resetTokenExpireTime
-    before do
-      reject_restricted_params!(params, LinkedData::Models::User) if request.post? || request.patch?
-    end
 
     post "/authenticate" do
       user_id       = params["user"]
