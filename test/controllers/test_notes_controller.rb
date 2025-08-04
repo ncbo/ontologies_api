@@ -55,6 +55,7 @@ class TestNotesController < TestCase
   end
 
   def test_note_lifecycle
+    env("REMOTE_USER", @@user)
     note = {
       creator: @@user.id.to_s,
       body: "Testing body",
@@ -81,6 +82,7 @@ class TestNotesController < TestCase
   end
 
   def test_proposal_lifecycle
+    env("REMOTE_USER", @@user)
     note = {
       :subject=>"New Term Proposal: Sleep Study Facility",
       :creator=>@@user.id.to_s,
@@ -136,4 +138,27 @@ class TestNotesController < TestCase
     assert_equal 1, test_note.length
     assert_operator 5, :<=, notes.length
   end
+
+  def test_note_creator_ignores_user_input
+    # Set current user for this test
+    env("REMOTE_USER", @@user)
+    post "/notes", MultiJson.dump({
+      body: "Testing body",
+      subject: "Testing subject", 
+      relatedOntology: [@@ontology.id.to_s],
+      creator: "wrong_user_id"
+    }), { "CONTENT_TYPE" => "application/json" }
+
+    assert_equal 201, last_response.status
+
+    new_note = MultiJson.load(last_response.body)
+    get new_note["@id"]
+    assert last_response.ok?
+
+    # Verify the creator is the current user, not the wrong user
+    retrieved_note = MultiJson.load(last_response.body)
+    assert_equal @@user.id.to_s, retrieved_note["creator"]
+    refute_equal "wrong_user_id", retrieved_note["creator"]
+  end
+
 end

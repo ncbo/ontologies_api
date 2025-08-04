@@ -1,302 +1,141 @@
 require_relative '../test_case'
 
 class TestOntologyAnalyticsController < TestCase
-  ANALYTICS_DATA = {
-    "NCIT" => {
-      "2013" => {
-        "1" => 0, "2" => 0, "3" => 0, "4" => 0, "5" => 0, "6" => 0, "7" => 0, "8" => 0, "9" => 0, "10" => 2850, "11" => 1631, "12" => 1323
-      },
-      "2014" => {
-        "1" => 1004, "2" => 1302, "3" => 2183, "4" => 2191, "5" => 1005, "6" => 1046, "7" => 1261, "8" => 1329, "9" => 1100, "10" => 956, "11" => 1105, "12" => 893
-      },
-      "2015" => {
-        "1" => 840, "2" => 30, "3" => 50, "4" => 20, "5" => 30, "6" => 10, "7" => 100, "8" => 80, "9" => 20, "10" => 90, "11" => 200, "12" => 50
-      },
-      "2016" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 520, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2017" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 220, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 170, "11" => 750, "12" => 730
-      },
-      "2018" => {
-        "1" => 2000, "2" => 220, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 120, "11" => 750, "12" => 730
-      },
-      "2019" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2020" => {
-        "1" => 2000, "2" => 210, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2021" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 550, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2022" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 990, "7" => 340, "8" => 320, "9" => 610, "10" => 180, "11" => 750, "12" => 730
-      }
-    },
-    "ONTOMA" => {
-      "2013" => {
-        "1" => 0, "2" => 0, "3" => 0, "4" => 0, "5" => 0, "6" => 0, "7" => 0, "8" => 0, "9" => 0, "10" => 6, "11" => 15, "12" => 0
-      },
-      "2014" => {
-        "1" => 2, "2" => 0, "3" => 0, "4" => 2, "5" => 2, "6" => 0, "7" => 6, "8" => 8, "9" => 0, "10" => 0, "11" => 0, "12" => 2
-      },
-      "2015" => {
-        "1" => 30, "2" => 90, "3" => 90, "4" => 50, "5" => 30, "6" => 20, "7" => 80, "8" => 90, "9" => 250, "10" => 230, "11" => 120, "12" => 70
-      },
-      "2016" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 520, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2017" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 220, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 170, "11" => 750, "12" => 730
-      },
-      "2018" => {
-        "1" => 2000, "2" => 220, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 120, "11" => 750, "12" => 730
-      },
-      "2019" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2020" => {
-        "1" => 2000, "2" => 210, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2021" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 550, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2022" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 990, "7" => 340, "8" => 320, "9" => 610, "10" => 180, "11" => 750, "12" => 730
-      }
-    },
-    "CMPO" => {
-      "2013" => {
-        "1" => 0, "2" => 0, "3" => 0, "4" => 0, "5" => 0, "6" => 0, "7" => 0, "8" => 0, "9" => 0, "10" => 64, "11" => 75, "12" => 22
-      },
-      "2014" => {
-        "1" => 15, "2" => 15, "3" => 19, "4" => 12, "5" => 13, "6" => 14, "7" => 22, "8" => 12, "9" => 36, "10" => 6, "11" => 8, "12" => 10
-      },
-      "2015" => {
-        "1" => 7, "2" => 40, "3" => 140, "4" => 320, "5" => 560, "6" => 320, "7" => 210, "8" => 230, "9" => 220, "10" => 10, "11" => 220, "12" => 880
-      },
-      "2016" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 520, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2017" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 220, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 170, "11" => 750, "12" => 30
-      },
-      "2018" => {
-        "1" => 2000, "2" => 220, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 120, "11" => 750, "12" => 430
-      },
-      "2019" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 830
-      },
-      "2020" => {
-        "1" => 2000, "2" => 210, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 380
-      },
-      "2021" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 550, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 794
-      },
-      "2022" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 990, "7" => 340, "8" => 320, "9" => 610, "10" => 180, "11" => 750, "12" => 738
-      }
-    },
-    "AEO" => {
-      "2013" => {
-        "1" => 0, "2" => 0, "3" => 0, "4" => 0, "5" => 0, "6" => 0, "7" => 0, "8" => 0, "9" => 0, "10" => 129, "11" => 142, "12" => 70
-      },
-      "2014" => {
-        "1" => 116, "2" => 93, "3" => 85, "4" => 132, "5" => 96, "6" => 137, "7" => 69, "8" => 158, "9" => 123, "10" => 221, "11" => 163, "12" => 43
-      },
-      "2015" => {
-        "1" => 25, "2" => 230, "3" => 330, "4" => 220, "5" => 650, "6" => 320, "7" => 840, "8" => 440, "9" => 220, "10" => 110, "11" => 210, "12" => 270
-      },
-      "2016" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 520, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 335
-      },
-      "2017" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 220, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 170, "11" => 750, "12" => 732
-      },
-      "2018" => {
-        "1" => 2000, "2" => 220, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 120, "11" => 750, "12" => 734
-      },
-      "2019" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 790
-      },
-      "2020" => {
-        "1" => 2000, "2" => 210, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 350
-      },
-      "2021" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 550, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 730
-      },
-      "2022" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 990, "7" => 340, "8" => 320, "9" => 610, "10" => 180, "11" => 750, "12" => 730
-      }
-    },
-    "SNOMEDCT" => {
-      "2013" => {
-        "1" => 0, "2" => 0, "3" => 0, "4" => 0, "5" => 0, "6" => 0, "7" => 0, "8" => 0, "9" => 0, "10" => 20721, "11" => 22717, "12" => 18565
-      },
-      "2014" => {
-        "1" => 17966, "2" => 17212, "3" => 20942, "4" => 20376, "5" => 21063, "6" => 18734, "7" => 18116, "8" => 18676, "9" => 15728, "10" => 16348, "11" => 13933, "12" => 9533
-      },
-      "2015" => {
-        "1" => 9036, "2" => 430, "3" => 550, "4" => 110, "5" => 990, "6" => 320, "7" => 630, "8" => 250, "9" => 270, "10" => 880, "11" => 330, "12" => 280
-      },
-      "2016" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 520, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 230
-      },
-      "2017" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 220, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 170, "11" => 750, "12" => 130
-      },
-      "2018" => {
-        "1" => 2000, "2" => 220, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 120, "11" => 750, "12" => 330
-      },
-      "2019" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 920
-      },
-      "2020" => {
-        "1" => 2000, "2" => 210, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 130
-      },
-      "2021" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 550, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 930
-      },
-      "2022" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 990, "7" => 340, "8" => 320, "9" => 610, "10" => 180, "11" => 750, "12" => 230
-      }
-    },
-    "TST" => {
-      "2013" => {
-        "1" => 0, "2" => 0, "3" => 23, "4" => 0, "5" => 0, "6" => 0, "7" => 20, "8" => 0, "9" => 0, "10" => 234, "11" => 7654, "12" => 2311
-      },
-      "2014" => {
-        "1" => 39383, "2" => 239, "3" => 40273, "4" => 3232, "5" => 2, "6" => 58734, "7" => 11236, "8" => 23, "9" => 867, "10" => 232, "11" => 1111, "12" => 8
-      },
-      "2015" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 710
-      },
-      "2016" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 520, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 720
-      },
-      "2017" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 220, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 170, "11" => 750, "12" => 73
-      },
-      "2018" => {
-        "1" => 2000, "2" => 220, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 120, "11" => 750, "12" => 60
-      },
-      "2019" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 70
-      },
-      "2020" => {
-        "1" => 2000, "2" => 210, "3" => 640, "4" => 540, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 790
-      },
-      "2021" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 550, "5" => 270, "6" => 980, "7" => 340, "8" => 320, "9" => 630, "10" => 110, "11" => 750, "12" => 70
-      },
-      "2022" => {
-        "1" => 2000, "2" => 230, "3" => 640, "4" => 540, "5" => 270, "6" => 990, "7" => 340, "8" => 320, "9" => 610, "10" => 180, "11" => 750, "12" => 30
-      }
-    }
-  }
+  ANALYTICS_DATA = JSON.parse(
+    File.read(File.expand_path('../data/ontology_analytics_data.json', __dir__))
+  )
+
+  class << self
+    attr_accessor :redis, :onts, :user
+  end
 
   def before_suite
-    @@redis = Redis.new(:host => Annotator.settings.annotator_redis_host, :port => Annotator.settings.annotator_redis_port)
-    db_size = @@redis.dbsize
+    self.class.redis = Redis.new(host: LinkedData.settings.ontology_analytics_redis_host,
+                                 port: LinkedData.settings.annotator_analytics_redis_port)
+    db_size = self.class.redis.dbsize
     if db_size > MAX_TEST_REDIS_SIZE
-      puts "   This test cannot be run because there #{db_size} redis entries (max #{MAX_TEST_REDIS_SIZE}). You are probably pointing to the wrong redis backend. "
+      puts(
+        "This test cannot be run because there are #{db_size} Redis entries " \
+        "(max #{MAX_TEST_REDIS_SIZE}). You are probably pointing to the wrong Redis backend."
+      )
       return
     end
-    @@redis.set(LinkedData::Models::Ontology::ONTOLOGY_ANALYTICS_REDIS_FIELD, Marshal.dump(ANALYTICS_DATA))
-    @@onts = {
-        "NCIT" => "NCIT Ontology",
-        "ONTOMA" => "ONTOMA Ontology",
-        "CMPO" => "CMPO Ontology",
-        "AEO" => "AEO Ontology",
-        "SNOMEDCT" => "SNOMEDCT Ontology",
-        "TST" => "TST Ontology"
+    self.class.redis.set(LinkedData.settings.ontology_analytics_redis_field, Marshal.dump(ANALYTICS_DATA))
+    self.class.onts = {
+      'NCIT' => 'NCIT Ontology', 'ONTOMA' => 'ONTOMA Ontology', 'CMPO' => 'CMPO Ontology', 'AEO' => 'AEO Ontology',
+      'SNOMEDCT' => 'SNOMEDCT Ontology', 'TST' => 'TST Ontology'
     }
     self.class._delete
     self.class._create_user
     self.class._create_onts
   end
 
-  def teardown
-    self.class._delete_onts
-    self.class._create_onts
+  def after_all
+    self.class.redis&.del(LinkedData.settings.ontology_analytics_redis_field)
+    self.class._delete
+    super
   end
 
   def self._create_user
-    username = "tim"
-    test_user = LinkedData::Models::User.new(username: username, email: "#{username}@example.org", password: "password")
+    username = 'tim'
+    test_user = LinkedData::Models::User.new(
+      username: username,
+      email: "#{username}@example.org",
+      password: 'password'
+    )
     test_user.save if test_user.valid?
-    @@user = test_user.valid? ? test_user : LinkedData::Models::User.find(username).first
+    self.user = test_user.valid? ? test_user : LinkedData::Models::User.find(username).first
   end
 
   def self._create_onts
-    @@onts.each do |acronym, name|
-      ont = LinkedData::Models::Ontology.new(acronym: acronym, name: name, administeredBy: [@@user])
+    onts.each do |acronym, name|
+      ont = LinkedData::Models::Ontology.new(
+        acronym: acronym,
+        name: name,
+        administeredBy: [user]
+      )
       ont.save
     end
   end
 
   def self._delete_onts
-    @@onts.each do |acronym, _|
+    onts.each_key do |acronym|
       ont = LinkedData::Models::Ontology.find(acronym).first
-      ont.delete unless ont.nil?
+      ont&.delete
     end
   end
 
   def self._delete
     _delete_onts
-    test_user = LinkedData::Models::User.find("tim").first
-    test_user.delete unless test_user.nil?
+    test_user = LinkedData::Models::User.find('tim').first
+    test_user&.delete
   end
 
-  def test_ontology_analytics
-    get "/analytics?year=2014&month=14"
-    assert_equal(400, last_response.status, msg=get_errors(last_response))
+  def test_invalid_query_params
+    get '/analytics?year=2014&month=14'
+    assert_equal(400, last_response.status, get_errors(last_response))
 
-    get "/analytics?year=20142&month=3"
-    assert_equal(400, last_response.status, msg=get_errors(last_response))
+    get '/analytics?year=20142&month=3'
+    assert_equal(400, last_response.status, get_errors(last_response))
+  end
 
-    get "/analytics?ontologies=NCIT,ONTOMA"
+  def test_ontology_filtering
+    get '/analytics?ontologies=NCIT,ONTOMA'
     assert last_response.ok?
     analytics = MultiJson.load(last_response.body)
     assert_equal 2, analytics.length
+  end
 
-    get "/analytics?ontologies=NCIT,ONTOMA&month=2"
+  def test_month_filtering
+    get '/analytics?ontologies=NCIT,ONTOMA&month=2'
     assert last_response.ok?
     analytics = MultiJson.load(last_response.body)
-    analytics.each { |k, _| assert_equal 10, analytics[k].length }
+    analytics.each_key { |k| assert_equal 10, analytics[k].length }
+  end
 
-    get "/analytics?year=2014&month=04"
+  def test_specific_month_and_year
+    get '/analytics?year=2014&month=04'
     assert last_response.ok?
     analytics = MultiJson.load(last_response.body)
 
     assert_equal 6, analytics.length
-    assert_equal 20376, analytics["SNOMEDCT"]["2014"]["4"]
-    assert_equal 1, analytics["SNOMEDCT"].length
-    assert_equal 12, analytics["CMPO"]["2014"]["4"]
-    analytics.values.each { |v| assert_equal 1, v.length; assert_equal "2014", v.keys[0]; assert_equal "4", v[v.keys[0]].keys[0] }
+    assert_equal 20_376, analytics['SNOMEDCT']['2014']['4']
+    assert_equal 1, analytics['SNOMEDCT'].length
+    assert_equal 12, analytics['CMPO']['2014']['4']
+    analytics.each_value do |v|
+      assert_equal 1, v.length
+      assert_equal '2014', v.keys[0]
+      assert_equal '4', v[v.keys[0]].keys[0]
+    end
+  end
 
-    get "/analytics"
+  def test_analytics_index
+    get '/analytics'
     assert last_response.ok?
     analytics = MultiJson.load(last_response.body)
     assert_equal 6, analytics.length
-    analytics.each { |k, _| assert_equal 10, analytics[k].length }
+    analytics.each_key { |k| assert_equal 10, analytics[k].length }
+  end
 
-    get "/ontologies/NON_EXISTENT/analytics"
-    assert_equal(404, last_response.status, msg=get_errors(last_response))
+  def test_missing_ontology
+    get '/ontologies/NON_EXISTENT/analytics'
+    assert_equal(404, last_response.status, get_errors(last_response))
+  end
 
-    get "/ontologies/TST/analytics"
+  def test_single_ontology
+    get '/ontologies/TST/analytics'
     assert last_response.ok?
     analytics = MultiJson.load(last_response.body)
     assert_equal 1, analytics.length
     assert_equal 10, analytics[analytics.keys[0]].length
-    assert_equal 2000, analytics["TST"]["2015"]["1"]
+    assert_equal 2000, analytics['TST']['2015']['1']
+  end
 
+  def test_ontology_csv
     get '/ontologies/TST/analytics?format=csv'
     assert last_response.ok?
     headers = last_response.headers
-    assert_equal "text/csv;charset=utf-8", headers["Content-Type"]
-    assert_equal 'attachment; filename="analytics-TST.csv"', headers["Content-Disposition"]
+    assert_equal 'text/csv;charset=utf-8', headers['Content-Type']
+    assert_equal 'attachment; filename="analytics-TST.csv"', headers['Content-Disposition']
   end
-
 end

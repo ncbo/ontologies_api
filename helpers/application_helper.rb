@@ -13,7 +13,7 @@ module Sinatra
         Rack::Utils.escape_html(text)
       end
 
-     ##
+      ##
       # Populate +obj+ using values from +params+
       # Will also try to find related objects using a Goo lookup.
       # TODO: Currently, this allows for mass-assignment of everything, which will permit
@@ -82,11 +82,29 @@ module Sinatra
               value.each do |e|
                 e = e.to_h
                 retrieved_value = attr_cls.where(e.symbolize_keys).first
-                retrieved_values << (retrieved_value || populate_from_params(attr_cls.new, e.symbolize_keys).save)
+
+                if retrieved_value
+                  retrieved_values << retrieved_value
+                else
+                  val = populate_from_params(attr_cls.new, e.symbolize_keys)
+
+                  if val.valid?
+                    val.save
+                    retrieved_values << val
+                  end
+                end
               end
             else
               retrieved_values = attr_cls.where(value.to_h.symbolize_keys).to_a
-              retrieved_values ||= populate_from_params(attr_cls.new, e.symbolize_keys).save
+
+              unless retrieved_values
+                val = populate_from_params(attr_cls.new, e.symbolize_keys)
+
+                if val.valid?
+                  val.save
+                  retrieved_values = val
+                end
+              end
             end
             value = retrieved_values
           elsif attribute_settings && attribute_settings[:enforce] && attribute_settings[:enforce].include?(:date_time)

@@ -42,11 +42,14 @@ LinkedData.config do |config|
   config.goo_redis_port                = REDIS_PORT.to_i
   config.http_redis_host               = REDIS_HTTP_CACHE_HOST.to_s
   config.http_redis_port               = REDIS_PORT.to_i
-  config.ontology_analytics_redis_host = REDIS_PERSISTENT_HOST.to_s
-  config.ontology_analytics_redis_port = REDIS_PORT.to_i
   config.search_server_url             = SOLR_TERM_SEARCH_URL.to_s
   config.property_search_server_url    = SOLR_PROP_SEARCH_URL.to_s
   #config.enable_notifications          = false
+
+  # Ontology analytics
+  config.ontology_analytics_redis_host  = REDIS_PERSISTENT_HOST.to_s
+  config.ontology_analytics_redis_port  = REDIS_PORT.to_i
+  config.ontology_analytics_redis_field = 'test_analytics'
 end
 
 Annotator.config do |config|

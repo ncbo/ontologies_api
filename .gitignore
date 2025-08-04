@@ -45,6 +45,9 @@ test/data/ontology_files/repo/**/*
 # Ignore jEnv
 .java-version
 
+# Ignore Byebug
+.byebug_history
+
 # Ignore RubyMine editor files
 .idea
 

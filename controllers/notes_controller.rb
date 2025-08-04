@@ -94,8 +94,10 @@ class NotesController < ApplicationController
 
     def note_from_params
       note_params = params.dup
+      note_params.delete("creator")
       proposal_params = clean_notes_hash(note_params.delete("proposal"))
       note = instance_from_params(LinkedData::Models::Note, clean_notes_hash(note_params))
+      note.creator = current_user
 
       if proposal_params
         proposal = instance_from_params(LinkedData::Models::Notes::Proposal, proposal_params)

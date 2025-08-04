@@ -10,7 +10,7 @@ module Sinatra
         if params[:cls] && !params[:cls].start_with?("http")
           notation_lookup = LinkedData::Models::Class.where(
             notation: RDF::Literal.new(params[:cls], :datatype => RDF::XSD.string))
-            .in(submission).first
+                                                     .in(submission).first
 
           if notation_lookup
             cls_uri = notation_lookup.id
@@ -18,7 +18,7 @@ module Sinatra
           end
           prefix_lookup = LinkedData::Models::Class.where(
             prefixIRI: RDF::Literal.new(params[:cls], :datatype => RDF::XSD.string))
-              .in(submission).first
+                                                   .in(submission).first
           if prefix_lookup
             cls_uri = prefix_lookup.id
             return cls_uri
@@ -32,23 +32,19 @@ module Sinatra
         load_children = load_attrs.delete :children
         load_has_children = load_attrs.delete :hasChildren
 
-        if !load_children
+        unless load_children
           load_children = load_attrs.select { |x| x.instance_of?(Hash) && x.include?(:children) }
-
-          if load_children.length == 0
-            load_children = nil
-          end
-          if !load_children.nil?
-            load_attrs = load_attrs.select { |x| !(x.instance_of?(Hash) && x.include?(:children)) }
-          end
+          load_children = nil if load_children.length == 0
+          load_attrs = load_attrs.select { |x| !(x.instance_of?(Hash) && x.include?(:children)) } unless load_children.nil?
         end
+
 
         cls_uri = notation_to_class_uri(submission)
 
         if cls_uri.nil?
           cls_uri = RDF::URI.new(params[:cls])
 
-          if !cls_uri.valid?
+          unless cls_uri.valid?
             error 400, "The input class id '#{params[:cls]}' is not a valid IRI"
           end
         end
@@ -62,22 +58,37 @@ module Sinatra
           error 404,
                 "Resource '#{params[:cls]}' not found in ontology #{submission.ontology.acronym} submission #{submission.submissionId}"
         end
-        unless load_has_children.nil?
-          cls.load_has_children
-        end
 
-        if !load_children.nil?
+
+        extra_include = []
+
+        extra_include << :hasChildren if load_has_children
+        extra_include << :isInActiveScheme if load_attrs.include?(:inScheme)
+        extra_include << :isInActiveCollection if load_attrs.include?(:memberOf)
+
+        cls.load_computed_attributes(to_load: extra_include ,
+                                     options: {schemes: concept_schemes, collections: concept_collections})
+
+
+        unless load_children.nil?
           LinkedData::Models::Class.partially_load_children(
-            [cls],500,cls.submission)
+            [cls], 500, cls.submission)
           unless load_has_children.nil?
             cls.children.each do |c|
               c.load_has_children
             end
           end
         end
-        return cls
+        cls
       end
 
+    end
+    def concept_schemes
+      params["concept_schemes"]&.split(',') || []
+    end
+
+    def concept_collections
+      params["concept_collections"]&.split(',') || []
     end
   end
 end
