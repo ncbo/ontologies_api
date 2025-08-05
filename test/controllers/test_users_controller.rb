@@ -47,7 +47,7 @@ class TestUsersController < TestCase
     user = User.find('new-user').include(User.attributes).first
     assert_nil user.resetToken
     assert_nil user.resetTokenExpireTime
-    assert_operator Time.now.to_time.to_i, :<=, user.created.to_time.to_i
+    assert_operator Time.now.to_time.to_i, :>=, user.created.to_time.to_i
 
     # PATCH attempt with restricted attributes
     patch "/users/#{username}", {
@@ -59,7 +59,7 @@ class TestUsersController < TestCase
     user = User.find('new-user').include(User.attributes).first
     assert_nil user.resetToken
     assert_nil user.resetTokenExpireTime
-    assert_operator Time.at(Time.now.to_i), :<=, user.created.to_time
+    assert_operator Time.at(Time.now.to_i), :>=, user.created.to_time
 
   end
 
