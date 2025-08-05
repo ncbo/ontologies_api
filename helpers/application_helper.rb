@@ -29,9 +29,17 @@ module Sinatra
           no_writable_attributes = obj.class.attributes(:all) - obj.class.attributes
           params = params.reject { |k, v| no_writable_attributes.include? k.to_sym }
 
-          # Strip out system-controlled attributes
+          # Strip out system_controlled attributes
           restricted = obj.class.hypermedia_settings[:system_controlled]
           params = params.reject { |k, _| restricted&.include?(k.to_sym) }
+
+          # Handle special-case assignment of `creator`
+          # Some models require a `creator` attribute (e.g., Notes, ProvisionalClass).
+          # Historically this was provided by clients via request params,
+          # but since `creator` is now treated as a system-controlled attribute,
+          # it should be assigned internally (e.g., from `current_user`) and
+          # must not be overwritten or user-defined.#
+          assign_creator_if_applicable(obj)
         end
         params.each do |attribute, value|
           next if value.nil?
@@ -473,6 +481,20 @@ module Sinatra
         RequestStore.store[:requested_lang] =  submissions_language if submissions_language
       end
 
+      # Assigns the current user as the creator if:
+      # - the model responds to `creator`,
+      # - the attribute is marked system-controlled
+      # - and the creator has not yet been set.
+      # This must run after system-controlled params are stripped.
+      def assign_creator_if_applicable(obj)
+        return unless obj.respond_to?(:creator)
+        return unless obj.creator.nil?
+
+        restricted = obj.class.hypermedia_settings[:system_controlled]
+        return unless restricted&.include?(:creator)
+
+        obj.creator = current_user
+      end
     end
   end
 end

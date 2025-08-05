@@ -16,6 +16,15 @@ class TestProvisionalClassesController < TestCase
     )
     @@test_user.save
 
+    # second user for testing stripping of system_controlled parameter
+    @@other_username = "other_provisional_user"
+    @@other_user = LinkedData::Models::User.new(
+        username: @@other_username,
+        email: "other_provisional_classes_user@example.org",
+        password: "test_user_password"
+      )
+    @@other_user.save
+
     # Create a test provisional class
     @@test_pc = {label: "Really Nasty Melanoma", synonym: ["Nasty Melanoma", "Worst Melanoma"], definition: ["Melanoma of the nastiest kind known to men"], creator: @@test_user.id.to_s}
 
@@ -72,6 +81,7 @@ class TestProvisionalClassesController < TestCase
   end
 
   def test_provisional_class_lifecycle
+    env("REMOTE_USER", @@test_user)
     pc = {
         creator: @@test_user.id.to_s,
         label: "A Newest Form of Cancer",
@@ -99,7 +109,7 @@ class TestProvisionalClassesController < TestCase
         permanentId: "http://purl.obolibrary.org/obo/MI_0925",
         relations: [
           {
-              creator: @@test_user.id.to_s,
+              creator: @@other_user.id.to_s,
               relationType: "http://www.w3.org/2004/02/skos/core#exactMatch",
               targetClassId: @@cls.id.to_s,
               targetClassOntology: @@ontology.id.to_s
@@ -113,6 +123,8 @@ class TestProvisionalClassesController < TestCase
     patched_pc = MultiJson.load(last_response.body)
     assert_equal patched_pc["label"], pc_changes[:label]
     assert_equal 1, patched_pc["relations"].length unless patched_pc["relations"].empty?
+    # test striping of system_controlled parameter
+    refute_match 'other_provisional_user', patched_pc["creator"]
 
     #test patch with a different relation
     pc_changes = {

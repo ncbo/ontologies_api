@@ -39,21 +39,28 @@ class TestUsersController < TestCase
       username: "new-user",
       email: "new@example.org",
       password: "newpass",
-      created: DateTime.now,
+      created: DateTime.now + 1.year,
       resetToken: "invalid",
       resetTokenExpireTime: DateTime.now
     }
-    assert_equal 400, last_response.status
-    assert_includes last_response.body, "restricted attributes"
+    assert_equal 201, last_response.status
+    user = User.find('new-user').include(User.attributes).first
+    assert_nil user.resetToken
+    assert_nil user.resetTokenExpireTime
+    assert_operator Time.now.to_time.to_i, :<=, user.created.to_time.to_i
 
     # PATCH attempt with restricted attributes
     patch "/users/#{username}", {
-      created: DateTime.now,
+      created: DateTime.now + 1.year,
       resetToken: "still-invalid",
       resetTokenExpireTime: DateTime.now
     }
-    assert_equal 400, last_response.status
-    assert_includes last_response.body, "restricted attributes"
+    assert_equal 204, last_response.status
+    user = User.find('new-user').include(User.attributes).first
+    assert_nil user.resetToken
+    assert_nil user.resetTokenExpireTime
+    assert_operator Time.at(Time.now.to_i), :<=, user.created.to_time
+
   end
 
   def test_admin_creation

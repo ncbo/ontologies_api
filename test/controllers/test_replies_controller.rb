@@ -56,13 +56,14 @@ class TestRepliesController < TestCase
   end
 
   def test_reply_lifecycle
+    env("REMOTE_USER", @@user)
     reply = {
       creator: @@user.id.to_s,
       body: "Testing body for reply",
       parent: @@note.id.to_s
     }
     post "/replies", MultiJson.dump(reply), "CONTENT_TYPE" => "application/json"
-    assert last_response.status == 201
+    assert_equal 201, last_response.status
 
     new_reply = MultiJson.load(last_response.body)
     get new_reply["@id"]
