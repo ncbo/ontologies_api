@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 26c0a69e67ac59778a46caf51202ebd38ccac767
-  branch: master
+  revision: 87a21a76bc61392d0629a19c8a18593f606b52e5
+  branch: develop
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -16,8 +16,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 4fb9114b80b99f0a654c7f70aaa96839c74fc615
-  branch: master
+  revision: 55e8cbfac358b2c40deb0bd963bfe6dee91e8347
+  branch: develop
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -27,8 +27,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 8d67188e7f21014234359b71bb93a9d1256c320c
-  branch: master
+  revision: c4f16085b3e34b1e38e30232988297016e1f0e39
+  branch: develop
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -45,8 +45,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: c6a18eb7700b23a1a4f1e32ebc94003bf75efe93
-  branch: master
+  revision: 76d9516adc3c5c6d5c95f21f307bdd60eb3e0acd
+  branch: develop
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -56,8 +56,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 2f22b1b19bd749c5625af798e2ad132f833309cb
-  branch: master
+  revision: 061f530204f5a08d26ad623e31cb2bbf398137bb
+  branch: develop
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -73,7 +73,7 @@ GIT
       rack
       rack-test
       rsolr
-      rubyzip
+      rubyzip (~> 3.0)
 
 GIT
   remote: https://github.com/ncbo/sparql-client.git
@@ -271,7 +271,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0805)
+    mime-types-data (3.2025.0819)
     mini_mime (1.1.5)
     minitest (5.25.5)
     minitest-hooks (1.5.2)
@@ -346,7 +346,7 @@ GEM
     redcarpet (3.6.1)
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.25.1)
+    redis-client (0.25.2)
       connection_pool
     redis-rack-cache (2.2.1)
       rack-cache (>= 1.10, < 2)
@@ -381,7 +381,7 @@ GEM
       prism (~> 1.4)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    rubyzip (3.0.0)
+    rubyzip (3.0.1)
     rufus-scheduler (2.0.24)
       tzinfo (>= 0.3.22)
     signet (0.20.0)
