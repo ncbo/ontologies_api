@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 87a21a76bc61392d0629a19c8a18593f606b52e5
+  revision: ca5f9d858eef89923903236fe6f76c78271e538d
   branch: develop
   specs:
     goo (0.0.2)
@@ -56,7 +56,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 061f530204f5a08d26ad623e31cb2bbf398137bb
+  revision: 9cae83def8a2a4a9bd1a3a1e8388c595c339ce72
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -271,7 +271,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0819)
+    mime-types-data (3.2025.0826)
     mini_mime (1.1.5)
     minitest (5.25.5)
     minitest-hooks (1.5.2)
@@ -286,7 +286,7 @@ GEM
     net-http (0.6.0)
       uri
     net-http-persistent (2.9.4)
-    net-imap (0.5.9)
+    net-imap (0.5.10)
       date
       net-protocol
     net-pop (0.1.2)
@@ -381,7 +381,7 @@ GEM
       prism (~> 1.4)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    rubyzip (3.0.1)
+    rubyzip (3.0.2)
     rufus-scheduler (2.0.24)
       tzinfo (>= 0.3.22)
     signet (0.20.0)
