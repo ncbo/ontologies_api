@@ -27,7 +27,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: c4f16085b3e34b1e38e30232988297016e1f0e39
+  revision: 948458c4be06e28ceae0d900691afbf924ed5b3c
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -56,7 +56,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 061f530204f5a08d26ad623e31cb2bbf398137bb
+  revision: 4e58bcebfe54789959f072663a668fca1a1b2039
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -167,7 +167,7 @@ GEM
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
-    gapic-common (1.0.1)
+    gapic-common (1.1.0)
       faraday (>= 1.9, < 3.a)
       faraday-retry (>= 1.0, < 3.a)
       google-cloud-env (~> 2.2)
@@ -213,31 +213,31 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    grpc (1.74.0)
+    grpc (1.74.1)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-aarch64-linux-gnu)
+    grpc (1.74.1-aarch64-linux-gnu)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-aarch64-linux-musl)
+    grpc (1.74.1-aarch64-linux-musl)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-arm64-darwin)
+    grpc (1.74.1-arm64-darwin)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-x86-linux-gnu)
+    grpc (1.74.1-x86-linux-gnu)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-x86-linux-musl)
+    grpc (1.74.1-x86-linux-musl)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-x86_64-darwin)
+    grpc (1.74.1-x86_64-darwin)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-x86_64-linux-gnu)
+    grpc (1.74.1-x86_64-linux-gnu)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.74.0-x86_64-linux-musl)
+    grpc (1.74.1-x86_64-linux-musl)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     haml (5.2.2)

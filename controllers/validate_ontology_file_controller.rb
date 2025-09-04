@@ -52,10 +52,6 @@ class ValidateOntologyFileController < ApplicationController
 
     private
 
-    def redis
-      Redis.new(host: Annotator.settings.annotator_redis_host, port: Annotator.settings.annotator_redis_port)
-    end
-
     ERROR_FORMAT_MAP = {
       "obo" => ["org.semanticweb.owlapi.oboformat.OBOFormatOWLAPIParser"],
       "owl" => [

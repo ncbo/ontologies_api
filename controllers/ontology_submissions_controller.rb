@@ -1,3 +1,5 @@
+require 'multi_json'
+
 class OntologySubmissionsController < ApplicationController
   get "/submissions" do
     check_last_modified_collection(LinkedData::Models::OntologySubmission)
@@ -88,6 +90,77 @@ class OntologySubmissionsController < ApplicationController
       error 422, "You must provide an existing `submissionId` to delete" if submission.nil?
       submission.delete
       halt 204
+    end
+
+    delete do
+      ont = Ontology.find(params["acronym"]).first
+      error 422, "You must provide an existing ontology `acronym` to delete its submissions" if ont.nil?
+
+      raw = params["ontology_submission_ids"]
+      ids =
+        case raw
+        when Array
+          raw
+        when String
+          raw.split(",")
+        else
+          []
+        end
+
+      ids = ids.map { |v| v.to_s.strip }.reject(&:empty?).map(&:to_i).uniq
+      error 422, "`ontology_submission_ids` must be a non-empty array or comma-separated list" if ids.empty?
+
+      args = { name: "bulk_delete_submissions_#{params['acronym']}", message: "deleting ontology submissions" }
+      process_id = process_long_operation(900, args) do |_args|
+        ont.bring(:submissions)
+        found = ont.submissions.select { |s|
+          s.bring(:submissionId)
+          ids.include?(s.submissionId.to_i)
+        }
+        found_ids = found.map { |s| s.submissionId.to_i }
+        missing = ids - found_ids
+        deleted_ids = []
+
+        if found.respond_to?(:each)
+          errors = []
+          found.each do |s|
+            begin
+              s.delete
+              deleted_ids << s.submissionId.to_i
+            rescue => e
+              errors << { id: (s.respond_to?(:id) ? s.id : nil), error: "#{e.class}: #{e.message}" }
+            end
+          end
+        end
+
+        payload = { deleted_ids: deleted_ids, deleted_count: deleted_ids.size, missing_ids: missing }
+        payload[:errors] = errors if defined?(errors) && errors.any?
+        payload
+      end
+
+      reply 202, { process_id: process_id }
+    end
+
+    # Polling endpoint for the bulk-delete long operation
+    # GET /ontologies/:acronym/submissions/bulk_delete/:process_id
+    get '/bulk_delete/:process_id' do
+      raw = redis.get(params["process_id"])
+      stored = raw.nil? ? nil : MultiJson.load(raw)
+      error 404, "Process id #{params['process_id']} does not exist" if stored.nil?
+
+      # If the job stored "done", report minimal success; if it stored a hash, return it.
+      if stored == "processing"
+        reply 200, { status: "processing" }
+      elsif stored == "done"
+        reply 200, { status: "done" }
+      elsif stored.is_a?(Hash) && stored["errors"]
+        reply 200, stored
+      else
+        # Assume it's the success payload produced in the worker
+        payload = stored.is_a?(Hash) ? stored : {}
+        payload["status"] = "done" unless payload["status"]
+        reply 200, payload
+      end
     end
 
     ##

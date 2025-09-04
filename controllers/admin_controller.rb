@@ -129,37 +129,6 @@ class AdminController < ApplicationController
 
     private
 
-    def process_long_operation(timeout, args)
-      process_id = "#{Time.now.to_i}_#{args[:name]}"
-      redis.setex process_id, timeout, MultiJson.dump("processing")
-      proc = Proc.new {
-        error = {}
-        begin
-          yield(args)
-        rescue Exception => e
-          msg = "Error #{args[:message]} - #{e.class}: #{e.message}"
-          puts "#{msg}\n#{e.backtrace.join("\n\t")}"
-          error[:errors] = [msg]
-        end
-        redis.setex process_id, timeout, MultiJson.dump(error.empty? ? "done" : error)
-      }
-
-      fork = true # set to false for testing
-      if fork
-        pid = Process.fork do
-          proc.call
-        end
-        Process.detach(pid)
-      else
-        proc.call
-      end
-      process_id
-    end
-
-    def redis
-      Redis.new(host: Annotator.settings.annotator_redis_host, port: Annotator.settings.annotator_redis_port, timeout: 30)
-    end
-
     def redis_goo
       Redis.new(host: LinkedData.settings.goo_redis_host, port: LinkedData.settings.goo_redis_port, timeout: 30)
     end

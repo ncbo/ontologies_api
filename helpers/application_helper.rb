@@ -1,4 +1,6 @@
 require 'sinatra/base'
+require 'sinatra/namespace'
+require 'multi_json'
 require 'date'
 require 'rdf'
 require 'uri'
@@ -450,6 +452,40 @@ module Sinatra
         return class_params_include || params_include
       end
 
+      # Long-operation helper modeled after the original from AdminController#process_long_operation
+      def process_long_operation(timeout, args, &block)
+        process_id = "#{Time.now.to_i}_#{args[:name]}"
+        redis.setex process_id, timeout, MultiJson.dump("processing")
+
+        worker = Proc.new do
+          result = {}
+          begin
+            result = block.call(args) || {}
+          rescue Exception => e
+            msg = "Error #{args[:message]} - #{e.class}: #{e.message}"
+            puts "#{msg}\n#{e.backtrace.join("\n\t")}"
+            result = { errors: [msg] }
+          end
+          # Store the result (either {errors: [...]} or a success payload)
+          redis.setex process_id, timeout, MultiJson.dump(result.empty? ? "done" : result)
+        end
+
+        # Use a fork like AdminController; set to false for testing if needed
+        fork_process = true
+        if fork_process
+          pid = Process.fork { worker.call }
+          Process.detach(pid)
+        else
+          worker.call
+        end
+
+        process_id
+      end
+
+      def redis
+        Redis.new(host: Annotator.settings.annotator_redis_host, port: Annotator.settings.annotator_redis_port, timeout: 30)
+      end
+
       private
 
       def naive_expiring_cache_write(key, object, timeout = 60)
@@ -464,7 +500,6 @@ module Sinatra
         return if Time.now > object[:timeout]
         return object[:object]
       end
-
 
       def save_submission_language(submission, language_property = :naturalLanguage)
         request_lang = RequestStore.store[:requested_lang]
