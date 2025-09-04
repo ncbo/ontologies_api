@@ -95,7 +95,7 @@ class OntologySubmissionsController < ApplicationController
     delete do
       ont = Ontology.find(params["acronym"]).first
       error 422, "You must provide an existing ontology `acronym` to delete its submissions" if ont.nil?
-
+      check_access(ont)
       raw = params["ontology_submission_ids"]
       ids =
         case raw
@@ -120,16 +120,14 @@ class OntologySubmissionsController < ApplicationController
         found_ids = found.map { |s| s.submissionId.to_i }
         missing = ids - found_ids
         deleted_ids = []
+        errors = []
 
-        if found.respond_to?(:each)
-          errors = []
-          found.each do |s|
-            begin
-              s.delete
-              deleted_ids << s.submissionId.to_i
-            rescue => e
-              errors << { id: (s.respond_to?(:id) ? s.id : nil), error: "#{e.class}: #{e.message}" }
-            end
+        found.each do |s|
+          begin
+            s.delete
+            deleted_ids << s.submissionId.to_i
+          rescue => e
+            errors << { id: (s.respond_to?(:id) ? s.id : nil), error: "#{e.class}: #{e.message}" }
           end
         end
 
