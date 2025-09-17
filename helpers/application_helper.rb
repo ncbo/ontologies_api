@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'sinatra/namespace'
 require 'multi_json'
+require 'securerandom'
 require 'date'
 require 'rdf'
 require 'uri'
@@ -453,26 +454,45 @@ module Sinatra
       end
 
       # Long-operation helper modeled after the original from AdminController#process_long_operation
-      def process_long_operation(timeout, args, &block)
-        process_id = "#{Time.now.to_i}_#{args[:name]}"
-        redis.setex process_id, timeout, MultiJson.dump("processing")
+      # Start: "processing"
+      # Success (empty/nil): "done"
+      # Success (payload): payload as-is (no status Hash)
+      # Error: { errors: ["..."] }
+      def process_long_operation(timeout, args = {}, &block)
+        name = (args[:name] || "job").to_s.gsub(/\s+/, "_")
+        message = (args[:message] || name).to_s
+        process_id = "#{Time.now.to_i}-#{name}-#{SecureRandom.hex(4)}"
 
-        worker = Proc.new do
-          result = {}
+        # 1) Immediately mark processing
+        redis.setex(process_id, timeout, MultiJson.dump("processing"))
+
+        worker = proc do
           begin
-            result = block.call(args) || {}
-          rescue Exception => e
-            msg = "Error #{args[:message]} - #{e.class}: #{e.message}"
-            puts "#{msg}\n#{e.backtrace.join("\n\t")}"
-            result = { errors: [msg] }
+            result = block.call(args)
+
+            # 2) Success. Preserve legacy string based responses
+            if result.nil? || (result.respond_to?(:empty?) && result.empty?)
+              redis.setex(process_id, timeout, MultiJson.dump("done"))
+            elsif result.is_a?(Hash) || result.is_a?(Array) || result.is_a?(String) || result.is_a?(Numeric) || result == true || result == false
+              redis.setex(process_id, timeout, MultiJson.dump(result))
+            else
+              redis.setex(process_id, timeout, MultiJson.dump("done"))
+            end
+          rescue => e
+            # 3) Error → log + legacy error payload (no backtrace to clients)
+            msg = "Error #{message} - #{e.class}: #{e.message}"
+            log_msg = "#{msg}\n#{e.backtrace.join("\n\t")}"
+            if respond_to?(:logger) && logger
+              logger.error(log_msg)
+            else
+              $stderr.puts(log_msg)
+            end
+            redis.setex(process_id, timeout, MultiJson.dump(errors: [msg]))
           end
-          # Store the result (either {errors: [...]} or a success payload)
-          redis.setex process_id, timeout, MultiJson.dump(result.empty? ? "done" : result)
         end
 
-        # Use a fork like AdminController; set to false for testing if needed
-        fork_process = true
-        if fork_process
+        # 4) Background work (toggle via fork: false in tests)
+        if args.fetch(:fork, true)
           pid = Process.fork { worker.call }
           Process.detach(pid)
         else
