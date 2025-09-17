@@ -93,28 +93,29 @@ class OntologySubmissionsController < ApplicationController
     end
 
     delete do
-      ont = Ontology.find(params["acronym"]).first
+      ont = Ontology.find(params["acronym"]).include(:acronym, :administeredBy, :acl, :viewingRestriction, submissions: :submissionId).first
       error 422, "You must provide an existing ontology `acronym` to delete its submissions" if ont.nil?
       check_access(ont)
       raw = params["ontology_submission_ids"]
-      ids =
-        case raw
-        when Array
-          raw
-        when String
-          raw.split(",")
-        else
-          []
-        end
-
-      ids = ids.map { |v| v.to_s.strip }.reject(&:empty?).map(&:to_i).uniq
+      list = case raw
+             when Array
+               raw
+             when String
+               s = raw.strip
+               # If it's a JSON-like array string (e.g., "[1,2,3]"), strip brackets
+               if s.start_with?("[") && s.end_with?("]")
+                 s = s[1..-2]
+               end
+               s.split(",")
+             else
+               []
+             end
+      # Coerce to integers, removing any stray non-digits (like leftover brackets/spaces)
+      ids = list.map { |v| v.to_s.gsub(/[^0-9]/, "").strip }.reject(&:empty?).map(&:to_i).uniq
       error 422, "`ontology_submission_ids` must be a non-empty array or comma-separated list" if ids.empty?
-
       args = { name: "bulk_delete_submissions_#{params['acronym']}", message: "deleting ontology submissions" }
       process_id = process_long_operation(900, args) do |_args|
-        ont.bring(:submissions)
         found = ont.submissions.select { |s|
-          s.bring(:submissionId)
           ids.include?(s.submissionId.to_i)
         }
         found_ids = found.map { |s| s.submissionId.to_i }
@@ -124,7 +125,16 @@ class OntologySubmissionsController < ApplicationController
 
         found.each do |s|
           begin
-            s.delete
+
+
+
+
+            # s.delete
+            puts "deleting: #{s.id.to_s}"
+
+
+
+
             deleted_ids << s.submissionId.to_i
           rescue => e
             errors << { id: (s.respond_to?(:id) ? s.id : nil), error: "#{e.class}: #{e.message}" }

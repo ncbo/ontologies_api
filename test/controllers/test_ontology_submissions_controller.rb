@@ -128,7 +128,6 @@ class TestOntologySubmissionsController < TestCase
     refute_includes updated_submission, "missingImports"
   end
 
-
   def test_delete_ontology_submission
     num_onts_created, created_ont_acronyms = create_ontologies_and_submissions(ont_count: 1, random_submission_count: false, submission_count: 5)
     acronym = created_ont_acronyms.first
@@ -139,13 +138,6 @@ class TestOntologySubmissionsController < TestCase
     get "/ontologies/#{acronym}/submissions/#{submission_to_delete}"
     assert_equal(404, last_response.status, msg=get_errors(last_response))
   end
-
-
-
-
-
-
-
 
   def test_delete_ontology_submissions
     submission_count = 5
@@ -206,28 +198,6 @@ class TestOntologySubmissionsController < TestCase
       assert last_response.ok?, msg="Submission #{sid} should still exist, but GET returned #{last_response.status}"
     end
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   def test_download_submission
     num_onts_created, created_ont_acronyms, onts = create_ontologies_and_submissions(ont_count: 1, submission_count: 1, process_submission: false)
