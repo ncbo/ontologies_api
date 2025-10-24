@@ -113,11 +113,18 @@ class OntologySubmissionsController < ApplicationController
       # Coerce to integers, removing any stray non-digits (like leftover brackets/spaces)
       ids = list.map { |v| v.to_s.gsub(/[^0-9]/, "").strip }.reject(&:empty?).map(&:to_i).uniq
       error 422, "`ontology_submission_ids` must be a non-empty array or comma-separated list" if ids.empty?
+
       args = { name: "bulk_delete_submissions_#{params['acronym']}", message: "deleting ontology submissions" }
       process_id = process_long_operation(900, args) do |_args|
+        latest_submission_id = ont.highest_submission_id(status: :ready)
+        max_submission_id = nil
+
         found = ont.submissions.select { |s|
-          ids.include?(s.submissionId.to_i)
+          sid = s.submissionId.to_i
+          max_submission_id = sid if !latest_submission_id && (max_submission_id.nil? || sid > max_submission_id)
+          ids.include?(sid)
         }
+        latest_submission_id ||= max_submission_id
         found_ids = found.map { |s| s.submissionId.to_i }
         missing = ids - found_ids
         deleted_ids = []
@@ -125,20 +132,19 @@ class OntologySubmissionsController < ApplicationController
 
         found.each do |s|
           begin
-
-
-
-
-            # s.delete
-            puts "deleting: #{s.id.to_s}"
-
-
-
-
+            s.delete
             deleted_ids << s.submissionId.to_i
           rescue => e
             errors << { id: (s.respond_to?(:id) ? s.id : nil), error: "#{e.class}: #{e.message}" }
           end
+        end
+
+        # If the latest READY submission is deleted, re-process the previous one, if exists
+        if latest_submission_id && deleted_ids.include?(latest_submission_id)
+          # Re-fetch ontology to avoid stale submissions cache
+          ont_refreshed = Ontology.find(params["acronym"]).include(submissions: :submissionId).first
+          new_latest_sub = ont_refreshed.latest_submission(status: :any)
+          NcboCron::Models::OntologySubmissionParser.new.queue_submission(new_latest_sub, all: true) if new_latest_sub
         end
 
         payload = { deleted_ids: deleted_ids, deleted_count: deleted_ids.size, missing_ids: missing }
