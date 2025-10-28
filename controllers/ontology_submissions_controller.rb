@@ -1,3 +1,5 @@
+require 'multi_json'
+
 class OntologySubmissionsController < ApplicationController
   get "/submissions" do
     check_last_modified_collection(LinkedData::Models::OntologySubmission)
@@ -88,6 +90,91 @@ class OntologySubmissionsController < ApplicationController
       error 422, "You must provide an existing `submissionId` to delete" if submission.nil?
       submission.delete
       halt 204
+    end
+
+    delete do
+      ont = Ontology.find(params["acronym"]).include(:acronym, :administeredBy, :acl, :viewingRestriction, submissions: :submissionId).first
+      error 422, "You must provide an existing ontology `acronym` to delete its submissions" if ont.nil?
+      check_access(ont)
+      raw = params["ontology_submission_ids"]
+      list = case raw
+             when Array
+               raw
+             when String
+               s = raw.strip
+               # If it's a JSON-like array string (e.g., "[1,2,3]"), strip brackets
+               if s.start_with?("[") && s.end_with?("]")
+                 s = s[1..-2]
+               end
+               s.split(",")
+             else
+               []
+             end
+      # Coerce to integers, removing any stray non-digits (like leftover brackets/spaces)
+      ids = list.map { |v| v.to_s.gsub(/[^0-9]/, "").strip }.reject(&:empty?).map(&:to_i).uniq
+      error 422, "`ontology_submission_ids` must be a non-empty array or comma-separated list" if ids.empty?
+
+      args = { name: "bulk_delete_submissions_#{params['acronym']}", message: "deleting ontology submissions" }
+      process_id = process_long_operation(900, args) do |_args|
+        latest_submission_id = ont.highest_submission_id(status: :ready)
+        max_submission_id = nil
+
+        found = ont.submissions.select { |s|
+          sid = s.submissionId.to_i
+          max_submission_id = sid if !latest_submission_id && (max_submission_id.nil? || sid > max_submission_id)
+          ids.include?(sid)
+        }
+        latest_submission_id ||= max_submission_id
+        found_ids = found.map { |s| s.submissionId.to_i }
+        missing = ids - found_ids
+        deleted_ids = []
+        errors = []
+
+        found.each do |s|
+          begin
+            s.delete
+            deleted_ids << s.submissionId.to_i
+          rescue => e
+            errors << { id: (s.respond_to?(:id) ? s.id : nil), error: "#{e.class}: #{e.message}" }
+          end
+        end
+
+        # If the latest READY submission is deleted, re-process the previous one, if exists
+        if latest_submission_id && deleted_ids.include?(latest_submission_id)
+          # Re-fetch ontology to avoid stale submissions cache
+          ont_refreshed = Ontology.find(params["acronym"]).include(submissions: :submissionId).first
+          new_latest_sub = ont_refreshed.latest_submission(status: :any)
+          NcboCron::Models::OntologySubmissionParser.new.queue_submission(new_latest_sub, all: true) if new_latest_sub
+        end
+
+        payload = { deleted_ids: deleted_ids, deleted_count: deleted_ids.size, missing_ids: missing }
+        payload[:errors] = errors if defined?(errors) && errors.any?
+        payload
+      end
+
+      reply 202, { process_id: process_id }
+    end
+
+    # Polling endpoint for the bulk-delete long operation
+    # GET /ontologies/:acronym/submissions/bulk_delete/:process_id
+    get '/bulk_delete/:process_id' do
+      raw = redis.get(params["process_id"])
+      stored = raw.nil? ? nil : MultiJson.load(raw)
+      error 404, "Process id #{params['process_id']} does not exist" if stored.nil?
+
+      # If the job stored "done", report minimal success; if it stored a hash, return it.
+      if stored == "processing"
+        reply 200, { status: "processing" }
+      elsif stored == "done"
+        reply 200, { status: "done" }
+      elsif stored.is_a?(Hash) && stored["errors"]
+        reply 200, stored
+      else
+        # Assume it's the success payload produced in the worker
+        payload = stored.is_a?(Hash) ? stored : {}
+        payload["status"] = "done" unless payload["status"]
+        reply 200, payload
+      end
     end
 
     ##

@@ -1,3 +1,5 @@
+require 'time'
+
 class OntologiesController < ApplicationController
 
   namespace "/ontologies" do
@@ -175,6 +177,85 @@ class OntologiesController < ApplicationController
       end
 
       reply 201, ont
+    end
+
+    namespace "/:acronym/admin" do
+
+      get '/log' do
+        ont = Ontology.find(params["acronym"]).first
+        entries = []
+
+        if ont
+          ont.bring(:viewingRestriction)
+          ont.bring(:administeredBy)
+          ont.bring(:acl)
+          check_access(ont)
+          latest_any = ont.latest_submission(status: :any)
+
+          if latest_any
+            log_path = "#{LinkedData.settings.repository_folder}/#{NcboCron::Models::OntologiesReport.new.log_file(params["acronym"], latest_any.submissionId.to_s)}"
+
+            if !log_path.empty? && File.file?(log_path)
+              file = File.open(log_path, "rb")
+              log_contents = file.read
+              file.close
+
+              severity_param = params['severity']&.split(',')&.map { |s| s.strip.upcase } # ['DEBUG', 'ERROR']
+              entries = parse_log(log_contents, severity_param)
+            end
+          end
+        end
+
+        reply entries
+      end
+
+      private
+
+      def parse_log(log_text, allowed_severities = nil)
+        valid_severities = %w[ERROR DEBUG INFO]
+
+        # Sanitize and validate allowed severities
+        allowed = Array(allowed_severities).map(&:upcase) & valid_severities
+        filter_enabled = !allowed.empty?
+
+        entries = []
+
+        log_text.each_line do |line|
+          line.strip!
+
+          # Match lines with timestamp
+          match =
+            line.match(/(?<level>[A-Z]), \[(?<timestamp>[^\]]+)\] +(?<severity>\w+) -- : (?<message>.+)/) ||
+              # Match legacy format (no timestamp)
+              line.match(/(?<severity>\w+) -- : (?<message>.+)/)
+
+          next unless match
+
+          entry = {
+            level: match[:level] || 'I',
+            timestamp: match.names.include?('timestamp') ? match[:timestamp].split('.').first : nil,
+            severity: match[:severity],
+            message: clean_message(match[:message])
+          }
+
+          entries << entry if !filter_enabled || allowed.include?(entry[:severity])
+        end
+
+        # Group by severity, sort within each group by timestamp DESC, then flatten in severity priority order
+        valid_severities.flat_map do |sev|
+          group = entries.select { |e| e[:severity] == sev }
+          group.sort_by { |e| e[:timestamp] ? Time.parse(e[:timestamp]) : Time.at(0) }.reverse
+        end
+      end
+
+      def clean_message(raw)
+        raw
+          .gsub(/\A\[\[?"?/, '')       # strip leading [[ or [" etc
+          .gsub(/"?\]?\]?\z/, '')      # strip trailing ]]
+          .gsub('\\n', "\n")           # replace \n (escaped) with real newline
+          .gsub('\\t', "\t")           # replace \t (escaped) with real tab
+          .strip
+      end
     end
   end
 
