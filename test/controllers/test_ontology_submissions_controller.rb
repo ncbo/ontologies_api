@@ -55,7 +55,7 @@ class TestOntologySubmissionsController < TestCase
     submissions_goo = OntologySubmission.where(ontology: { acronym: ontology}).to_a
 
     submissions = MultiJson.load(last_response.body)
-    assert submissions.length == submissions_goo.length
+    assert_equal submissions.length, submissions_goo.length
   end
 
   def test_create_new_submission_missing_file_and_pull_location
@@ -70,7 +70,7 @@ class TestOntologySubmissionsController < TestCase
     sub = MultiJson.load(last_response.body)
     get "/ontologies/#{@@acronym}"
     ont = MultiJson.load(last_response.body)
-    assert ont["acronym"].eql?(@@acronym)
+    assert_equal @@acronym, ont["acronym"]
     # Cleanup
     delete "/ontologies/#{@@acronym}/submissions/#{sub['submissionId']}"
     assert_equal(204, last_response.status, msg=get_errors(last_response))
@@ -88,21 +88,21 @@ class TestOntologySubmissionsController < TestCase
   def test_patch_ontology_submission
     num_onts_created, created_ont_acronyms = create_ontologies_and_submissions(ont_count: 1)
     ont = Ontology.find(created_ont_acronyms.first).include(submissions: [:submissionId, ontology: :acronym]).first
-    assert(ont.submissions.length > 0)
+    assert_operator ont.submissions.length, :>, 0
     submission = ont.submissions[0]
     new_values = {description: "Testing new description changes"}
     patch "/ontologies/#{submission.ontology.acronym}/submissions/#{submission.submissionId}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
     assert_equal(204, last_response.status, msg=get_errors(last_response))
     get "/ontologies/#{submission.ontology.acronym}/submissions/#{submission.submissionId}"
     submission = MultiJson.load(last_response.body)
-    assert submission["description"].eql?("Testing new description changes")
+    assert_equal "Testing new description changes", submission["description"]
   end
 
   def test_patch_submission_ignores_system_controlled_attributes
     _, acronyms = create_ontologies_and_submissions(ont_count: 1)
     acronym = acronyms.first
     ontology = Ontology.find(acronym).include(submissions: [:submissionId, ontology: :acronym]).first
-    assert !ontology.submissions.empty?
+    assert_operator ontology.submissions.length, :>, 0
     submission = ontology.submissions.first
 
     patch_payload = {
@@ -303,14 +303,18 @@ class TestOntologySubmissionsController < TestCase
     submissions = MultiJson.load(last_response.body)
 
     assert_equal ontology_count, submissions.size
-    assert(submissions.all? { |sub| submission_default_attributes.eql?(submission_keys(sub)) })
+    submissions.each do |sub|
+      assert_equal(submission_default_attributes, submission_keys(sub))
+    end
 
     get("/ontologies/#{created_ont_acronyms.first}/submissions?display_links=false&display_context=false")
 
     assert last_response.ok?
     submissions = MultiJson.load(last_response.body)
     assert_equal 1, submissions.size
-    assert(submissions.all? { |sub| submission_default_attributes.eql?(submission_keys(sub)) })
+    submissions.each do |sub|
+      assert_equal(submission_default_attributes, submission_keys(sub))
+    end
   end
 
   def test_submissions_all_includes
@@ -328,8 +332,10 @@ class TestOntologySubmissionsController < TestCase
     submissions = MultiJson.load(last_response.body)
     assert_equal ontology_count, submissions.size
 
-    assert(submissions.all? { |sub| submission_all_attributes.sort.eql?(submission_keys(sub).sort) })
-    assert(submissions.all? { |sub| sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])) })
+    submissions.each do |sub|
+      assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
+      assert_submission_contact_structure(sub)
+    end
 
     get("/ontologies/#{created_ont_acronyms.first}/submissions?include=all&display_links=false&display_context=false")
 
@@ -337,22 +343,24 @@ class TestOntologySubmissionsController < TestCase
     submissions = MultiJson.load(last_response.body)
     assert_equal 1, submissions.size
 
-    assert(submissions.all? { |sub| submission_all_attributes.sort.eql?(submission_keys(sub).sort) })
-    assert(submissions.all? { |sub| sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])) })
+    submissions.each do |sub|
+      assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
+      assert_submission_contact_structure(sub)
+    end
 
     get("/ontologies/#{created_ont_acronyms.first}/latest_submission?include=all&display_links=false&display_context=false")
     assert last_response.ok?
     sub = MultiJson.load(last_response.body)
 
-    assert(submission_all_attributes.sort.eql?(submission_keys(sub).sort))
-    assert(sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])))
+    assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
+    assert_submission_contact_structure(sub)
 
     get("/ontologies/#{created_ont_acronyms.first}/submissions/1?include=all&display_links=false&display_context=false")
     assert last_response.ok?
     sub = MultiJson.load(last_response.body)
 
-    assert(submission_all_attributes.sort.eql?(submission_keys(sub).sort))
-    assert(sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])))
+    assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
+    assert_submission_contact_structure(sub)
   end
 
   def test_submissions_custom_includes
@@ -365,33 +373,44 @@ class TestOntologySubmissionsController < TestCase
     assert last_response.ok?
     submissions = MultiJson.load(last_response.body)
     assert_equal ontology_count, submissions.size
-    assert(submissions.all? { |sub| include.split(',').eql?(submission_keys(sub)) })
-    assert(submissions.all? { |sub| sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])) })
+    submissions.each do |sub|
+      assert_equal(include.split(','), submission_keys(sub))
+      assert_submission_contact_structure(sub)
+    end
 
     get("/ontologies/#{created_ont_acronyms.first}/submissions?include=#{include}&display_links=false&display_context=false")
 
     assert last_response.ok?
     submissions = MultiJson.load(last_response.body)
     assert_equal 1, submissions.size
-    assert(submissions.all? { |sub| include.split(',').eql?(submission_keys(sub)) })
-    assert(submissions.all? { |sub| sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])) })
+    submissions.each do |sub|
+      assert_equal(include.split(','), submission_keys(sub))
+      assert_submission_contact_structure(sub)
+    end
 
     get("/ontologies/#{created_ont_acronyms.first}/latest_submission?include=#{include}&display_links=false&display_context=false")
     assert last_response.ok?
     sub = MultiJson.load(last_response.body)
-    assert(include.split(',').eql?(submission_keys(sub)))
-    assert(sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])))
+    assert_equal(include.split(','), submission_keys(sub))
+    assert_submission_contact_structure(sub)
 
     get("/ontologies/#{created_ont_acronyms.first}/submissions/1?include=#{include}&display_links=false&display_context=false")
     assert last_response.ok?
     sub = MultiJson.load(last_response.body)
-    assert(include.split(',').eql?(submission_keys(sub)))
-    assert(sub["contact"] && (sub["contact"].first.nil? || sub["contact"].first.keys.eql?(%w[name email id])))
+    assert_equal(include.split(','), submission_keys(sub))
+    assert_submission_contact_structure(sub)
   end
 
   private
   def submission_keys(sub)
     sub.to_hash.keys - %w[@id @type id]
+  end
+
+  def assert_submission_contact_structure(sub)
+    assert sub["contact"], "Contact should be present"
+    if sub["contact"].first
+      assert_equal(%w[name email id].sort, sub["contact"].first.keys.sort)
+    end
   end
 
 end
