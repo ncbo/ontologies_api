@@ -181,13 +181,22 @@ class TestOntologySubmissionsController < TestCase
       sleep 0.1
     end
 
-    # Validate result payload when present
-    if status_payload["deleted_ids"]
-      # Only the chosen 5 should be deleted
-      assert_equal delete_ids, status_payload["deleted_ids"].map(&:to_i).sort, "Deleted IDs mismatch"
+     # Validate result payload
+    if status_payload["errors"]
+      flunk "Bulk delete returned errors: #{status_payload['errors'].inspect}"
+    else
+      returned_deleted = Array(status_payload["deleted_ids"]).map(&:to_i).sort
+      assert_equal delete_ids, returned_deleted, "Deleted IDs mismatch"
       assert_equal delete_ids.size, status_payload["deleted_count"], "Deleted count mismatch"
       assert(status_payload["missing_ids"].nil? || status_payload["missing_ids"].empty?, "Expected no missing IDs")
-    end
+    end 
+    # Validate result payload when present
+    # if status_payload["deleted_ids"]
+    #   # Only the chosen 3 should be deleted
+    #   assert_equal delete_ids, status_payload["deleted_ids"].map(&:to_i).sort, "Deleted IDs mismatch"
+    #   assert_equal delete_ids.size, status_payload["deleted_count"], "Deleted count mismatch"
+    #   assert(status_payload["missing_ids"].nil? || status_payload["missing_ids"].empty?, "Expected no missing IDs")
+    # end
 
     # Deleted ones should be gone
     delete_ids.each do |sid|
