@@ -141,7 +141,7 @@ class TestOntologySubmissionsController < TestCase
 
   def test_delete_ontology_submissions
     submission_count = 5
-    # Create a single ontology with 10 submissions
+    # Create a single ontology with 5 submissions
     num_onts_created, created_ont_acronyms = create_ontologies_and_submissions(
       ont_count: 1,
       random_submission_count: false,
@@ -149,9 +149,9 @@ class TestOntologySubmissionsController < TestCase
     )
     acronym = created_ont_acronyms.first
     all_ids = (1..submission_count).to_a
-    delete_ids = all_ids.sample(3).sort
+    delete_ids = all_ids.first(3)
     keep_ids = (all_ids - delete_ids).sort
-    assert_equal 2, keep_ids.size, "Expected 2 IDs to be kept"
+    assert_equal submission_count - delete_ids.size, keep_ids.size, "Unexpected keep_ids size"
 
     # Kick off the long-running bulk delete via the collection DELETE endpoint
     payload = MultiJson.dump({ ontology_submission_ids: delete_ids })
@@ -159,10 +159,10 @@ class TestOntologySubmissionsController < TestCase
 
     assert_equal 202, last_response.status, msg=get_errors(last_response)
     body = MultiJson.load(last_response.body)
-    assert body["process_id"], "Expected process_id in response for bulk delete"
+    process_id = body["process_id"]
+    assert process_id, "Expected process_id in response for bulk delete"
 
     # Poll the bulk_delete status endpoint until it's done (or timeout)
-    process_id = body["process_id"]
     max_attempts = 100
     attempts = 0
     status_payload = nil
@@ -172,7 +172,10 @@ class TestOntologySubmissionsController < TestCase
       assert_equal 200, last_response.status, msg=get_errors(last_response)
       status_payload = MultiJson.load(last_response.body)
 
-      break if status_payload["status"] == "done" || (status_payload.is_a?(Hash) && (status_payload["deleted_ids"] || status_payload["errors"]))
+      status = status_payload.is_a?(Hash) ? status_payload["status"] : nil
+      has_errors = status_payload.is_a?(Hash) && status_payload["errors"]
+      break if status == "done" || has_errors
+  
       attempts += 1
       assert attempts < max_attempts, "Timed out waiting for bulk delete to finish"
       sleep 0.1
@@ -180,7 +183,7 @@ class TestOntologySubmissionsController < TestCase
 
     # Validate result payload when present
     if status_payload["deleted_ids"]
-      # Only the chosen 8 should be deleted
+      # Only the chosen 5 should be deleted
       assert_equal delete_ids, status_payload["deleted_ids"].map(&:to_i).sort, "Deleted IDs mismatch"
       assert_equal delete_ids.size, status_payload["deleted_count"], "Deleted count mismatch"
       assert(status_payload["missing_ids"].nil? || status_payload["missing_ids"].empty?, "Expected no missing IDs")
@@ -189,13 +192,13 @@ class TestOntologySubmissionsController < TestCase
     # Deleted ones should be gone
     delete_ids.each do |sid|
       get "/ontologies/#{acronym}/submissions/#{sid}"
-      assert_equal 404, last_response.status, msg="Submission #{sid} should be gone, but GET returned #{last_response.status}"
+      assert_equal 404, last_response.status, "Submission #{sid} should be gone, but GET returned #{last_response.status} for #{sid}"
     end
 
     # Kept ones should still be present
     keep_ids.each do |sid|
       get "/ontologies/#{acronym}/submissions/#{sid}"
-      assert last_response.ok?, msg="Submission #{sid} should still exist, but GET returned #{last_response.status}"
+      assert last_response.ok?, "Submission #{sid} should still exist, but GET returned #{last_response.status}"
     end
   end
 
