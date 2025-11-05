@@ -110,28 +110,7 @@ class AppUnit < Minitest::Test
     after_suite
     super
   end
-
-
-
-  def _run_suite(suite, type)
-    begin
-      backend_4s_delete
-      suite.before_suite if suite.respond_to?(:before_suite)
-      super(suite, type)
-    rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n\t")
-      puts "Traced from:"
-      raise e
-    ensure
-      backend_4s_delete
-      suite.after_suite if suite.respond_to?(:after_suite)
-    end
-  end
 end
-
-
-
 # All tests should inherit from this class.
 # Use 'rake test' from the command line to run tests.
 # See http://www.sinatrarb.com/testing.html for testing information
