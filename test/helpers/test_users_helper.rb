@@ -56,8 +56,6 @@ class TestUsersHelper < TestCaseHelpers
     assert results.all? {|r| @@custom_ont_ids.include?(r["links"]["ontology"])}
   end
 
-  private
-
   def self._create_user(username = nil)
     username ||= "testuser"
     u = LinkedData::Models::User.new({
@@ -65,7 +63,7 @@ class TestUsersHelper < TestCaseHelpers
       email: "#{username}@example.com",
       password: "a_password"
     })
-    u.save rescue binding.pry
+    u.save
     u
   end
 end
