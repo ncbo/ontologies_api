@@ -49,7 +49,7 @@ class TestBatchController < TestCase
       }
     }
     post "/batch/", call_params
-    assert last_response.status = 422
+    assert_equal 422, last_response.status
   end
 
   def test_class_batch_multiple
@@ -109,7 +109,7 @@ class TestBatchController < TestCase
     assert_equal classes.length, classes_response.length
     classes_response.each do |klass|
       assert_instance_of String, klass["prefLabel"]
-      assert klass["prefLabel"] == class_ids[klass["@id"]]
+      assert_equal klass["prefLabel"], class_ids[klass["@id"]]
     end
   end
 end
