@@ -56,7 +56,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: e8980335667cfdf3687be0ce1adbeaa58c62e7c9
+  revision: 9cae83def8a2a4a9bd1a3a1e8388c595c339ce72
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -291,7 +291,7 @@ GEM
     net-ftp (0.3.9)
       net-protocol
       time
-    net-http (0.6.0)
+    net-http (0.7.0)
       uri
     net-http-persistent (2.9.4)
     net-imap (0.5.12)
@@ -310,7 +310,7 @@ GEM
     net-ssh (7.3.0)
     netrc (0.11.0)
     newrelic_rpm (9.19.0)
-    oj (3.16.11)
+    oj (3.16.12)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     omni_logger (0.1.4)
@@ -445,7 +445,7 @@ GEM
     unicorn-worker-killer (0.4.5)
       get_process_mem (~> 0)
       unicorn (>= 4, < 7)
-    uri (1.0.4)
+    uri (1.1.1)
     uuid (2.3.9)
       macaddr (~> 1.0)
     webmock (3.19.1)
