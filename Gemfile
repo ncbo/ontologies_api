@@ -81,4 +81,5 @@ group :test do
   gem 'simplecov-cobertura' # for codecov.io
   gem 'webmock', '~> 3.19.1'
   gem 'webrick'
+  gem 'minitest-bisect'
 end
