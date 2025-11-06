@@ -191,6 +191,21 @@ class TestCase < AppUnit
     LinkedData.settings.enable_security = old_security
   end
 
+ # Ensure a user exists; return it. Safe to call from anywhere.
+  def create_user(username, email: nil, password: "password")
+    user = User.new(username: username, email: email || "#{username}@example.org", password: password)
+    user.save if user.valid?
+    user
+  end
+
+  def ensure_user(username, email: nil, password: "password")
+    User.find(username).first || create_user(username, email: email, password: password)
+  end
+
+  def delete_user(username)
+    User.find(username).first&.delete
+  end
+
 
   def self.make_admin(user)
     user.bring_remaining
