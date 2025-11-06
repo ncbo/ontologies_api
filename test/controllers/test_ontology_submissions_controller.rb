@@ -1,15 +1,8 @@
 require_relative '../test_case'
 class TestOntologySubmissionsController < TestCase
-  USERNAME = "test_user".freeze
-
-  def before_all
-    delete_ontologies_and_submissions
-    super
-  end
 
   def after_all
     delete_ontologies_and_submissions
-    delete_user(USERNAME)
   end
 
   def setup
@@ -18,15 +11,15 @@ class TestOntologySubmissionsController < TestCase
     @suffix   = SecureRandom.hex(4)
     @acronym  = "TST#{@suffix}".upcase
     @name     = "Test Ontology #{@acronym}"
-    @user = ensure_user(USERNAME)
+    @test_user, _format, _contact = LinkedData::SampleData::Ontology.ontology_objects
 
-    Ontology.new(acronym: @acronym, name: @name, administeredBy: [@user]).save
+    Ontology.new(acronym: @acronym, name: @name, administeredBy: [@test_user]).save
 
     test_file = File.expand_path("../../data/ontology_files/BRO_v3.1.owl", __FILE__)
     @file_params = {
       name: @name,
       hasOntologyLanguage: "OWL",
-      administeredBy: USERNAME,
+      administeredBy: @test_user,
       "file" => Rack::Test::UploadedFile.new(test_file, ""),
       released: Time.now.utc.iso8601,
       contact: [{ name: "test_name", email: "test3@example.org" }],
@@ -104,18 +97,18 @@ class TestOntologySubmissionsController < TestCase
     patch "/ontologies/#{acronym}/submissions/#{submission.submissionId}",
           MultiJson.dump(patch_payload),
           "CONTENT_TYPE" => "application/json"
-    assert_equal 204, last_response.status
+    assert_equal(204, last_response.status, get_errors(last_response))
 
     get "/ontologies/#{acronym}/submissions/#{submission.submissionId}"
     updated_submission = MultiJson.load(last_response.body)
 
     # Confirm description was updated
-    assert_equal "Updated description", updated_submission["description"]
+    assert_equal("Updated description", updated_submission["description"])
 
     # Confirm restricted fields were ignored
-    refute_includes updated_submission, "uploadFilePath"
-    refute_includes updated_submission, "diffFilePath"
-    refute_includes updated_submission, "missingImports"
+    refute_includes(updated_submission, "uploadFilePath")
+    refute_includes(updated_submission, "diffFilePath")
+    refute_includes(updated_submission, "missingImports")
   end
 
   def test_delete_ontology_submission
