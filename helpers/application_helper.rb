@@ -492,7 +492,8 @@ module Sinatra
         end
 
         # 4) Background work (toggle via fork: false in tests)
-        if args.fetch(:fork, true)
+        fork_process = ENV['RACK_ENV'] != 'test'
+        if fork_process
           pid = Process.fork { worker.call }
           Process.detach(pid)
         else
