@@ -32,6 +32,7 @@ class TestSlicesHelper < TestCaseHelpers
   end
 
   def after_suite
+    LinkedData.settings.enable_slices = @@orig_slices_setting
     self.backend_4s_delete
   end
 

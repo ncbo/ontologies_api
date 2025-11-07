@@ -110,28 +110,7 @@ class AppUnit < Minitest::Test
     after_suite
     super
   end
-
-
-
-  def _run_suite(suite, type)
-    begin
-      backend_4s_delete
-      suite.before_suite if suite.respond_to?(:before_suite)
-      super(suite, type)
-    rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n\t")
-      puts "Traced from:"
-      raise e
-    ensure
-      backend_4s_delete
-      suite.after_suite if suite.respond_to?(:after_suite)
-    end
-  end
 end
-
-
-
 # All tests should inherit from this class.
 # Use 'rake test' from the command line to run tests.
 # See http://www.sinatrarb.com/testing.html for testing information
@@ -210,6 +189,21 @@ class TestCase < AppUnit
 
   def self.reset_security(old_security =  @@old_security_setting)
     LinkedData.settings.enable_security = old_security
+  end
+
+ # Ensure a user exists; return it. Safe to call from anywhere.
+  def create_user(username, email: nil, password: "password")
+    user = User.new(username: username, email: email || "#{username}@example.org", password: password)
+    user.save if user.valid?
+    user
+  end
+
+  def ensure_user(username, email: nil, password: "password")
+    User.find(username).first || create_user(username, email: email, password: password)
+  end
+
+  def delete_user(username)
+    User.find(username).first&.delete
   end
 
 

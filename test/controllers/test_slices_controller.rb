@@ -46,12 +46,18 @@ class TestSlicesController < TestCase
 
     post "/slices?apikey=#{@@user.apikey}", MultiJson.dump(@@new_slice_data), "CONTENT_TYPE" => "application/json"
 
-    assert 201, last_response.status
+    assert_equal 201, last_response.status
+
+    # Verify created
+    get "/slices?apikey=#{@@user.apikey}"
+    assert_equal 200, last_response.status
+    slices = MultiJson.load(last_response.body)
+    assert_includes slices.map { |s| s["acronym"] }, @@new_slice_data[:acronym]
   end
 
   def test_delete_slices
     self.class.enable_security
-    LinkedData.settings.enable_security = @@old_security_setting
+    # LinkedData.settings.enable_security = @@old_security_setting
     self.class._create_slice(@@new_slice_data[:acronym],  @@new_slice_data[:name], @@onts)
 
 
@@ -61,7 +67,13 @@ class TestSlicesController < TestCase
     self.class.make_admin(@@user)
 
     delete "/slices/#{@@new_slice_data[:acronym]}?apikey=#{@@user.apikey}"
-    assert 201, last_response.status
+    assert_equal 204, last_response.status
+
+      # Verify deleted
+    get "/slices?apikey=#{@@user.apikey}"
+    assert_equal 200, last_response.status
+    slices = MultiJson.load(last_response.body)
+    refute_includes slices.map { |s| s["acronym"] }, @@new_slice_data[:acronym]
   end
 
   private

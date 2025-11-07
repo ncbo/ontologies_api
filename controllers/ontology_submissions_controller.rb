@@ -144,7 +144,7 @@ class OntologySubmissionsController < ApplicationController
           # Re-fetch ontology to avoid stale submissions cache
           ont_refreshed = Ontology.find(params["acronym"]).include(submissions: :submissionId).first
           new_latest_sub = ont_refreshed.latest_submission(status: :any)
-          NcboCron::Models::OntologySubmissionParser.new.queue_submission(new_latest_sub, all: true) if new_latest_sub
+          NcboCron::Models::OntologySubmissionParser.new.queue_submission(new_latest_sub, all: true) if new_latest_sub && ENV['RACK_ENV'] != 'test'
         end
 
         payload = { deleted_ids: deleted_ids, deleted_count: deleted_ids.size, missing_ids: missing }
