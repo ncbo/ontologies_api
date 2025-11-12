@@ -32,7 +32,7 @@ on:
   workflow_dispatch:
     branches: [master, develop]
     inputs:
-      BRANCH:
+      branch:
         description: 'Branch/tag to deploy'
         default: develop
         required: true
@@ -64,12 +64,12 @@ jobs:
         USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
         echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> $GITHUB_ENV
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: get-deployment-config
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: ${{ secrets.CONFIG_REPO }} # repository containing deployment settings
         token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
