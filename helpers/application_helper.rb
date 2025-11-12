@@ -1,4 +1,7 @@
 require 'sinatra/base'
+require 'sinatra/namespace'
+require 'multi_json'
+require 'securerandom'
 require 'date'
 require 'rdf'
 require 'uri'
@@ -450,6 +453,60 @@ module Sinatra
         return class_params_include || params_include
       end
 
+      # Long-operation helper modeled after the original from AdminController#process_long_operation
+      # Start: "processing"
+      # Success (empty/nil): "done"
+      # Success (payload): payload as-is (no status Hash)
+      # Error: { errors: ["..."] }
+      def process_long_operation(timeout, args = {}, &block)
+        name = (args[:name] || "job").to_s.gsub(/\s+/, "_")
+        message = (args[:message] || name).to_s
+        process_id = "#{Time.now.to_i}-#{name}-#{SecureRandom.hex(4)}"
+
+        # 1) Immediately mark processing
+        redis.setex(process_id, timeout, MultiJson.dump("processing"))
+
+        worker = proc do
+          begin
+            result = block.call(args)
+
+            # 2) Success. Preserve legacy string based responses
+            if result.nil? || (result.respond_to?(:empty?) && result.empty?)
+              redis.setex(process_id, timeout, MultiJson.dump("done"))
+            elsif result.is_a?(Hash) || result.is_a?(Array) || result.is_a?(String) || result.is_a?(Numeric) || result == true || result == false
+              redis.setex(process_id, timeout, MultiJson.dump(result))
+            else
+              redis.setex(process_id, timeout, MultiJson.dump("done"))
+            end
+          rescue => e
+            # 3) Error → log + legacy error payload (no backtrace to clients)
+            msg = "Error #{message} - #{e.class}: #{e.message}"
+            log_msg = "#{msg}\n#{e.backtrace.join("\n\t")}"
+            if respond_to?(:logger) && logger
+              logger.error(log_msg)
+            else
+              $stderr.puts(log_msg)
+            end
+            redis.setex(process_id, timeout, MultiJson.dump(errors: [msg]))
+          end
+        end
+
+        # 4) Background work (toggle via fork: false in tests)
+        fork_process = ENV['RACK_ENV'] != 'test'
+        if fork_process
+          pid = Process.fork { worker.call }
+          Process.detach(pid)
+        else
+          worker.call
+        end
+
+        process_id
+      end
+
+      def redis
+        Redis.new(host: Annotator.settings.annotator_redis_host, port: Annotator.settings.annotator_redis_port, timeout: 30)
+      end
+
       private
 
       def naive_expiring_cache_write(key, object, timeout = 60)
@@ -464,7 +521,6 @@ module Sinatra
         return if Time.now > object[:timeout]
         return object[:object]
       end
-
 
       def save_submission_language(submission, language_property = :naturalLanguage)
         request_lang = RequestStore.store[:requested_lang]

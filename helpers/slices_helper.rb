@@ -4,16 +4,18 @@ require 'ontologies_linked_data/models/slice'
 module Sinatra
   module Helpers
     module SlicesHelper
+
       def filter_for_slice(obj)
         return obj unless LinkedData.settings.enable_slices
+        return obj unless request.get? # only slice GET requests
         return obj unless slice_request?
+        return obj unless obj.is_a?(Enumerable)
 
-        slice = current_slice()
+        first = obj.first
+        return obj unless first && first.is_a?(LinkedData::Models::Ontology)
 
-        if obj.is_a?(Enumerable) && obj.first.is_a?(LinkedData::Models::Ontology)
-          obj = obj.select { |o| slice.ontology_id_set.include?(o.id.to_s) }
-        end
-        obj
+        slice = current_slice
+        obj.select { |o| slice.ontology_id_set.include?(o.id.to_s) }
       end
 
       def slice_request?
