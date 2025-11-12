@@ -18,10 +18,6 @@
 name: Capistrano Deployment
 # Controls when the action will run.
 on:
-  push:
-    branches:
-      - master
-      - develop
   # Trigger deployment to staging after unit test action completes
   workflow_run:
     workflows: ["Ruby Unit Tests"]
