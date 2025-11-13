@@ -44,7 +44,7 @@ on:
 jobs:
   deploy:
     concurrency:
-      group: "${{ format('deploy-{0}', github.event_name == 'workflow_dispatch' ? github.event.inputs.environment : 'staging') }}"
+      group: "${{ format('deploy-{0}', github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'staging') }}"
     runs-on: ubuntu-latest
     # run deployment only if "Ruby Unit Tests" workflow completes sucessefully
     # or when manually triggered
