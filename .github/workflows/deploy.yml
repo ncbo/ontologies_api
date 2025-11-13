@@ -14,7 +14,6 @@
 #
 # DEPLOY_ENC_KEY - key for decrypting deploymnet ssh key residing in config/deploy_id_rsa_enc (see miloserdow/capistrano-deploy)
 # this SSH key is used for accessing jump host, UI nodes, and private github repo.
-
 name: Capistrano Deployment
 
 permissions:
@@ -45,8 +44,7 @@ on:
 jobs:
   deploy:
     concurrency:
-      group: deploy-${{ env.TARGET }}
-      cancel-in-progress: true
+      group: deploy-${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'staging' }}
     runs-on: ubuntu-latest
     # run deployment only if "Ruby Unit Tests" workflow completes sucessefully
     # or when manually triggered
