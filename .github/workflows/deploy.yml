@@ -44,7 +44,7 @@ on:
 jobs:
   deploy:
     concurrency:
-      group: deploy-${{ github.event.inputs.environment }}
+      group: deploy
     runs-on: ubuntu-latest
     # run deployment only if "Ruby Unit Tests" workflow completes sucessefully
     # or when manually triggered
