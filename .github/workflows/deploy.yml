@@ -14,25 +14,22 @@
 #
 # DEPLOY_ENC_KEY - key for decrypting deploymnet ssh key residing in config/deploy_id_rsa_enc (see miloserdow/capistrano-deploy)
 # this SSH key is used for accessing jump host, UI nodes, and private github repo.
-
 name: Capistrano Deployment
-# Controls when the action will run.
+
+permissions:
+  contents: read
+
 on:
-  push:
-    branches:
-      - master
-      - develop
   # Trigger deployment to staging after unit test action completes
   workflow_run:
     workflows: ["Ruby Unit Tests"]
     types:
       - completed
-    branches: [master, develop]
+    branches: [develop]  # trigger auto deployment to staging from develop branch
   # Allows running this workflow manually from the Actions tab
   workflow_dispatch:
-    branches: [master, develop]
     inputs:
-      BRANCH:
+      branch:
         description: 'Branch/tag to deploy'
         default: develop
         required: true
@@ -46,36 +43,62 @@ on:
 
 jobs:
   deploy:
+    concurrency:
+      group: deploy
     runs-on: ubuntu-latest
-    # run deployment only if "Ruby Unit Tests" workflow completes sucessefully or when manually triggered
-    if: ${{ (github.event.workflow_run.conclusion == 'success') || (github.event_name == 'workflow_dispatch') }}
+    # run deployment only if "Ruby Unit Tests" workflow completes sucessefully
+    # or when manually triggered
+    if: >
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch')
     env:
-      BUNDLE_WITHOUT: default #install gems required primarily for the deployment in order to speed this workflow
+      BUNDLE_WITHOUT: default:test:development #install gems required primarily for the deployment in order to speed this workflow
       PRIVATE_CONFIG_REPO: ${{ format('git@github.com:{0}.git', secrets.CONFIG_REPO) }}
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: set branch/tag and environment to deploy from inputs
       run: |
-        # workflow_dispatch default input doesn't get set on push so we need to set defaults
-        # via shell parameter expansion
-        # https://dev.to/mrmike/github-action-handling-input-default-value-5f2g
-        USER_INPUT_BRANCH=${{ inputs.branch }}
-        echo "BRANCH=${USER_INPUT_BRANCH:-develop}" >> $GITHUB_ENV
-        USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
-        echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> $GITHUB_ENV
+        if [ "${{ github.event_name }}" = "workflow_run" ]; then
+          # Auto: always deploy develop to staging
+          echo "BRANCH=develop" >> "$GITHUB_ENV"
+          # echo "BRANCH=${{ github.event.workflow_run.head_branch }}" >> "$GITHUB_ENV"  # auto deploy from branch if needed
+          echo "TARGET=staging" >> "$GITHUB_ENV"
+        else
+          # Manual: use inputs, with defaulting via parameter expansion
+          USER_INPUT_BRANCH=${{ inputs.branch }}
+          USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
+
+          echo "BRANCH=${USER_INPUT_BRANCH:-develop}" >> "$GITHUB_ENV"
+          echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> "$GITHUB_ENV"
+        fi
+    - name: Provide deployment info
+      run: |
+        echo "=== Deployment Details ======================================"
+        echo "Time:        $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+        echo "Branch/Tag:  ${BRANCH}"
+        echo "Environment: ${TARGET}"
+        echo "Commit:      ${GITHUB_SHA}"
+        echo "Triggered by: ${GITHUB_ACTOR}"
+        echo "Event:       ${GITHUB_EVENT_NAME}"
+        if [ "${GITHUB_EVENT_NAME}" = "workflow_run" ]; then
+          echo "Mode:        auto-deploy from develop"
+        else
+          echo "Mode:        manual deployment"
+        fi
+        echo "=============================================================="
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: get-deployment-config
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: ${{ secrets.CONFIG_REPO }} # repository containing deployment settings
         token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-        path:  deploy_config
+        path: deploy_config
     - name: copy-deployment-config
-      run:  cp -r deploy_config/ontologies_api/* .
+      run: cp -r deploy_config/ontologies_api/* .
     # add ssh hostkey so that capistrano doesn't complain
     - name: Add jumphost's hostkey to Known Hosts
       run: |
