@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: b92ae7ab3d2fad40a8b4a7563047c7157765472c
+  revision: 68f4613039cd088b236f3c8b1a8e832e7acce138
   branch: develop
   specs:
     goo (0.0.2)
@@ -27,7 +27,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 111c7263d8a98b1e8f7c033cb0b7d9c6cc10cd01
+  revision: d3625bc7769f1c8cfcc4063ac9478b0723ed4686
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -56,7 +56,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 9cae83def8a2a4a9bd1a3a1e8388c595c339ce72
+  revision: 73b4f60deb65528b3fe8de928b78cabd6276f6b8
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -153,8 +153,8 @@ GEM
       logger
     faraday-follow_redirects (0.4.0)
       faraday (>= 1, < 3)
-    faraday-net_http (3.4.1)
-      net-http (>= 0.5.0)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     faraday-retry (2.3.2)
       faraday (~> 2.0)
     ffi (1.17.2)
@@ -433,7 +433,7 @@ GEM
     tilt (2.6.1)
     time (0.4.1)
       date
-    timeout (0.4.4)
+    timeout (0.5.0)
     tzinfo (1.2.11)
       thread_safe (~> 0.1)
     unicode-display_width (3.1.4)

@@ -189,7 +189,7 @@ class OntologiesController < ApplicationController
           ont.bring(:viewingRestriction)
           ont.bring(:administeredBy)
           ont.bring(:acl)
-          check_access(ont)
+          check_write_access(ont)
           latest_any = ont.latest_submission(status: :any)
 
           if latest_any
