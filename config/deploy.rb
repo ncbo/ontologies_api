@@ -106,9 +106,8 @@ namespace :deploy do
     end
   end
 
-  after :publishing, :get_config
-  after :get_config, :restart
-  # after :deploy, :smoke_test
+  after :updating, :get_config
+  after :publishing, :restart
   after :restart, "newrelic:notice_deployment"
 
   after :restart, :clear_cache do

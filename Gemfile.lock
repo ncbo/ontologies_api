@@ -1,14 +1,16 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: b92ae7ab3d2fad40a8b4a7563047c7157765472c
-  branch: develop
+  revision: edddd813a857446314a00d283d162c5ce53f945d
+  branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
       pry
-      rdf (= 1.0.8)
+      rdf
+      rdf-raptor
+      rdf-rdfxml
+      rdf-vocab
       redis
-      request_store
       rest-client
       rsolr
       sparql-client
@@ -27,7 +29,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 111c7263d8a98b1e8f7c033cb0b7d9c6cc10cd01
+  revision: d3625bc7769f1c8cfcc4063ac9478b0723ed4686
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -56,12 +58,13 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 9cae83def8a2a4a9bd1a3a1e8388c595c339ce72
-  branch: develop
+  revision: ae232f1179efccad72f6d8284a539c7c8f818175
+  branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
       bcrypt
+      down (~> 5.0)
       goo
       json
       libxml-ruby
@@ -77,13 +80,12 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/sparql-client.git
-  revision: 512edc320b43e83971835dc046b4923485e8f70e
-  tag: v6.3.0
+  revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
+  branch: ontoportal-lirmm-development
   specs:
-    sparql-client (1.0.1)
-      json_pure (>= 1.4)
-      net-http-persistent (= 2.9.4)
-      rdf (>= 1.0)
+    sparql-client (3.2.2)
+      net-http-persistent (~> 4.0, >= 4.0.2)
+      rdf (~> 3.2, >= 3.2.11)
 
 GIT
   remote: https://github.com/palexander/rack-post-body-to-params.git
@@ -101,34 +103,67 @@ GIT
     shotgun (0.9)
       rack (>= 1.0)
 
+GIT
+  remote: https://github.com/ruby-rdf/rdf-raptor.git
+  revision: 6392ceabf71c3233b0f7f0172f662bd4a22cd534
+  ref: 6392ceabf71c3233b0f7f0172f662bd4a22cd534
+  specs:
+    rdf-raptor (3.3.0)
+      ffi (~> 1.15)
+      rdf (~> 3.3)
+
+GIT
+  remote: https://github.com/sinatra/sinatra.git
+  revision: 9e5c4ec8ade92c7375f44acf4c6e1103d32d6c12
+  specs:
+    rack-protection (4.2.1)
+      base64 (>= 0.1.0)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    sinatra-contrib (4.2.1)
+      multi_json (>= 0.0.2)
+      mustermann (~> 3.0)
+      rack-protection (= 4.2.1)
+      sinatra (= 4.2.1)
+      tilt (~> 2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.2.8.1)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (>= 0.7, < 2)
-      minitest (~> 5.1)
-      tzinfo (~> 1.1)
-    addressable (2.8.7)
-      public_suffix (>= 2.0.2, < 7.0)
-    airbrussh (1.5.3)
+    activesupport (8.1.2)
+      base64
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.3.1)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      json
+      logger (>= 1.4.2)
+      minitest (>= 5.1)
+      securerandom (>= 0.3)
+      tzinfo (~> 2.0, >= 2.0.5)
+      uri (>= 0.13.1)
+    addressable (2.8.8)
+      public_suffix (>= 2.0.2, < 8.0)
+    airbrussh (1.6.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    ansi (1.5.0)
     ast (2.4.3)
-    backports (3.25.1)
     base64 (0.3.0)
-    bcrypt (3.1.20)
-    bcrypt_pbkdf (1.1.1)
-    bcrypt_pbkdf (1.1.1-arm64-darwin)
-    bcrypt_pbkdf (1.1.1-x86_64-darwin)
-    bigdecimal (3.3.1)
+    bcp47_spec (0.2.1)
+    bcrypt (3.1.21)
+    bcrypt_pbkdf (1.1.2)
+    bcrypt_pbkdf (1.1.2-arm64-darwin)
+    bcrypt_pbkdf (1.1.2-x86_64-darwin)
+    bigdecimal (4.0.1)
     builder (3.3.0)
     byebug (12.0.0)
-    capistrano (3.19.2)
+    capistrano (3.20.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
-    capistrano-bundler (2.1.1)
+    capistrano-bundler (2.2.0)
       capistrano (~> 3.1)
     capistrano-locally (0.3.0)
       capistrano (~> 3.0)
@@ -136,38 +171,40 @@ GEM
       capistrano (~> 3.1)
       sshkit (~> 1.3)
     coderay (1.1.3)
-    concurrent-ruby (1.3.5)
-    connection_pool (2.5.4)
+    concurrent-ruby (1.3.6)
+    connection_pool (3.0.2)
     crack (0.4.5)
       rexml
     cube-ruby (0.0.3)
     dante (0.2.0)
-    date (3.5.0)
+    date (3.5.1)
     docile (1.4.1)
     domain_name (0.6.20240107)
+    down (5.4.2)
+      addressable (~> 2.8)
     drb (2.2.3)
     ed25519 (1.4.0)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-follow_redirects (0.4.0)
+    faraday-follow_redirects (0.5.0)
       faraday (>= 1, < 3)
-    faraday-net_http (3.4.1)
-      net-http (>= 0.5.0)
-    faraday-retry (2.3.2)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
+    faraday-retry (2.4.0)
       faraday (~> 2.0)
-    ffi (1.17.2)
-    ffi (1.17.2-aarch64-linux-gnu)
-    ffi (1.17.2-aarch64-linux-musl)
-    ffi (1.17.2-arm-linux-gnu)
-    ffi (1.17.2-arm-linux-musl)
-    ffi (1.17.2-arm64-darwin)
-    ffi (1.17.2-x86-linux-gnu)
-    ffi (1.17.2-x86-linux-musl)
-    ffi (1.17.2-x86_64-darwin)
-    ffi (1.17.2-x86_64-linux-gnu)
-    ffi (1.17.2-x86_64-linux-musl)
+    ffi (1.17.3)
+    ffi (1.17.3-aarch64-linux-gnu)
+    ffi (1.17.3-aarch64-linux-musl)
+    ffi (1.17.3-arm-linux-gnu)
+    ffi (1.17.3-arm-linux-musl)
+    ffi (1.17.3-arm64-darwin)
+    ffi (1.17.3-x86-linux-gnu)
+    ffi (1.17.3-x86-linux-musl)
+    ffi (1.17.3-x86_64-darwin)
+    ffi (1.17.3-x86_64-linux-gnu)
+    ffi (1.17.3-x86_64-linux-musl)
     gapic-common (1.1.0)
       faraday (>= 1.9, < 3.a)
       faraday-retry (>= 1.0, < 3.a)
@@ -194,19 +231,19 @@ GEM
       faraday (>= 1.0, < 3.a)
     google-cloud-errors (1.5.0)
     google-logging-utils (0.2.0)
-    google-protobuf (3.25.8)
-    google-protobuf (3.25.8-aarch64-linux)
-    google-protobuf (3.25.8-arm64-darwin)
-    google-protobuf (3.25.8-x86-linux)
-    google-protobuf (3.25.8-x86_64-darwin)
-    google-protobuf (3.25.8-x86_64-linux)
+    google-protobuf (3.25.3)
+    google-protobuf (3.25.3-aarch64-linux)
+    google-protobuf (3.25.3-arm64-darwin)
+    google-protobuf (3.25.3-x86-linux)
+    google-protobuf (3.25.3-x86_64-darwin)
+    google-protobuf (3.25.3-x86_64-linux)
     googleapis-common-protos (1.8.0)
       google-protobuf (>= 3.18, < 5.a)
       googleapis-common-protos-types (~> 1.20)
       grpc (~> 1.41)
     googleapis-common-protos-types (1.20.0)
       google-protobuf (>= 3.18, < 5.a)
-    googleauth (1.15.1)
+    googleauth (1.16.1)
       faraday (>= 1.0, < 3.a)
       google-cloud-env (~> 2.2)
       google-logging-utils (~> 0.1)
@@ -214,51 +251,53 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    grpc (1.76.0)
+    grpc (1.70.1)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-aarch64-linux-gnu)
+    grpc (1.70.1-aarch64-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-aarch64-linux-musl)
+    grpc (1.70.1-arm64-darwin)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-arm64-darwin)
+    grpc (1.70.1-x86-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-x86-linux-gnu)
+    grpc (1.70.1-x86_64-darwin)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-x86-linux-musl)
-      google-protobuf (>= 3.25, < 5.0)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-x86_64-darwin)
-      google-protobuf (>= 3.25, < 5.0)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-x86_64-linux-gnu)
-      google-protobuf (>= 3.25, < 5.0)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.76.0-x86_64-linux-musl)
+    grpc (1.70.1-x86_64-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    hashdiff (1.2.0)
+    hashdiff (1.2.1)
+    htmlentities (4.4.2)
     http-accept (1.7.0)
     http-cookie (1.1.0)
       domain_name (~> 0.5)
-    i18n (1.14.7)
+    i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    json (2.15.2)
-    json-schema (2.8.1)
-      addressable (>= 2.4)
-    json_pure (2.8.1)
+    io-console (0.8.2)
+    json (2.18.0)
+    json-canonicalization (0.4.0)
+    json-ld (3.2.5)
+      htmlentities (~> 4.3)
+      json-canonicalization (~> 0.3, >= 0.3.2)
+      link_header (~> 0.0, >= 0.0.8)
+      multi_json (~> 1.15)
+      rack (>= 2.2, < 4)
+      rdf (~> 3.2, >= 3.2.10)
+    json-schema (6.1.0)
+      addressable (~> 2.8)
+      bigdecimal (>= 3.1, < 5)
     jwt (3.1.2)
       base64
     kgio (2.11.4)
     language_server-protocol (3.17.0.5)
     libxml-ruby (5.0.5)
+    link_header (0.0.8)
     lint_roller (1.1.0)
     logger (1.7.0)
     macaddr (1.7.2)
@@ -273,28 +312,33 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0924)
+    mime-types-data (3.2026.0113)
     mini_mime (1.1.5)
-    minitest (5.26.0)
-    minitest-bisect (1.7.0)
-      minitest-server (~> 1.0)
-      path_expander (~> 1.1)
-    minitest-hooks (1.5.2)
+    minitest (6.0.1)
+      prism (~> 1.5)
+    minitest-fail-fast (0.2.0)
+      minitest (>= 5.0, < 7)
+    minitest-hooks (1.5.3)
       minitest (> 5.3)
-    minitest-server (1.0.8)
-      drb (~> 2.0)
-      minitest (~> 5.16)
+    minitest-reporters (1.7.1)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
     minitest-stub_any_instance (1.0.3)
     mlanett-redis-lock (0.2.7)
       redis
-    multi_json (1.17.0)
+    multi_json (1.19.1)
+    mustermann (3.0.4)
+      ruby2_keywords (~> 0.0.1)
     net-ftp (0.3.9)
       net-protocol
       time
-    net-http (0.7.0)
-      uri
-    net-http-persistent (2.9.4)
-    net-imap (0.5.12)
+    net-http (0.9.1)
+      uri (>= 0.11.1)
+    net-http-persistent (4.0.8)
+      connection_pool (>= 2.2.4, < 4)
+    net-imap (0.6.2)
       date
       net-protocol
     net-pop (0.1.2)
@@ -309,60 +353,80 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     netrc (0.11.0)
-    newrelic_rpm (9.19.0)
-    oj (3.16.12)
+    newrelic_rpm (10.0.0)
+      logger
+    oj (3.16.13)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     omni_logger (0.1.4)
       logger
     os (1.1.4)
     ostruct (0.6.3)
+    pandoc-ruby (2.1.10)
     parallel (1.27.0)
     parseconfig (1.1.2)
-    parser (3.3.8.0)
+    parser (3.3.10.1)
       ast (~> 2.4.1)
       racc
-    path_expander (1.1.3)
     pony (1.13.1)
       mail (>= 2.0)
-    prism (1.4.0)
-    pry (0.15.2)
+    prism (1.8.0)
+    pry (0.16.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    public_suffix (6.0.2)
+      reline (>= 0.6.0)
+    public_suffix (7.0.2)
     racc (1.8.1)
-    rack (1.6.13)
+    rack (3.2.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-attack (6.6.1)
-      rack (>= 1.0, < 3)
-    rack-cache (1.13.0)
+    rack-attack (6.8.0)
+      rack (>= 1.0, < 4)
+    rack-cache (1.17.0)
       rack (>= 0.4)
-    rack-cors (1.0.6)
-      rack (>= 1.6.0)
-    rack-mini-profiler (4.0.0)
+    rack-contrib (2.5.0)
+      rack (< 4)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
+    rack-mini-profiler (4.0.1)
       rack (>= 1.2.0)
-    rack-protection (1.5.5)
-      rack
+    rack-session (2.1.1)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0)
     rack-test (2.2.0)
       rack (>= 1.3)
     rack-timeout (0.7.0)
+    rackup (2.3.1)
+      rack (>= 3)
     rainbow (3.1.1)
     raindrops (0.20.1)
-    rake (10.5.0)
-    rdf (1.0.8)
-      addressable (>= 2.2)
-    redcarpet (3.6.1)
+    rake (13.3.1)
+    rdf (3.3.1)
+      bcp47_spec (~> 0.2)
+      link_header (~> 0.0, >= 0.0.8)
+    rdf-rdfxml (3.3.0)
+      builder (~> 3.2, >= 3.2.4)
+      htmlentities (~> 4.3)
+      rdf (~> 3.3)
+      rdf-xsd (~> 3.3)
+    rdf-vocab (3.3.3)
+      rdf (~> 3.3)
+    rdf-xsd (3.3.0)
+      rdf (~> 3.3)
+      rexml (~> 3.2)
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.26.1)
+    redis-client (0.26.3)
       connection_pool
     redis-rack-cache (2.2.1)
       rack-cache (>= 1.10, < 2)
       redis-store (>= 1.6, < 2)
     redis-store (1.11.0)
       redis (>= 4, < 6)
-    regexp_parser (2.10.0)
+    regexp_parser (2.11.3)
+    reline (0.6.3)
+      io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
     rest-client (2.1.0)
@@ -370,11 +434,11 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.4.1)
+    rexml (3.4.4)
     rsolr (2.6.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
-    rubocop (1.78.0)
+    rubocop (1.82.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -382,17 +446,19 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.45.1, < 2.0)
+      rubocop-ast (>= 1.48.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.46.0)
+    rubocop-ast (1.49.0)
       parser (>= 3.3.7.2)
-      prism (~> 1.4)
+      prism (~> 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
+    ruby2_keywords (0.0.5)
     rubyzip (3.2.2)
     rufus-scheduler (2.0.24)
       tzinfo (>= 0.3.22)
+    securerandom (0.4.1)
     signet (0.21.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -402,25 +468,19 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-cobertura (3.0.0)
+    simplecov-cobertura (3.1.0)
       rexml
       simplecov (~> 0.19)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    sinatra (1.4.8)
-      rack (~> 1.5)
-      rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
-    sinatra-advanced-routes (0.5.3)
-      sinatra (~> 1.0)
-    sinatra-contrib (1.4.7)
-      backports (>= 2.0)
-      multi_json
-      rack-protection
-      rack-test
-      sinatra (~> 1.4.0)
-      tilt (>= 1.3, < 3)
-    sshkit (1.24.0)
+    sinatra (4.2.1)
+      logger (>= 1.6.0)
+      mustermann (~> 3.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.2.1)
+      rack-session (>= 2.0.0, < 3)
+      tilt (~> 2.0)
+    sshkit (1.25.0)
       base64
       logger
       net-scp (>= 1.1.2)
@@ -428,17 +488,16 @@ GEM
       net-ssh (>= 2.8.0)
       ostruct
     systemu (2.6.5)
-    temple (0.10.3)
-    thread_safe (0.3.6)
-    tilt (2.6.1)
-    time (0.4.1)
+    temple (0.10.4)
+    tilt (2.7.0)
+    time (0.4.2)
       date
-    timeout (0.4.4)
-    tzinfo (1.2.11)
-      thread_safe (~> 0.1)
-    unicode-display_width (3.1.4)
-      unicode-emoji (~> 4.0, >= 4.0.4)
-    unicode-emoji (4.0.4)
+    timeout (0.6.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.2.0)
     unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
@@ -448,11 +507,11 @@ GEM
     uri (1.1.1)
     uuid (2.3.9)
       macaddr (~> 1.0)
-    webmock (3.19.1)
+    webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webrick (1.9.1)
+    webrick (1.9.2)
 
 PLATFORMS
   aarch64-linux
@@ -471,7 +530,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  activesupport (~> 5)
+  activesupport
   bcrypt_pbkdf (>= 1.0, < 2.0)
   bigdecimal
   byebug (~> 12.0)
@@ -484,46 +543,55 @@ DEPENDENCIES
   ed25519 (>= 1.2, < 2.0)
   ffi
   goo!
+  google-protobuf (= 3.25.3)
+  grpc (= 1.70.1)
   haml (~> 5.2.2)
-  json-schema (~> 2.0)
-  minitest (~> 5.0)
-  minitest-bisect
-  minitest-hooks (~> 1.5)
+  json-ld (~> 3.2.0)
+  json-schema
+  minitest
+  minitest-fail-fast
+  minitest-hooks
+  minitest-reporters
   minitest-stub_any_instance
   multi_json
   ncbo_annotator!
   ncbo_cron!
   ncbo_ontology_recommender!
+  net-ftp
   newrelic_rpm
   oj
   ontologies_linked_data!
+  pandoc-ruby
+  parallel
   parseconfig
   rack
-  rack-accept (~> 0.4)
-  rack-attack (~> 6.6.1)
-  rack-cache (~> 1.13.0)
+  rack-accept
+  rack-attack
+  rack-cache
+  rack-contrib
   rack-cors
   rack-mini-profiler
   rack-post-body-to-params!
   rack-test
   rack-timeout
-  rake (~> 10.0)
-  redcarpet
+  rackup
+  rake
+  rdf-raptor!
   redis
-  redis-rack-cache (~> 2.0)
-  redis-store (~> 1.10)
+  redis-rack-cache
+  redis-store
+  request_store
   rexml
   rubocop
   shotgun!
   simplecov
   simplecov-cobertura
-  sinatra (~> 1.0)
-  sinatra-advanced-routes
-  sinatra-contrib (~> 1.0)
+  sinatra
+  sinatra-contrib!
   sparql-client!
   unicorn
   unicorn-worker-killer
-  webmock (~> 3.19.1)
+  webmock
   webrick
 
 BUNDLED WITH

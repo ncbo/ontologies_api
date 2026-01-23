@@ -4,6 +4,10 @@ class TestSearchController < TestCase
 
   def before_suite
      self.backend_4s_delete
+     LinkedData::Models::Ontology.indexClear
+     LinkedData::Models::Class.indexClear
+     LinkedData::Models::OntologyProperty.indexClear
+
      count, acronyms, bro = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
       process_submission: true,
       acronym: "BROSEARCHTEST",

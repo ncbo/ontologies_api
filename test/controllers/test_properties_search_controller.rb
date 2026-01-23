@@ -30,8 +30,8 @@ class TestPropertiesSearchController < TestCase
 
   def after_suite
     LinkedData::SampleData::Ontology.delete_ontologies_and_submissions
-    LinkedData::Models::Ontology.indexClear(:property)
-    LinkedData::Models::Ontology.indexCommit(nil, :property)
+    LinkedData::Models::OntologyProperty.indexClear
+    LinkedData::Models::OntologyProperty.indexCommit
   end
 
   def test_property_search

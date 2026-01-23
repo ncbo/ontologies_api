@@ -22,7 +22,7 @@ class PropertiesSearchController < ApplicationController
       # puts "Properties query: #{query}, params: #{params}"
       set_page_params(params)
       docs = Array.new
-      resp = LinkedData::Models::Class.search(query, params, :property)
+      resp = LinkedData::Models::OntologyProperty.search(query, params)
       total_found = resp["response"]["numFound"]
       add_matched_fields(resp, Sinatra::Helpers::SearchHelper::MATCH_TYPE_LABEL)
       ontology_rank = LinkedData::Models::Ontology.rank

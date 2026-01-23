@@ -1,10 +1,11 @@
+$VERBOSE = false
+
 # sinatra-base
 require 'sinatra'
 
 # sinatra-contrib
 require 'sinatra/respond_with'
 require 'sinatra/namespace'
-require 'sinatra/advanced_routes'
 require 'sinatra/multi_route'
 
 # Other gem dependencies
@@ -24,7 +25,6 @@ require 'rack/post-body-to-params'
 require 'rack-timeout'
 require 'rack/cors'
 require_relative 'lib/rack/slow_requests'
-require_relative 'lib/rack/cube_reporter'
 require_relative 'lib/rack/param_translator'
 require_relative 'lib/rack/slice_detection'
 require_relative 'lib/rack/request_lang'
@@ -84,6 +84,9 @@ if [:development, :console].include?(settings.environment)
   set :raise_errors, true
   set :dump_errors, false
   set :show_exceptions, false
+  # use Rack::DowncaseHeaders to ensure headers are downcased for rack > 3.0 compatibility
+  require_relative 'lib/rack/downcase_headers'
+  use Rack::DowncaseHeaders
 end
 
 # mini-profiler sets the etag header to nil, so don't use when caching is enabled

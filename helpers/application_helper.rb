@@ -188,9 +188,19 @@ module Sinatra
           status = obj
           obj = nil
         end
-        status, obj = response.first, response.last if response.length == 2
-        status, headers, obj = response.first, response[1], response.last if response.length == 3
-        if obj.is_a?(Rack::File) # Avoid the serializer when returning files
+
+        if response.length == 2
+          status = response.first
+          obj = response.last
+        end
+
+        if response.length == 3
+          status = response.first
+          headers = response[1]
+          obj = response.last
+        end
+
+        if obj.is_a?(Rack::Files) || obj.is_a?(Rack::Files::Iterator) # Avoid the serializer when returning files
           super(response)
         else
           super(LinkedData::Serializer.build_response(@env, status: status, headers: headers, ld_object: obj))

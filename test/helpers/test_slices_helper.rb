@@ -4,6 +4,7 @@ class TestSlicesHelper < TestCaseHelpers
 
   def before_suite
     self.backend_4s_delete
+    LinkedData::Models::Class.indexClear
 
     @@orig_slices_setting = LinkedData.settings.enable_slices
     LinkedData.settings.enable_slices = true
