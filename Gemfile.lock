@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: edddd813a857446314a00d283d162c5ce53f945d
+  revision: 326eb26687f7307b6ae7e6b8f2e215057606180e
   branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
