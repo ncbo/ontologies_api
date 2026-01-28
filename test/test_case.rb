@@ -109,6 +109,7 @@ class AppUnit < Minitest::Test
   end
 
   def after_all
+    self.class.disable_security
     after_suite
     super
   end
@@ -209,7 +210,11 @@ class TestCase < AppUnit
     LinkedData.settings.enable_security = true
   end
 
-  def self.reset_security(old_security =  @@old_security_setting)
+  def self.disable_security
+    LinkedData.settings.enable_security = false
+  end
+
+  def self.reset_security(old_security = @@old_security_setting)
     LinkedData.settings.enable_security = old_security
   end
 
