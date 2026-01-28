@@ -13,7 +13,7 @@ module Sinatra
       ##
       # Escape text for use in html
       def h(text)
-        Rack::Utils.escape_html(text)
+        Rack::Utils.escape_html(text).gsub('/', '&#x2F;')
       end
 
       ##
@@ -225,7 +225,7 @@ module Sinatra
       # Look for the includes parameter and provide a formatted list of attributes
       def includes_param
         if @params["display"]
-          return @params["display"].split(",").map {|e| e.to_sym}
+          return @params["display"].split(",").map { |e| e.to_sym }
         end
         Array.new
       end
@@ -233,14 +233,14 @@ module Sinatra
       ##
       # Look for the ontologies acronym and give back a formatted list of ontolody id uris
       # This can be called without passing an argument and it will use the values from the current request
-      def ontologies_param(params=nil)
+      def ontologies_param(params = nil)
         params ||= @params
 
         if params["ontologies"]
           # Get list
-          ontologies = params["ontologies"].split(",").map {|o| o.strip}
+          ontologies = params["ontologies"].split(",").map { |o| o.strip }
           # When they aren't URIs, make them URIs
-          ontologies.map! {|o| o.start_with?("http://") ? replace_url_prefix(o) : ontology_uri_from_acronym(o)}
+          ontologies.map! { |o| o.start_with?("http://") ? replace_url_prefix(o) : ontology_uri_from_acronym(o) }
           if ontologies.include? nil
             error 404, "The ontologies parameter `[#{params["ontologies"]}]` includes non-existent acronyms. Notice that acronyms are case sensitive."
           end
@@ -249,7 +249,7 @@ module Sinatra
         Array.new
       end
 
-      def restricted_ontologies(params=nil)
+      def restricted_ontologies(params = nil)
         params ||= @params
 
         found_onts = false
@@ -278,23 +278,23 @@ module Sinatra
         return onts
       end
 
-      def restricted_ontologies_to_acronyms(params=nil, onts=nil)
+      def restricted_ontologies_to_acronyms(params = nil, onts = nil)
         onts ||= restricted_ontologies(params)
-        return onts.map {|o| o.acronym }
+        return onts.map { |o| o.acronym }
       end
 
-      def ontologies_param_to_acronyms(params=nil)
+      def ontologies_param_to_acronyms(params = nil)
         ontResourceIds = ontologies_param(params)
-        return ontResourceIds.map { |ontResourceId| ontResourceId.to_s.split('/')[-1]}
+        return ontResourceIds.map { |ontResourceId| ontResourceId.to_s.split('/')[-1] }
       end
 
       ##
       # Get semantic types parameter in the form [semantic_types=T099,T085,T345]
-      def semantic_types_param(params=nil)
+      def semantic_types_param(params = nil)
         params ||= @params
 
         if params["semantic_types"]
-          semanticTypes = params["semantic_types"].split(",").map {|o| o.strip}
+          semanticTypes = params["semantic_types"].split(",").map { |o| o.strip }
           return semanticTypes
         end
         Array.new
@@ -302,10 +302,10 @@ module Sinatra
 
       ##
       # Get cui parameter in the form [cui=C0302369,C0522224,C0176617]
-      def cui_param(params=nil)
+      def cui_param(params = nil)
         params ||= @params
         if params["cui"]
-          cui = params["cui"].split(",").map {|o| o.strip}
+          cui = params["cui"].split(",").map { |o| o.strip }
           return cui
         end
         Array.new
@@ -316,7 +316,7 @@ module Sinatra
         params ||= @params
         if params["month"]
           month = params["month"].strip
-          if %r{(?<month>^(0[1-9]|[1-9]|1[0-2])$)}x === month
+          if /(?<month>^(0[1-9]|[1-9]|1[0-2])$)/x === month
             return month.to_i.to_s
           end
         end
@@ -324,11 +324,11 @@ module Sinatra
       end
 
       # validates year for starting with 1 or 2 and containing 4 digits
-      def year_param(params=nil)
+      def year_param(params = nil)
         params ||= @params
         if params["year"]
           year = params["year"].strip
-          if %r{(?<year>^([1-2]\d{3})$)}x === year
+          if /(?<year>^([1-2]\d{3})$)/x === year
             return year.to_i.to_s
           end
         end
@@ -368,14 +368,14 @@ module Sinatra
       def ontology_objects_from_params(params = nil)
         ontologies = Set.new(ontologies_param(params))
         all_onts = LinkedData::Models::Ontology.where.include(LinkedData::Models::Ontology.goo_attrs_to_load).to_a
-        all_onts.select {|o| ontologies.include?(o.id.to_s)}
+        all_onts.select { |o| ontologies.include?(o.id.to_s) }
       end
 
       def ontology_uri_acronym_map
         cached_map = naive_expiring_cache_read(__method__)
         return cached_map if cached_map
         map = {}
-        LinkedData::Models::Ontology.where.include(:acronym).all.each {|o| map[o.acronym] = o.id.to_s}
+        LinkedData::Models::Ontology.where.include(:acronym).all.each { |o| map[o.acronym] = o.id.to_s }
         naive_expiring_cache_write(__method__, map)
         map
       end
@@ -384,7 +384,7 @@ module Sinatra
         cached_map = naive_expiring_cache_read(__method__)
         return cached_map if cached_map
         map = {}
-        LinkedData::Models::Ontology.where.include(:acronym).all.each {|o| map[o.id.to_s] = o.acronym}
+        LinkedData::Models::Ontology.where.include(:acronym).all.each { |o| map[o.id.to_s] = o.acronym }
         naive_expiring_cache_write(__method__, map)
         map
       end
@@ -422,6 +422,21 @@ module Sinatra
       # EX: http://stagedata.bioontology.org/ontologies/BRO would become http://data.bioontology.org/ontologies/BRO
       def replace_url_prefix(id)
         LinkedData::Models::Base.replace_url_prefix_to_id(id)
+      end
+
+      def retrieve_latest_submissions(options = {})
+        submissions = retrieve_submissions(options)
+
+        latest_submissions = page? ? submissions : {} # latest_submission doest not work with pagination
+        submissions.each do |sub|
+          unless page?
+            next if include_ready?(options) && !sub.ready?
+            next if sub.ontology.nil?
+            latest_submissions[sub.ontology.acronym] ||= sub
+            latest_submissions[sub.ontology.acronym] = sub if sub.submissionId.to_i > latest_submissions[sub.ontology.acronym].submissionId.to_i
+          end
+        end
+        latest_submissions
       end
 
       def get_ontology_and_submission
