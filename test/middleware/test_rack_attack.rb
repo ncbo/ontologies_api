@@ -5,7 +5,7 @@ require_relative '../test_case'
 RACK_CONFIG = File.join([settings.root, "config.ru"])
 
 class TestRackAttack < TestCase
-  
+
   def before_suite
     # Store app settings
     @@auth_setting = LinkedData.settings.enable_security
@@ -40,7 +40,7 @@ class TestRackAttack < TestCase
     # Fork the process to create two servers. This isolates the Rack::Attack configuration, which makes other tests fail if included.
     @@pid1 = fork do
       require_relative '../../config/rack_attack'
-      Rack::Server.start(
+      Rackup::Server.start(
         config: RACK_CONFIG,
         Port: @@port1
       )
@@ -50,7 +50,7 @@ class TestRackAttack < TestCase
     @@port2 = unused_port
     @@pid2 = fork do
       require_relative '../../config/rack_attack'
-      Rack::Server.start(
+      Rackup::Server.start(
         config: RACK_CONFIG,
         Port: @@port2
       )
@@ -90,7 +90,7 @@ class TestRackAttack < TestCase
   # TODO: Upgrading rack-attack from 5 to 6 causes this test to fail with a 500 Internal Server error.
   #   Project is currently pinned at 5.4.2. Investigate failure at the time we decide to upgrade.
   def test_throttling_limit_with_forwarding
-    limit = LinkedData::OntologiesAPI.settings.req_per_second_per_ip 
+    limit = LinkedData::OntologiesAPI.settings.req_per_second_per_ip
     headers = {"Authorization" => "apikey token=#{@@user.apikey}", "X-Forwarded-For" => "1.2.3.6"}
 
     exception = assert_raises(OpenURI::HTTPError) do
