@@ -18,7 +18,7 @@ class TestSearchModelsController < TestCase
     get '/admin/search/collections'
     assert last_response.ok?
     res = MultiJson.load(last_response.body)
-    array = %w[agents_metadata ontology_data ontology_metadata prop_search_core1 term_search_core1]
+    array = %w[ontology_data ontology_metadata prop_search_core1 term_search_core1]
     assert_equal res["collections"].sort , array.sort
   end
 
@@ -38,7 +38,6 @@ class TestSearchModelsController < TestCase
   end
 
   def test_collection_search
-
     count, acronyms, bro = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
                                                                                                 process_submission: false,
                                                                                                 acronym: "BROSEARCHTEST",
@@ -78,54 +77,66 @@ class TestSearchModelsController < TestCase
                                                                                                  submission_count: 1
                                                                                                })
 
-
     subs = LinkedData::Models::OntologySubmission.all
+
     subs.each do |s|
       s.bring_remaining
       s.index_all(Logger.new($stdout))
     end
 
+    allowed_user1 = User.new({
+                               username: "allowed1",
+                               email: "test1@example.org",
+                               password: "12345"
+                             })
+    allowed_user1.save
 
-    allowed_user = User.new({
-                              username: "allowed",
-                              email: "test1@example.org",
-                              password: "12345"
-                            })
-    allowed_user.save
+    allowed_user2 = User.new({
+                               username: "allowed2",
+                               email: "test2@example.org",
+                               password: "12345"
+                             })
+    allowed_user2.save
+
 
     blocked_user = User.new({
                               username: "blocked",
-                              email: "test2@example.org",
+                              email: "test3@example.org",
                               password: "12345"
                             })
     blocked_user.save
 
     bro =  bro.first
     bro.bring_remaining
-    bro.acl = [allowed_user]
+    bro.acl = [allowed_user1, allowed_user2]
     bro.viewingRestriction = "private"
     bro.save
 
-    self.class.enable_security
-    get "/search/ontologies?query=#{bro.acronym}&apikey=#{blocked_user.apikey}"
-    response = MultiJson.load(last_response.body)["collection"]
-    assert_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
+    begin
+      self.class.enable_security
 
-    get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{blocked_user.apikey}"
-    assert last_response.ok?
-    res = MultiJson.load(last_response.body)
-    assert_equal 0, res['totalCount']
+      get "/search/ontologies?query=\"#{bro.acronym}\"&apikey=#{blocked_user.apikey}"
+      response = MultiJson.load(last_response.body)["collection"]
+      assert_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
 
-    get "/search/ontologies?query=#{bro.acronym}&apikey=#{allowed_user.apikey}"
-    response = MultiJson.load(last_response.body)["collection"]
-    refute_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
+      get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{blocked_user.apikey}"
+      assert last_response.ok?
+      res = MultiJson.load(last_response.body)
+      assert_equal 0, res['totalCount']
 
-    get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{allowed_user.apikey}"
-    assert last_response.ok?
-    res = MultiJson.load(last_response.body)
-    assert_equal 1, res['totalCount']
+      get "/search/ontologies?query=\"#{bro.acronym}\"&apikey=#{allowed_user1.apikey}"
+      response = MultiJson.load(last_response.body)["collection"]
+      refute_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
 
-    self.class.reset_security(false)
+      get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{allowed_user1.apikey}"
+      assert last_response.ok?
+      res = MultiJson.load(last_response.body)
+      assert_equal 1, res['totalCount']
+
+      self.class.reset_security(false)
+    ensure
+      self.class.disable_security
+    end
   end
 
   def test_ontology_metadata_search
@@ -231,7 +242,6 @@ class TestSearchModelsController < TestCase
   def test_ontology_metadata_filters
     num_onts_created, created_ont_acronyms, ontologies = create_ontologies_and_submissions(ont_count: 10, submission_count: 1)
 
-
     group1 = LinkedData::Models::Group.find('group-1').first || LinkedData::Models::Group.new(acronym: 'group-1', name: "Test Group 1").save
     group2 = LinkedData::Models::Group.find('group-2').first || LinkedData::Models::Group.new(acronym: 'group-2', name: "Test Group 2").save
     category1 = LinkedData::Models::Category.find('category-1').first || LinkedData::Models::Category.new(acronym: 'category-1', name: "Test Category 1").save
@@ -251,7 +261,6 @@ class TestSearchModelsController < TestCase
       o.save
     end
 
-
     # test filter by group and category
     get "/search/ontologies?page=1&pagesize=100&groups=#{group1.acronym}"
     assert last_response.ok?
@@ -259,7 +268,6 @@ class TestSearchModelsController < TestCase
     get "/search/ontologies?page=1&pagesize=100&groups=#{group2.acronym}"
     assert last_response.ok?
     assert_equal ontologies2.size, MultiJson.load(last_response.body)["collection"].length
-
 
     get "/search/ontologies?page=1&pagesize=100&groups=#{group1.acronym},#{group2.acronym}"
     assert last_response.ok?
@@ -283,8 +291,6 @@ class TestSearchModelsController < TestCase
     get "/search/ontologies?page=1&pagesize=100&hasDomain=#{category2.acronym}&groups=#{group2.acronym}"
     assert last_response.ok?
     assert_equal ontologies2.size, MultiJson.load(last_response.body)["collection"].length
-
-
 
     ontologies3 = ontologies[9]
     ontologies3.bring_remaining
@@ -312,7 +318,6 @@ class TestSearchModelsController < TestCase
 
     get "/search/ontologies?page=1&pagesize=100&q=tes&sort=creationDate_dt desc"
 
-
     assert last_response.ok?
     submissions = MultiJson.load(last_response.body)
     refute_empty submissions["collection"]
@@ -327,14 +332,11 @@ class TestSearchModelsController < TestCase
     refute_empty submissions["collection"]
     assert_equal 1, submissions["collection"].size
 
-
-
     get "/search/ontologies?page=1&pagesize=100&q=tes&hasOntologyLanguage=OWL"
     assert last_response.ok?
     submissions = MultiJson.load(last_response.body)
     refute_empty submissions["collection"]
     assert_equal ontologies.size-1 , submissions["collection"].size
-
 
     # test ontology filter with submission filter attributes
     get "/search/ontologies?page=1&pagesize=100&q=tes&groups=group-2&hasDomain=category-2&hasOntologyLanguage=OWL"
@@ -343,10 +345,7 @@ class TestSearchModelsController < TestCase
     refute_empty submissions["collection"]
     assert_equal ontologies2.size + 1 , submissions["collection"].size
 
-
-
     # test ontology filter with status
-
     get "/search/ontologies?page=1&pagesize=100&status=retired"
     assert last_response.ok?
     submissions = MultiJson.load(last_response.body)
@@ -403,7 +402,6 @@ class TestSearchModelsController < TestCase
     # res = MultiJson.load(last_response.body)
     # assert_equal count.sum, res['totalCount']
 
-
     get "/search/ontologies/content?q=*&ontologies=MCCLSEARCHTEST-0,BROSEARCHTEST-0"
     assert last_response.ok?
     res = MultiJson.load(last_response.body)
@@ -418,6 +416,6 @@ class TestSearchModelsController < TestCase
     assert last_response.ok?
     res = MultiJson.load(last_response.body)
     assert_includes count, res['totalCount']
-
   end
+
 end
