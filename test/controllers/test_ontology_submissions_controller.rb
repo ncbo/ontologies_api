@@ -314,88 +314,56 @@ class TestOntologySubmissionsController < TestCase
 
   def test_submissions_all_includes
     ontology_count = 5
-    _, created_ont_acronyms, ontologies = create_ontologies_and_submissions(ont_count: ontology_count,
-      submission_count: 1, submissions_to_process: [])
-    def submission_all_attributes
-      attrs = OntologySubmission.goo_attrs_to_load([:all])
-      embed_attrs = attrs.find { |x| x.is_a?(Hash) }
+    _, created_ont_acronyms, = create_ontologies_and_submissions(ont_count: ontology_count, submission_count: 1, submissions_to_process: [])
 
-      attrs.delete_if { |x| x.is_a?(Hash) }.map(&:to_s) + embed_attrs.keys.map(&:to_s)
+    submission_all_attributes = begin
+                                  attrs = OntologySubmission.goo_attrs_to_load([:all])
+                                  embed_attrs = attrs.select { |x| x.is_a?(Hash) }.first || {}
+                                  attrs.reject { |x| x.is_a?(Hash) }.map(&:to_s) + embed_attrs.keys.map(&:to_s)
+                                end.sort
+
+    params = '?include=all&display_links=false&display_context=false'
+
+    [
+      "/submissions#{params}",
+      "/ontologies/#{created_ont_acronyms.first}/submissions#{params}",
+      "/ontologies/#{created_ont_acronyms.first}/latest_submission#{params}",
+      "/ontologies/#{created_ont_acronyms.first}/submissions/1#{params}"
+    ].each do |url|
+      get(url)
+      assert last_response.ok?
+
+      response_body = MultiJson.load(last_response.body)
+      submissions = response_body.is_a?(Array) ? response_body : [response_body]
+
+      assert_equal(ontology_count, submissions.size) if url == "/submissions#{params}"
+      assert(submissions.all? { |sub| submission_all_attributes.eql?(submission_keys(sub).sort) })
+      assert(submissions.all? { |sub| sub['contact']&.first&.keys.to_a.sort.eql?(%w[name email id].sort) })
     end
-    get("/submissions?include=all&display_links=false&display_context=false")
-
-    assert(last_response.ok?)
-    submissions = MultiJson.load(last_response.body)
-    assert_equal(ontology_count, submissions.size)
-
-    submissions.each do |sub|
-      assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
-      assert_submission_contact_structure(sub)
-    end
-
-    get("/ontologies/#{created_ont_acronyms.first}/submissions?include=all&display_links=false&display_context=false")
-
-    assert(last_response.ok?)
-    submissions = MultiJson.load(last_response.body)
-    assert_equal(1, submissions.size)
-
-    submissions.each do |sub|
-      assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
-      assert_submission_contact_structure(sub)
-    end
-
-    get("/ontologies/#{created_ont_acronyms.first}/latest_submission?include=all&display_links=false&display_context=false")
-    assert(last_response.ok?)
-    sub = MultiJson.load(last_response.body)
-
-    assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
-    assert_submission_contact_structure(sub)
-
-    get("/ontologies/#{created_ont_acronyms.first}/submissions/1?include=all&display_links=false&display_context=false")
-    assert(last_response.ok?)
-    sub = MultiJson.load(last_response.body)
-
-    assert_equal(submission_all_attributes.sort, submission_keys(sub).sort)
-    assert_submission_contact_structure(sub)
   end
 
   def test_submissions_custom_includes
     ontology_count = 5
-    _, created_ont_acronyms, _ = create_ontologies_and_submissions(ont_count: ontology_count,
-      submission_count: 1, submissions_to_process: [])
-    include = "ontology,contact,submissionId"
+    _, created_ont_acronyms, _ = create_ontologies_and_submissions(ont_count: ontology_count, submission_count: 1, submissions_to_process: [])
+    include_keys = %w[ontology contact submissionId]
+    params = "?include=#{include_keys.join(',')}&display_links=false&display_context=false"
 
-    get("/submissions?include=#{include}&display_links=false&display_context=false")
+    [
+      "/submissions#{params}",
+      "/ontologies/#{created_ont_acronyms.first}/submissions#{params}",
+      "/ontologies/#{created_ont_acronyms.first}/latest_submission#{params}",
+      "/ontologies/#{created_ont_acronyms.first}/submissions/1#{params}"
+    ].each do |url|
+      get(url)
+      assert last_response.ok?
 
-    assert(last_response.ok?)
-    submissions = MultiJson.load(last_response.body)
-    assert_equal ontology_count, submissions.size
-    submissions.each do |sub|
-      assert_equal(include.split(","), submission_keys(sub))
-      assert_submission_contact_structure(sub)
+      response_body = MultiJson.load(last_response.body)
+      submissions = response_body.is_a?(Array) ? response_body : [response_body]
+
+      assert_equal(ontology_count, submissions.size) if url == "/submissions#{params}"
+      assert(submissions.all? { |sub| include_keys.eql?(submission_keys(sub)) })
+      assert(submissions.all? { |sub| sub['contact']&.first&.keys&.sort.eql?(%w[name email id].sort) })
     end
-
-    get("/ontologies/#{created_ont_acronyms.first}/submissions?include=#{include}&display_links=false&display_context=false")
-
-    assert(last_response.ok?)
-    submissions = MultiJson.load(last_response.body)
-    assert_equal(1, submissions.size)
-    submissions.each do |sub|
-      assert_equal(include.split(","), submission_keys(sub))
-      assert_submission_contact_structure(sub)
-    end
-
-    get("/ontologies/#{created_ont_acronyms.first}/latest_submission?include=#{include}&display_links=false&display_context=false")
-    assert(last_response.ok?)
-    sub = MultiJson.load(last_response.body)
-    assert_equal(include.split(","), submission_keys(sub))
-    assert_submission_contact_structure(sub)
-
-    get("/ontologies/#{created_ont_acronyms.first}/submissions/1?include=#{include}&display_links=false&display_context=false")
-    assert(last_response.ok?)
-    sub = MultiJson.load(last_response.body)
-    assert_equal(include.split(","), submission_keys(sub))
-    assert_submission_contact_structure(sub)
   end
 
   def test_ontology_submissions_access_controller
