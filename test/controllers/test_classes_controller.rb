@@ -422,7 +422,7 @@ class TestClassesController < TestCase
     escaped_cls= CGI.escape("http://my.bogus.inexistent.class/that/this/is")
 
     #404 on ontology
-    get "/ontologies/NO-ONT-ZZZZZZ/classes/"
+    get "/ontologies/NO-ONT-ZZZZZZ/classes"
     assert last_response.status == 404
     get "/ontologies/NO-ONT-ZZZZZZ/classes/#{escaped_cls}/children"
     assert last_response.status == 404

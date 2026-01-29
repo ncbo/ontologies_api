@@ -48,6 +48,8 @@ set :root, File.dirname(__FILE__)
 use Rack::Static,
   :urls => ["/static"],
   :root => "public"
+set :public_folder, File.expand_path('public', __dir__)
+set :static, true
 
 # Setup the environment
 environment = settings.environment.nil? ? :development : settings.environment
