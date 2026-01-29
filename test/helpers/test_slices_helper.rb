@@ -18,11 +18,11 @@ class TestSlicesHelper < TestCaseHelpers
     end
 
     @@search_onts = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
-      ont_count: 2,
-      submission_count: 1,
-      acronym: "PARSED",
-      process_submission: true
-    })[2]
+                                                                                         ont_count: 2,
+                                                                                         submission_count: 1,
+                                                                                         acronym: "PARSED",
+                                                                                         process_submission: true
+                                                                                       })[2]
     @@search_onts.first.bring_remaining
     @@search_onts.first.group = [@@group]
     @@search_onts.first.save
@@ -33,7 +33,6 @@ class TestSlicesHelper < TestCaseHelpers
   end
 
   def after_suite
-    LinkedData.settings.enable_slices = @@orig_slices_setting
     self.backend_4s_delete
   end
 
@@ -77,12 +76,28 @@ class TestSlicesHelper < TestCaseHelpers
     assert results.all? {|r| group_ids.include?(r["links"]["ontology"])}
   end
 
+  def test_mappings_slices
+    LinkedData::Mappings.create_mapping_counts(Logger.new(TestLogFile.new))
+
+    get "/mappings/statistics/ontologies"
+
+    expected_result_without_slice = ["PARSED-0", "PARSED-1"]
+
+    assert_equal expected_result_without_slice, MultiJson.load(last_response.body).keys.sort
+
+    get "http://#{@@group_acronym}/mappings/statistics/ontologies"
+
+    expected_result_with_slice = ["PARSED-0"]
+
+    assert_equal expected_result_with_slice, MultiJson.load(last_response.body).keys.sort
+  end
+
   private
 
   def self._create_group
     LinkedData::Models::Group.new({
-      acronym: @@group_acronym,
-      name: "Test Group"
-    }).save
+                                    acronym: @@group_acronym,
+                                    name: "Test Group"
+                                  }).save
   end
 end
