@@ -18,8 +18,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 55e8cbfac358b2c40deb0bd963bfe6dee91e8347
-  branch: develop
+  revision: fa8f225e6c3d3df4bdc03029b1598201d079b387
+  branch: chore/rdf3-compat
   specs:
     ncbo_annotator (0.0.1)
       goo
