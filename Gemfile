@@ -40,9 +40,6 @@ gem 'redis-rack-cache'
 gem 'redis'
 gem 'redis-store'
 
-# Monitoring
-gem 'newrelic_rpm', group: [:default, :deployment]
-
 # HTTP server
 gem 'unicorn'
 gem 'unicorn-worker-killer'

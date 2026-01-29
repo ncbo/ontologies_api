@@ -352,8 +352,6 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     netrc (0.11.0)
-    newrelic_rpm (10.0.0)
-      logger
     oj (3.16.13)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -556,7 +554,6 @@ DEPENDENCIES
   ncbo_cron!
   ncbo_ontology_recommender!
   net-ftp
-  newrelic_rpm
   oj
   ontologies_linked_data!
   pandoc-ruby
