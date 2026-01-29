@@ -269,7 +269,7 @@ class TestSearchController < TestCase
       # mdorf, 3/2/2024, when the : is followed by a LETTER, as in NCIT:C20480,
       # then Solr does not split the query on the tokens,
       # but when the : is followed by a number, as in OGMS:0000071,
-      # then Solr does split this on tokens and shows the other resuluts
+      # then Solr does split this on tokens and shows the other results
       get "/search?q=OGMS:0000071"
       assert last_response.ok?
       results = MultiJson.load(last_response.body)

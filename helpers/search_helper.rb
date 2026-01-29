@@ -97,7 +97,7 @@ module Sinatra
 
         if params[EXACT_MATCH_PARAM] == "true"
           query = "\"#{solr_escape(text)}\""
-          params["qf"] = "resource_id^20 #{add_lang_suffix('prefLabel', '^10')} #{add_lang_suffix('synonymExact')} #{QUERYLESS_FIELDS_STR}"
+          params["qf"] = "resource_id^20 notation^20 oboId^20 #{add_lang_suffix('prefLabelExact', '^10')} #{add_lang_suffix('synonymExact')} #{QUERYLESS_FIELDS_STR_NO_IDS}"
           params["hl.fl"] = "resource_id #{add_lang_suffix('prefLabelExact')} #{add_lang_suffix('synonymExact')} #{QUERYLESS_FIELDS_STR}"
         elsif params[SUGGEST_PARAM] == "true" || text[-1] == '*'
           text.gsub!(/\*+$/, '')
@@ -131,17 +131,18 @@ module Sinatra
 
           params["qf"] = [
             "resource_id^100",
+            "notation^100",
+            "oboId^100",
             add_lang_suffix('prefLabelExact', '^90'),
             add_lang_suffix('prefLabel', '^70'),
             add_lang_suffix('synonymExact', '^50'),
             add_lang_suffix('synonym', '^10'),
-            QUERYLESS_FIELDS_STR
+            QUERYLESS_FIELDS_STR_NO_IDS
           ].join(' ')
 
           params["qf"] << " property" if params[INCLUDE_PROPERTIES_PARAM] == "true"
-
+          params["bq"] = "idAcronymMatch:true^80"
           params["hl.fl"] = "resource_id #{add_lang_suffix('prefLabelExact')} #{ add_lang_suffix('prefLabel')} #{add_lang_suffix('synonymExact')} #{add_lang_suffix('synonym')} #{QUERYLESS_FIELDS_STR}"
-
           params["hl.fl"] = "#{params["hl.fl"]} property" if params[INCLUDE_PROPERTIES_PARAM] == "true"
         end
 
