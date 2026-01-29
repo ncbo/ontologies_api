@@ -175,7 +175,6 @@ GEM
     connection_pool (3.0.2)
     crack (0.4.5)
       rexml
-    cube-ruby (0.0.3)
     dante (0.2.0)
     date (3.5.1)
     docile (1.4.1)
@@ -539,7 +538,6 @@ DEPENDENCIES
   capistrano-locally
   capistrano-rbenv
   crack (= 0.4.5)
-  cube-ruby
   ed25519 (>= 1.2, < 2.0)
   ffi
   goo!

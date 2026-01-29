@@ -13,8 +13,6 @@ module LinkedData::OntologiesAPI
 
     # Set defaults
     @settings.enable_monitoring           ||= false
-    @settings.cube_host                   ||= "localhost"
-    @settings.cube_port                   ||= 1180
     @settings.slow_request_log            ||= File.expand_path("../../logs/slow_requests.log", __FILE__)
     @settings.http_redis_host             ||= "localhost"
     @settings.http_redis_port             ||= 6379
@@ -30,7 +28,6 @@ module LinkedData::OntologiesAPI
 
     if @settings.enable_monitoring
       puts "(API) >> Slow queries log enabled: #{@settings.slow_request_log}"
-      puts "(API) >> Using cube server #{@settings.cube_host}:#{@settings.cube_port}"
     end
   end
 

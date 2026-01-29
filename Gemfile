@@ -41,7 +41,6 @@ gem 'redis'
 gem 'redis-store'
 
 # Monitoring
-gem 'cube-ruby', require: 'cube'
 gem 'newrelic_rpm', group: [:default, :deployment]
 
 # HTTP server
