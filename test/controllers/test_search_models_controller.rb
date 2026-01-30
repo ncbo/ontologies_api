@@ -98,7 +98,6 @@ class TestSearchModelsController < TestCase
                              })
     allowed_user2.save
 
-
     blocked_user = User.new({
                               username: "blocked",
                               email: "test3@example.org",
