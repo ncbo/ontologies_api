@@ -525,7 +525,7 @@ class TestClassesController < TestCase
     assert page_response["collection"].length == 0
   end
 
-  def test_multilingual
+  def test_default_multilingual
     ont = Ontology.find("TEST-ONT-0").include(:acronym).first
     sub = ont.latest_submission
     sub.bring_remaining
@@ -605,7 +605,7 @@ class TestClassesController < TestCase
     assert last_response.ok?
     page_response = MultiJson.load(last_response.body)
 
-    assert_equal 'Research Lab Management', page_response["prefLabel"]["none"]
+    assert_equal 'Research Lab Management', page_response.dig("prefLabel", "none") || page_response.dig("prefLabel", "@none")
     assert_equal 'Gestion du laboratoire de recherche', page_response["prefLabel"]["fr"]
     assert_equal 'Gestione del laboratorio di ricerca', page_response["prefLabel"]["it"]
   end
