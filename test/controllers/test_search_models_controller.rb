@@ -115,7 +115,7 @@ class TestSearchModelsController < TestCase
     begin
       self.class.enable_security
 
-      get "/search/ontologies?query=\"#{bro.acronym}\"&apikey=#{blocked_user.apikey}"
+      get "/search/ontologies?query=#{bro.acronym}&apikey=#{blocked_user.apikey}"
       response = MultiJson.load(last_response.body)["collection"]
       assert_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
 
@@ -124,7 +124,7 @@ class TestSearchModelsController < TestCase
       res = MultiJson.load(last_response.body)
       assert_equal 0, res['totalCount']
 
-      get "/search/ontologies?query=\"#{bro.acronym}\"&apikey=#{allowed_user1.apikey}"
+      get "/search/ontologies?query=#{bro.acronym}&apikey=#{allowed_user1.apikey}"
       response = MultiJson.load(last_response.body)["collection"]
       refute_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
 
