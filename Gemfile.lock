@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 256afce837da44d31e8da1e08a6c7c56bbd1820f
+  revision: 824872a443b074bb7ad85f7fa57274fdb2e2b39a
   branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
@@ -311,7 +311,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0113)
+    mime-types-data (3.2026.0127)
     mini_mime (1.1.5)
     minitest (6.0.1)
       prism (~> 1.5)
