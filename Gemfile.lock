@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 824872a443b074bb7ad85f7fa57274fdb2e2b39a
+  revision: 53a0d4c3bbe56f7a8caed9fab736f509ebecb61d
   branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 7373727da30d09f7556c550798ed14bed0e99383
+  revision: d9aefd5a9bff4fcb40d687b16b25e171457deeeb
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)

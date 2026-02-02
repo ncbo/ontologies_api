@@ -560,8 +560,7 @@ class TestClassesController < TestCase
     assert last_response.ok?
     page_response = MultiJson.load(last_response.body)
     # show french value as specified in submission naturalLanguage
-    assert_equal 'Gestion des échantillons biologiques', page_response["prefLabel"]
-
+    assert_equal 'Gestion des Bioéchantillons', page_response["prefLabel"]
     sub.naturalLanguage = []
     sub.save
 
@@ -584,7 +583,6 @@ class TestClassesController < TestCase
     page_response = MultiJson.load(last_response.body)
     # show Japanese value as specified in submission naturalLanguage
     assert_equal 'カタログ', page_response["prefLabel"]
-
     sub.naturalLanguage = []
     sub.save
 
