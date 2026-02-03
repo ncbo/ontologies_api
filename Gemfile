@@ -84,7 +84,6 @@ group :test do
   gem 'minitest-hooks'
   gem 'minitest-stub_any_instance'
   gem 'minitest-reporters'
-  gem 'minitest-fail-fast'
   gem 'rack-test'
   gem 'simplecov', require: false
   gem 'simplecov-cobertura' # for codecov.io

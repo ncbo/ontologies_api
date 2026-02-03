@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 33e412fb08b7c6919543785c94016a1ab0113cfd
+  revision: 9cdb46a6b94c1bedb7a4dbab456888459217b7be
   branch: chore/ruby3.2-rdf3-compat
   specs:
     ncbo_annotator (0.0.1)
@@ -279,7 +279,7 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
-    json (2.18.0)
+    json (2.18.1)
     json-canonicalization (0.4.0)
     json-ld (3.2.5)
       htmlentities (~> 4.3)
@@ -315,8 +315,6 @@ GEM
     mini_mime (1.1.5)
     minitest (6.0.1)
       prism (~> 1.5)
-    minitest-fail-fast (0.2.0)
-      minitest (>= 5.0, < 7)
     minitest-hooks (1.5.3)
       minitest (> 5.3)
     minitest-reporters (1.7.1)
@@ -545,7 +543,6 @@ DEPENDENCIES
   json-ld (~> 3.2.0)
   json-schema
   minitest
-  minitest-fail-fast
   minitest-hooks
   minitest-reporters
   minitest-stub_any_instance
