@@ -16,8 +16,8 @@ x-app: &app
     REDIS_HTTP_CACHE_HOST: redis-ut
     REDIS_PERSISTENT_HOST: redis-ut
     REDIS_PORT: 6379
-    SOLR_TERM_SEARCH_URL: http://solr-ut:8983/solr/term_search_core1
-    SOLR_PROP_SEARCH_URL: http://solr-ut:8983/solr/prop_search_core1
+    SOLR_TERM_SEARCH_URL: http://solr-ut:8983/solr
+    SOLR_PROP_SEARCH_URL: http://solr-ut:8983/solr
     MGREP_HOST: mgrep-ut
     MGREP_PORT: 55556
   stdin_open: true
