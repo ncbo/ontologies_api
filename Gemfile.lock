@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: d3625bc7769f1c8cfcc4063ac9478b0723ed4686
-  branch: develop
+  revision: 160404bc5e0dcd1ef0ab06883b19c63a3aae6c9d
+  branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 8c2040180b364921698ccc7810bb26ea54e6f701
+  revision: 9282060c02a6ca242d9c4652e3f66799d3475d43
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
