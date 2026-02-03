@@ -18,8 +18,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: a3f45dc497ec8188872a3ed15cdade44d5f3fd64
-  branch: chore/rdf3-compat
+  revision: 33e412fb08b7c6919543785c94016a1ab0113cfd
+  branch: chore/ruby3.2-rdf3-compat
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: d9aefd5a9bff4fcb40d687b16b25e171457deeeb
+  revision: 77a98064f91c7cce5d89e31e3b3768dbc9a441a5
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)

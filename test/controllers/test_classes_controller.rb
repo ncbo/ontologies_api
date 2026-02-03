@@ -551,7 +551,7 @@ class TestClassesController < TestCase
     assert last_response.ok?
     page_response = MultiJson.load(last_response.body)
     # does not contain a value in english show the generated one
-    assert_equal 'Gene_Therapy', page_response["prefLabel"]
+    assert_equal 'Gene Therapy', page_response["prefLabel"]
 
     # prefLabel is present in the ontology language
     sub.naturalLanguage = ['fr']
