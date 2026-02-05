@@ -29,7 +29,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 81f118d2f108a3e98019ea87e93286d15376332c
+  revision: 86b3067c1c5da9b4cdc66388d0602e0932b09025
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ncbo_cron (0.0.1)

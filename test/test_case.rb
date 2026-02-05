@@ -143,8 +143,6 @@ end
 class TestCase < AppUnit
   include Rack::Test::Methods
 
-
-
   def app
     Sinatra::Application
   end
@@ -235,7 +233,6 @@ class TestCase < AppUnit
   def self.delete_user(username)
     User.find(username).first&.delete
   end
-
 
   def self.make_admin(user)
     user.bring_remaining
