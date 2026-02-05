@@ -2,7 +2,7 @@ x-app: &app
   build:
     context: .
     args:
-      RUBY_VERSION: '3.1'
+      RUBY_VERSION: '3.2'
   # Increase the version number in the image tag every time Dockerfile or its arguments is changed
   image: ontologies_api:0.0.6
   environment: &env
@@ -122,7 +122,7 @@ services:
       retries: 5
 
   agraph-ut:
-    image: franzinc/agraph:v8.1.0
+    image: franzinc/agraph:v8.3.1
     platform: linux/amd64
     environment:
       - AGRAPH_SUPER_USER=test
