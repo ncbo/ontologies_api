@@ -1,4 +1,3 @@
-require_relative '../test_case'
 require 'json-schema'
 
 class TestProjectsController < TestCase
@@ -107,7 +106,7 @@ class TestProjectsController < TestCase
     _project_delete(@p.acronym)
     # Fail PUT for any project with required missing data.
     username = 'user_does_not_exist'
-    @projectParams['creator'] = username
+    @projectParams[:creator] = username
     put "/projects/#{@p.acronym}", MultiJson.dump(@projectParams), "CONTENT_TYPE" => "application/json"
     _response_status(422, last_response)
     _project_get_failure(@p.acronym)
