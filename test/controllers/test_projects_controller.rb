@@ -1,3 +1,4 @@
+require_relative '../test_case'
 require 'json-schema'
 
 class TestProjectsController < TestCase
