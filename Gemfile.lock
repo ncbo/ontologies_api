@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 53a0d4c3bbe56f7a8caed9fab736f509ebecb61d
+  revision: 75e1df5ce04d877f2d2eb3a4e93686c4c12339b9
   branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 30ae1929a038650fb5685b075d960ff8a4a96dba
+  revision: 78f53234d52f4938047972425d1cc58933882f86
   branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_annotator (0.0.1)
@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 160404bc5e0dcd1ef0ab06883b19c63a3aae6c9d
-  branch: chore/ruby3.2-minitest6-compat
+  revision: 81f118d2f108a3e98019ea87e93286d15376332c
+  branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -43,11 +43,11 @@ GIT
       ncbo_annotator
       ontologies_linked_data
       redis
-      rufus-scheduler (~> 2.0.24)
+      rufus-scheduler (~> 3.9)
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 7e81eb9ac92b98ee72fc5e05a63b99292f0de5f9
+  revision: b0a45a25d901bd43e28d9e2ca667a5c9a299c86e
   branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_ontology_recommender (0.0.1)
@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 9282060c02a6ca242d9c4652e3f66799d3475d43
+  revision: abb93105158193d348daba0e1b0e005174e14061
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
@@ -183,6 +183,8 @@ GEM
       addressable (~> 2.8)
     drb (2.2.3)
     ed25519 (1.4.0)
+    et-orbi (1.4.0)
+      tzinfo
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -204,6 +206,9 @@ GEM
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
     ffi (1.17.3-x86_64-linux-musl)
+    fugit (1.12.1)
+      et-orbi (~> 1.4)
+      raabro (~> 1.4)
     gapic-common (1.1.0)
       faraday (>= 1.9, < 3.a)
       faraday-retry (>= 1.0, < 3.a)
@@ -311,7 +316,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0127)
+    mime-types-data (3.2026.0203)
     mini_mime (1.1.5)
     minitest (6.0.1)
       prism (~> 1.5)
@@ -350,9 +355,8 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     netrc (0.11.0)
-    oj (3.16.13)
+    oj (3.16.14)
       bigdecimal (>= 3.0)
-      ostruct (>= 0.2)
     omni_logger (0.1.4)
       logger
     os (1.1.4)
@@ -371,6 +375,7 @@ GEM
       method_source (~> 1.0)
       reline (>= 0.6.0)
     public_suffix (7.0.2)
+    raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.4)
     rack-accept (0.4.5)
@@ -451,8 +456,8 @@ GEM
     ruby-xxHash (0.4.0.2)
     ruby2_keywords (0.0.5)
     rubyzip (3.2.2)
-    rufus-scheduler (2.0.24)
-      tzinfo (>= 0.3.22)
+    rufus-scheduler (3.9.2)
+      fugit (~> 1.1, >= 1.11.1)
     securerandom (0.4.1)
     signet (0.21.0)
       addressable (~> 2.8)
@@ -616,6 +621,7 @@ CHECKSUMS
   down (5.4.2) sha256=516e5e01e7a96214a7e2cd155aac6f700593038ae6c857c0f4a05413b1c58acf
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   ed25519 (1.4.0) sha256=16e97f5198689a154247169f3453ef4cfd3f7a47481fde0ae33206cdfdcac506
+  et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc
   faraday (2.14.0) sha256=8699cfe5d97e55268f2596f9a9d5a43736808a943714e3d9a53e6110593941cd
   faraday-follow_redirects (0.5.0) sha256=5cde93c894b30943a5d2b93c2fe9284216a6b756f7af406a1e55f211d97d10ad
   faraday-net_http (3.4.2) sha256=f147758260d3526939bf57ecf911682f94926a3666502e24c69992765875906c
@@ -631,6 +637,7 @@ CHECKSUMS
   ffi (1.17.3-x86_64-darwin) sha256=1f211811eb5cfaa25998322cdd92ab104bfbd26d1c4c08471599c511f2c00bb5
   ffi (1.17.3-x86_64-linux-gnu) sha256=3746b01f677aae7b16dc1acb7cb3cc17b3e35bdae7676a3f568153fb0e2c887f
   ffi (1.17.3-x86_64-linux-musl) sha256=086b221c3a68320b7564066f46fed23449a44f7a1935f1fe5a245bd89d9aea56
+  fugit (1.12.1) sha256=5898f478ede9b415f0804e42b8f3fd53f814bd85eebffceebdbc34e1107aaf68
   gapic-common (1.1.0) sha256=3270ab3c5135012a4ab4d8848f945cf35014192f24504cdb40c66fc67f1beaa3
   get_process_mem (0.2.7) sha256=4afd3c3641dd6a817c09806c7d6d509d8a9984512ac38dea8b917426bbf77eba
   goo (0.0.2)
@@ -677,7 +684,7 @@ CHECKSUMS
   mail (2.9.0) sha256=6fa6673ecd71c60c2d996260f9ee3dd387d4673b8169b502134659ece6d34941
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
   mime-types (3.7.0) sha256=dcebf61c246f08e15a4de34e386ebe8233791e868564a470c3fe77c00eed5e56
-  mime-types-data (3.2026.0127) sha256=4a58692436a987ad930e75bf8f24da7e627acfa0d06e1720aa514791b4c7d12b
+  mime-types-data (3.2026.0203) sha256=54353d693af028847391c28361c07d4b8b689cad78c3e1cc272fb1205c6d2a2f
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   minitest (6.0.1) sha256=7854c74f48e2e975969062833adc4013f249a4b212f5e7b9d5c040bf838d54bb
   minitest-hooks (1.5.3) sha256=ef50dd3bf47e6d1646befc358c640c71ca41f5650f0036b4c69929a44d6f32c4
@@ -700,7 +707,7 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   net-ssh (7.3.0) sha256=172076c4b30ce56fb25a03961b0c4da14e1246426401b0f89cba1a3b54bf3ef0
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
-  oj (3.16.13) sha256=b114bcb83ef884f1736b3112108f77cf9ca90aa8111a775318cc5d7a6a1e0303
+  oj (3.16.14) sha256=94da4f737f5c67aa52e2231fe2adb5257c0c95822fe7e3793a07c69542362571
   omni_logger (0.1.4) sha256=b61596f7d96aa8426929e46c3500558d33e838e1afd7f4735244feb4d082bb3e
   ontologies_linked_data (0.0.1)
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
@@ -713,6 +720,7 @@ CHECKSUMS
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   pry (0.16.0) sha256=d76c69065698ed1f85e717bd33d7942c38a50868f6b0673c636192b3d1b6054e
   public_suffix (7.0.2) sha256=9114090c8e4e7135c1fd0e7acfea33afaab38101884320c65aaa0ffb8e26a857
+  raabro (1.4.0) sha256=d4fa9ff5172391edb92b242eed8be802d1934b1464061ae5e70d80962c5da882
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.2.4) sha256=5d74b6f75082a643f43c1e76b419c40f0e5527fcfee1e669ac1e6b73c0ccb6f6
   rack-accept (0.4.5) sha256=66247b5449db64ebb93ae2ec4af4764b87d1ae8a7463c7c68893ac13fa8d4da2
@@ -751,7 +759,7 @@ CHECKSUMS
   ruby-xxHash (0.4.0.2) sha256=201d8305ec1bd0bc32abeaecf7b423755dd1f45f4f4d02ef793b6bb71bf20684
   ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
   rubyzip (3.2.2) sha256=c0ed99385f0625415c8f05bcae33fe649ed2952894a95ff8b08f26ca57ea5b3c
-  rufus-scheduler (2.0.24) sha256=cf1b6ebe4835368d48e5ec9fd275327ffb03fc566fd1609744b76749b32ad446
+  rufus-scheduler (3.9.2) sha256=55fa9e4db0ff69d7f38c804f17baba0c9bce5cba39984ae3c5cf6c039d1323b9
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   shotgun (0.9)
   signet (0.21.0) sha256=d617e9fbf24928280d39dcfefba9a0372d1c38187ffffd0a9283957a10a8cd5b
