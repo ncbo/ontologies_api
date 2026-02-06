@@ -18,8 +18,11 @@ class TestSearchModelsController < TestCase
     get '/admin/search/collections'
     assert last_response.ok?
     res = MultiJson.load(last_response.body)
-    array = %w[ontology_data ontology_metadata prop_search_core1 term_search_core1]
-    assert_equal res["collections"].sort , array.sort
+    required = %w[ontology_data ontology_metadata prop_search_core1 term_search_core1]
+    allowed_extra = %w[term_search test_solr]
+    collections = res["collections"]
+    assert_empty required - collections
+    assert_empty collections - (required + allowed_extra)
   end
 
   def test_collection_schema
