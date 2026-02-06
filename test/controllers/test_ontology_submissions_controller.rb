@@ -494,7 +494,6 @@ class TestOntologySubmissionsController < TestCase
       get "/submissions?page=1&pagesize=100&name=#{name_search}"
       assert last_response.ok?
       submissions = MultiJson.load(last_response.body)
-      binding.pry unless submissions['collection'].length.eql?(count)
       assert_equal count, submissions['collection'].length
     end
 
