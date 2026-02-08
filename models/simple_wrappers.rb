@@ -29,3 +29,5 @@ ProvisionalClass = LinkedData::Models::ProvisionalClass
 ProvisionalRelation = LinkedData::Models::ProvisionalRelation
 
 SearchHelper = Sinatra::Helpers::SearchHelper
+
+Resource = LinkedData::Models::Resource
