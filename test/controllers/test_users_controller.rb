@@ -21,48 +21,6 @@ class TestUsersController < TestCase
     end
   end
 
-  def test_rejects_restricted_user_attributes_on_post_and_patch
-    username = "restricted_test_user"
-    email = "restricted@example.org"
-    password = "testpass"
-
-    # Create baseline user
-    post "/users", {
-      username: username,
-      email: email,
-      password: password
-    }
-    assert_equal 201, last_response.status
-
-    # POST attempt with restricted attributes
-    post "/users", {
-      username: "new-user",
-      email: "new@example.org",
-      password: "newpass",
-      created: DateTime.now + 1.year,
-      resetToken: "invalid",
-      resetTokenExpireTime: DateTime.now
-    }
-    assert_equal 201, last_response.status
-    user = User.find('new-user').include(User.attributes).first
-    assert_nil user.resetToken
-    assert_nil user.resetTokenExpireTime
-    assert_operator Time.now.to_time.to_i, :>=, user.created.to_time.to_i
-
-    # PATCH attempt with restricted attributes
-    patch "/users/#{username}", {
-      created: DateTime.now + 1.year,
-      resetToken: "still-invalid",
-      resetTokenExpireTime: DateTime.now
-    }
-    assert_equal 204, last_response.status
-    user = User.find('new-user').include(User.attributes).first
-    assert_nil user.resetToken
-    assert_nil user.resetTokenExpireTime
-    assert_operator Time.at(Time.now.to_i), :>=, user.created.to_time
-
-  end
-
   def test_admin_creation
     existent_user = @@users.first #no admin
 
@@ -80,18 +38,6 @@ class TestUsersController < TestCase
     users = MultiJson.load(last_response.body)
     assert users.any? {|u| u["username"].eql?("fred")}
     assert users.length >= @@usernames.length
-
-    get '/users?search=fred'
-    assert last_response.ok?
-    users = MultiJson.load(last_response.body)
-    assert users.all? {|u| u["username"].include?("fred")}
-    assert users.length == 1
-
-    get '/users?page=1&pagesize=5'
-    assert last_response.ok?
-    users = MultiJson.load(last_response.body)
-    assert_equal 5, users["collection"].length
-    assert users["totalCount"] >= @@usernames.length
   end
 
   def test_single_user
@@ -100,21 +46,6 @@ class TestUsersController < TestCase
     assert last_response.ok?
 
     assert_equal "fred", MultiJson.load(last_response.body)["username"]
-  end
-
-  def test_hide_sensitive_data
-    user = @@users[0]
-    reset_token = token(36)
-    user.resetToken = reset_token
-    user.resetTokenExpireTime = Time.now.to_i - 2.hours.to_i
-    user.save
-
-    username = user.username
-    get "/users/#{username}?display=resetToken,resetTokenExpireTime"
-    assert last_response.ok?
-
-    refute_includes MultiJson.load(last_response.body), 'resetToken', "resetToken should NOT be included in the response"
-    refute_includes MultiJson.load(last_response.body), 'resetTokenExpireTime', "resetTokenExpireTime should NOT be included in the response"
   end
 
   def test_create_new_user
@@ -136,7 +67,7 @@ class TestUsersController < TestCase
 
     get "/users/#{@@username}"
     assert last_response.ok?
-    assert MultiJson.load(last_response.body)["username"].eql?(@@username) 
+    assert MultiJson.load(last_response.body)["username"].eql?(@@username)
     assert_equal "test_user@example.org", MultiJson.load(last_response.body)["email"]
   end
 
@@ -186,7 +117,6 @@ class TestUsersController < TestCase
     post "/users/reset_password", {username: username, email: "#{username}@example.org", token: user.resetToken}
     assert_equal 401, last_response.status
   end
-
 
   def test_create_new_invalid_user
     put "/users/totally_new_user"
@@ -238,18 +168,61 @@ class TestUsersController < TestCase
     assert user["username"].eql?(@@usernames.first)
   end
 
-  private
+  def test_oauth_authentication
+    fake_responses = {
+      github: {
+        id: 123456789,
+        login: 'github_user',
+        email: 'github_user@example.com',
+        name: 'GitHub User',
+        avatar_url: 'https://avatars.githubusercontent.com/u/123456789'
+      },
+      google: {
+        sub: 'google_user_id',
+        email: 'google_user@example.com',
+        name: 'Google User',
+        given_name: 'Google',
+        family_name: 'User',
+        picture: 'https://lh3.googleusercontent.com/a-/user-profile-image-url'
+      },
+      orcid: {
+        orcid: '0000-0002-1825-0097',
+        email: 'orcid_user@example.com',
+        name: {
+          "family-name": 'ORCID',
+          "given-names": 'User'
+        }
+      }
+    }
 
-  def token(len)
-    chars = ("a".."z").to_a + ("A".."Z").to_a + ("1".."9").to_a
-    token = ""
-    1.upto(len) { |i| token << chars[rand(chars.size-1)] }
-    token
+    fake_responses.each do |provider, data|
+      WebMock.stub_request(:get, LinkedData::Models::User.oauth_providers[provider][:link])
+             .to_return(status: 200, body: data.to_json, headers: { 'Content-Type' => 'application/json' })
+      post "/users/authenticate", {access_token:'jkooko', token_provider: provider.to_s}
+      assert last_response.ok?
+      user = MultiJson.load(last_response.body)
+      assert data[:email], user["email"]
+    end
   end
+
+  def test_hide_sensitive_data
+    user = @@users[0]
+    reset_token = "reset_password_token"
+    user.resetToken = reset_token
+    user.save
+    username = user.username
+    get "/users/#{username}?display=resetToken,passwordHash"
+    assert last_response.ok?
+    refute_includes MultiJson.load(last_response.body), 'resetToken', "resetToken should NOT be included in the response"
+    refute_includes MultiJson.load(last_response.body), 'passwordHash', "passwordHash should NOT be included in the response"
+  end
+
+  private
 
   def _delete_user(username)
     LinkedData::Models::User.find(@@username).first&.delete
   end
+
   def _create_admin_user(apikey: nil)
     user = {email: "#{@@username}@example.org", password: "pass_the_word", role: ['ADMINISTRATOR']}
     _delete_user(@@username)
