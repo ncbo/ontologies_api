@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: c60f8bcad0450456ae3ee2c3a66fe386bba84b56
+  revision: 3204c0a830d344eb9ae1db82c22b46be1ef468b3
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
@@ -185,7 +185,7 @@ GEM
     ed25519 (1.4.0)
     et-orbi (1.4.0)
       tzinfo
-    faraday (2.14.0)
+    faraday (2.14.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -355,8 +355,9 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     netrc (0.11.0)
-    oj (3.16.14)
+    oj (3.16.15)
       bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
     omni_logger (0.1.4)
       logger
     os (1.1.4)
@@ -622,7 +623,7 @@ CHECKSUMS
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   ed25519 (1.4.0) sha256=16e97f5198689a154247169f3453ef4cfd3f7a47481fde0ae33206cdfdcac506
   et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc
-  faraday (2.14.0) sha256=8699cfe5d97e55268f2596f9a9d5a43736808a943714e3d9a53e6110593941cd
+  faraday (2.14.1) sha256=a43cceedc1e39d188f4d2cdd360a8aaa6a11da0c407052e426ba8d3fb42ef61c
   faraday-follow_redirects (0.5.0) sha256=5cde93c894b30943a5d2b93c2fe9284216a6b756f7af406a1e55f211d97d10ad
   faraday-net_http (3.4.2) sha256=f147758260d3526939bf57ecf911682f94926a3666502e24c69992765875906c
   faraday-retry (2.4.0) sha256=7b79c48fb7e56526faf247b12d94a680071ff40c9fda7cf1ec1549439ad11ebe
@@ -707,7 +708,7 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   net-ssh (7.3.0) sha256=172076c4b30ce56fb25a03961b0c4da14e1246426401b0f89cba1a3b54bf3ef0
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
-  oj (3.16.14) sha256=94da4f737f5c67aa52e2231fe2adb5257c0c95822fe7e3793a07c69542362571
+  oj (3.16.15) sha256=4d3324cac3e8fef54c0fa250b2af26a16dadd9f9788a1d6b1b2098b793a1b2cd
   omni_logger (0.1.4) sha256=b61596f7d96aa8426929e46c3500558d33e838e1afd7f4735244feb4d082bb3e
   ontologies_linked_data (0.0.1)
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
