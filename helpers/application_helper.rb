@@ -550,6 +550,14 @@ module Sinatra
         Redis.new(host: Annotator.settings.annotator_redis_host, port: Annotator.settings.annotator_redis_port, timeout: 30)
       end
 
+      def redis_goo
+        Redis.new(host: LinkedData.settings.goo_redis_host, port: LinkedData.settings.goo_redis_port, timeout: 30)
+      end
+
+      def redis_http
+        Redis.new(host: LinkedData.settings.http_redis_host, port: LinkedData.settings.http_redis_port, timeout: 30)
+      end
+
       private
 
       def naive_expiring_cache_write(key, object, timeout = 60)
@@ -593,6 +601,11 @@ module Sinatra
         return unless restricted&.include?(:creator)
 
         obj.creator = current_user
+      end
+
+      def update_current_user(user)
+        Thread.current[:remote_user] = user
+        env.update("REMOTE_USER" => user)
       end
     end
   end
