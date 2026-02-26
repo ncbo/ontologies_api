@@ -58,8 +58,6 @@ gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branc
 gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'chore/ontoportal-lirmm-goo-compat'
 
 group :development do
-  # bcrypt_pbkdf and ed35519 is required for capistrano deployments when using ed25519 keys; see https://github.com/miloserdow/capistrano-deploy/issues/42
-  gem 'shotgun', github: 'palexander/shotgun', branch: 'ncbo'
   gem 'rubocop'
 end
 

@@ -82,6 +82,9 @@ require_relative "config/environments/#{environment}.rb"
 # Development-specific options
 if [:development, :console].include?(settings.environment)
   require 'pry' # Debug by placing 'binding.pry' where you want the interactive console to start
+  require 'sinatra/reloader'
+  register Sinatra::Reloader
+  also_reload './{config,controllers,helpers,models,lib}/**/*.rb'
   # Show exceptions
   set :raise_errors, true
   set :dump_errors, false
