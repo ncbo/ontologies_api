@@ -104,21 +104,6 @@ GIT
       ffi (~> 1.15)
       rdf (~> 3.3)
 
-GIT
-  remote: https://github.com/sinatra/sinatra.git
-  revision: f891dd2b6f4911e356600efe6c3b82af97d262c6
-  specs:
-    rack-protection (4.2.1)
-      base64 (>= 0.1.0)
-      logger (>= 1.6.0)
-      rack (>= 3.0.0, < 4)
-    sinatra-contrib (4.2.1)
-      multi_json (>= 0.0.2)
-      mustermann (~> 3.0)
-      rack-protection (= 4.2.1)
-      sinatra (= 4.2.1)
-      tilt (~> 2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -387,6 +372,10 @@ GEM
       rack (>= 3.0.14)
     rack-mini-profiler (4.0.1)
       rack (>= 1.2.0)
+    rack-protection (4.2.1)
+      base64 (>= 0.1.0)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -476,6 +465,12 @@ GEM
       rack (>= 3.0.0, < 4)
       rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
+      tilt (~> 2.0)
+    sinatra-contrib (4.2.1)
+      multi_json (>= 0.0.2)
+      mustermann (~> 3.0)
+      rack-protection (= 4.2.1)
+      sinatra (= 4.2.1)
       tilt (~> 2.0)
     sshkit (1.25.0)
       base64
@@ -580,7 +575,7 @@ DEPENDENCIES
   simplecov
   simplecov-cobertura
   sinatra
-  sinatra-contrib!
+  sinatra-contrib
   sparql-client!
   unicorn
   unicorn-worker-killer
@@ -727,7 +722,7 @@ CHECKSUMS
   rack-cors (3.0.0) sha256=7b95be61db39606906b61b83bd7203fa802b0ceaaad8fcb2fef39e097bf53f68
   rack-mini-profiler (4.0.1) sha256=485810c23211f908196c896ea10cad72ed68780ee2998bec1f1dfd7558263d78
   rack-post-body-to-params (0.1.8)
-  rack-protection (4.2.1)
+  rack-protection (4.2.1) sha256=cf6e2842df8c55f5e4d1a4be015e603e19e9bc3a7178bae58949ccbb58558bac
   rack-session (2.1.1) sha256=0b6dc07dea7e4b583f58a48e8b806d4c9f1c6c9214ebc202ec94562cbea2e4e9
   rack-test (2.2.0) sha256=005a36692c306ac0b4a9350355ee080fd09ddef1148a5f8b2ac636c720f5c463
   rack-timeout (0.7.0) sha256=757337e9793cca999bb73a61fe2a7d4280aa9eefbaf787ce3b98d860749c87d9
@@ -764,7 +759,7 @@ CHECKSUMS
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
   simplecov_json_formatter (0.1.4) sha256=529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428
   sinatra (4.2.1) sha256=b7aeb9b11d046b552972ade834f1f9be98b185fa8444480688e3627625377080
-  sinatra-contrib (4.2.1)
+  sinatra-contrib (4.2.1) sha256=10d091c944d268aa910c618ea40a3c3ebe0533e6e32990d84af92235a3d26b4a
   sparql-client (3.2.2)
   sshkit (1.25.0) sha256=c8c6543cdb60f91f1d277306d585dd11b6a064cb44eab0972827e4311ff96744
   systemu (2.6.5) sha256=01f7d014b1453b28e5781e15c4d7d63fc9221c29b174b7aae5253207a75ab33e
