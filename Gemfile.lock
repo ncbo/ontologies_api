@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: fb4e00f8928867fc6bce953b4aa8f946c793e7cd
+  revision: 93c8ade0f7ef56fa4ad4fbdee0f9c6c4553be287
   branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 637fdfcfc0f9201a631b4d827d34aa8993325565
+  revision: 4db7da9900c892ec9ff9a2fddfe9ab809e59caee
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
@@ -103,6 +103,15 @@ GIT
     rdf-raptor (3.3.0)
       ffi (~> 1.15)
       rdf (~> 3.3)
+
+GIT
+  remote: https://github.com/syphax-bouazzouni/shotgun.git
+  revision: 421f4d0bc2f3193f7cd4b634f5f8ccab09f6b0f7
+  branch: master
+  specs:
+    shotgun (0.9.2)
+      rack
+      rackup
 
 GEM
   remote: https://rubygems.org/
@@ -572,6 +581,7 @@ DEPENDENCIES
   request_store
   rexml
   rubocop
+  shotgun!
   simplecov
   simplecov-cobertura
   sinatra
@@ -753,6 +763,7 @@ CHECKSUMS
   rubyzip (3.2.2) sha256=c0ed99385f0625415c8f05bcae33fe649ed2952894a95ff8b08f26ca57ea5b3c
   rufus-scheduler (3.9.2) sha256=55fa9e4db0ff69d7f38c804f17baba0c9bce5cba39984ae3c5cf6c039d1323b9
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
+  shotgun (0.9.2)
   signet (0.21.0) sha256=d617e9fbf24928280d39dcfefba9a0372d1c38187ffffd0a9283957a10a8cd5b
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-cobertura (3.1.0) sha256=6d7f38aa32c965ca2174b2e5bd88cb17138eaf629518854976ac50e628925dc5
