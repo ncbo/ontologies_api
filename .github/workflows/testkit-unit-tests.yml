@@ -1,0 +1,87 @@
+name: Docker Unit Tests
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  pull_request:
+
+env:
+  # CI execution mode for backend tests:
+  # - container: run `test:docker:<backend>:container` (default)
+  # - native: run `test:docker:<backend>` on host Ruby
+  OPTK_CI_RUN_MODE: ${{ vars.OPTK_CI_RUN_MODE || 'container' }}
+  # Example override to force native mode in this workflow file:
+  # OPTK_CI_RUN_MODE: native
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      backends: ${{ steps.cfg.outputs.backends }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: cfg
+        name: Read backend matrix from .ontoportal-testkit.yml
+        run: |
+          BACKENDS=$(ruby -ryaml -rjson -e 'c=YAML.safe_load_file(".ontoportal-testkit.yml") || {}; b=c["backends"] || %w[fs ag vo gd]; puts JSON.generate(b)')
+          echo "backends=$BACKENDS" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: ${{ fromJson(needs.prepare.outputs.backends) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby from .ruby-version
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Set up Java 11 (native mode)
+        if: env.OPTK_CI_RUN_MODE == 'native'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+
+      - name: Install native system dependencies
+        if: env.OPTK_CI_RUN_MODE == 'native'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y raptor2-utils
+
+      - name: Run unit tests
+        env:
+          CI: "true"
+          TESTOPTS: "-v"
+          BACKEND: ${{ matrix.backend }}
+        run: |
+          MODE="${OPTK_CI_RUN_MODE:-container}"
+          TASK="test:docker:${BACKEND}"
+          if [ "$MODE" = "container" ]; then
+            TASK="${TASK}:container"
+          elif [ "$MODE" != "native" ]; then
+            echo "Invalid OPTK_CI_RUN_MODE=$MODE (expected container or native)"
+            exit 1
+          fi
+
+          bundle exec rake "$TASK"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests,${{ matrix.backend }}
+          verbose: true
+          fail_ci_if_error: false

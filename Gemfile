@@ -77,8 +77,9 @@ group :test do
   gem 'crack', '0.4.5'
   gem 'minitest'
   gem 'minitest-hooks'
-  gem 'minitest-stub_any_instance'
   gem 'minitest-reporters'
+  gem 'minitest-stub_any_instance'
+  gem 'ontoportal_testkit', github: 'alexskr/ontoportal_testkit', branch: 'main'
   gem 'rack-test'
   gem 'simplecov', require: false
   gem 'simplecov-cobertura' # for codecov.io
