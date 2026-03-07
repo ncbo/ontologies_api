@@ -64,7 +64,6 @@ jobs:
       - name: Run unit tests
         env:
           CI: "true"
-          TESTOPTS: "-v"
           BACKEND: ${{ matrix.backend }}
         run: |
           MODE="${OPTK_CI_RUN_MODE:-container}"
