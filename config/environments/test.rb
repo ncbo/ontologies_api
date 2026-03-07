@@ -55,7 +55,6 @@ Annotator.config do |config|
   config.annotator_redis_port  = REDIS_PORT.to_i
   config.mgrep_host            = MGREP_HOST.to_s
   config.mgrep_port            = MGREP_PORT.to_i
-  config.mgrep_dictionary_file = MGREP_DICTIONARY_FILE.to_s
 end
 
 LinkedData::OntologiesAPI.config do |config|
