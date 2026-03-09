@@ -221,8 +221,8 @@ class HomeController < ApplicationController
       navigable_routes
     end
 
-    # Sinatra < 4 routes were objects; Sinatra 4 routes are arrays.
-    # Normalize both to a common hash used by this controller.
+    # Sinatra < 4 routes are route objects; Sinatra 4 routes are arrays.
+    # Normalize both to a common shape.
     def parse_route(method, route)
       if route.respond_to?(:path) && route.respond_to?(:file)
         return { verb: route.verb.to_s, path: route.path.to_s.split("?").first, file: route.file }
@@ -230,8 +230,24 @@ class HomeController < ApplicationController
 
       if route.is_a?(Array)
         pattern = route[0]
-        route_block = route[-1]
-        file = route_block.respond_to?(:source_location) ? route_block.source_location&.first : nil
+        wrapper_proc = route[-1]
+        original_block = nil
+        file = nil
+
+        if wrapper_proc.respond_to?(:binding)
+          begin
+            route_binding = wrapper_proc.binding
+            if route_binding.local_variables.include?(:block)
+              original_block = route_binding.local_variable_get(:block)
+            end
+          rescue StandardError
+            # ignore and leave file nil
+          end
+        end
+
+        if original_block.respond_to?(:source_location)
+          file = original_block.source_location&.first
+        end
         return { verb: method.to_s, path: pattern.to_s.split("?").first, file: file }
       end
 

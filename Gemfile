@@ -55,6 +55,7 @@ gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branc
 gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'chore/ontoportal-lirmm-goo-compat'
 
 group :development do
+  gem 'shotgun', github: 'syphax-bouazzouni/shotgun', branch: 'master'
   gem 'rubocop'
 end
 

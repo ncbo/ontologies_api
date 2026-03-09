@@ -8,6 +8,9 @@ class TestHomeController < TestCase
     body = MultiJson.load(last_response.body)
     assert body.key?('links')
     assert_kind_of Hash, body['links']
+    assert body['links'].key?('@context')
+    assert_kind_of Hash, body['links']['@context']
+    assert_operator body['links']['@context'].length, :>, 0
   end
 
   def test_home_index_handles_type_uri_failures
