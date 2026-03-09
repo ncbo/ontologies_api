@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 93c8ade0f7ef56fa4ad4fbdee0f9c6c4553be287
+  revision: 3ef0104cd9681c6d6fa1759ae736eee4ffb0ba72
   branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 790ac6dd95924e81bde8f6956dce3d20b3719c04
+  revision: 95126578b6a62ecba0cabbbb4b8795e665810a2e
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
@@ -268,7 +268,7 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
-    json (2.18.1)
+    json (2.19.1)
     json-canonicalization (0.4.0)
     json-ld (3.2.5)
       htmlentities (~> 4.3)
@@ -409,7 +409,7 @@ GEM
       rexml (~> 3.2)
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.26.4)
+    redis-client (0.27.0)
       connection_pool
     redis-rack-cache (2.2.1)
       rack-cache (>= 1.10, < 2)
@@ -652,7 +652,7 @@ CHECKSUMS
   http-cookie (1.1.0) sha256=38a5e60d1527eebc396831b8c4b9455440509881219273a6c99943d29eadbb19
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
-  json (2.18.1) sha256=fe112755501b8d0466b5ada6cf50c8c3f41e897fa128ac5d263ec09eedc9f986
+  json (2.19.1) sha256=dd94fdc59e48bff85913829a32350b3148156bc4fd2a95a2568a78b11344082d
   json-canonicalization (0.4.0) sha256=73ea88b68f210d1a09c2116d4cd1ff5a39684c6a409f7ccac70d5b1a426a8bef
   json-ld (3.2.5) sha256=98b96f1831b0fe9c7d2568a7d43b64f6b8c3f5892d55ccf91640e32a99c273fc
   json-schema (6.1.0) sha256=6bf70a2cfb6dfd5a06da28093fa8190f324c88eabd36a7f47097f227321dc702
@@ -729,7 +729,7 @@ CHECKSUMS
   rdf-vocab (3.3.3) sha256=d3b642edb37be7b37b73cafa9e01d55762f99292838e7b0868a3575bd297bf8b
   rdf-xsd (3.3.0) sha256=fab51d27b20344237d9b622ef32e83e4c44940840bfc76a245ce6b6abba44772
   redis (5.4.1) sha256=b5e675b57ad22b15c9bcc765d5ac26f60b675408af916d31527af9bd5a81faae
-  redis-client (0.26.4) sha256=3ad70beff5da2653e02dfeae996e7d8d7147a558da12b16b2282ad345e4c7120
+  redis-client (0.27.0) sha256=00e5918c1ba3fcd54b28e7be24b36fbf7b073e842c3c021ac072173c3eac42bd
   redis-rack-cache (2.2.1) sha256=9c72978a6354e02efeb2f933dd32c94a4a13f1137dac492442126bf25cc19970
   redis-store (1.11.0) sha256=edc4f3e239dcd1fdd9905584e6b1e623a84618e14436e6e8a07c70891008eda4
   regexp_parser (2.11.3) sha256=ca13f381a173b7a93450e53459075c9b76a10433caadcb2f1180f2c741fc55a4
