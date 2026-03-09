@@ -157,7 +157,7 @@ module Sinatra
         onts = restricted_ontologies(params)
         onts.select! { |o| ont_type = o.ontologyType.nil? ? "ONTOLOGY" : o.ontologyType.get_code_from_id; ontology_types.include?(ont_type) } unless ontology_types.empty?
         acronyms = restricted_ontologies_to_acronyms(params, onts)
-        filter_query = get_quoted_field_query_param(acronyms, "OR", "submissionAcronym")
+        filter_query = get_terms_field_query_param(acronyms, "submissionAcronym")
 
         # add subtree filter query if not empty
         filter_query << subtree_filter_query
@@ -383,6 +383,16 @@ module Sinatra
         query << words.join(" ")
 
         query
+      end
+
+      def get_terms_field_query_param(values, field_name)
+        return "" if values.nil? || values.empty?
+
+        escaped_values = values.map do |value|
+          value.to_s.gsub('\\', '\\\\\\').gsub(',', '\\,').gsub('"', '\\"')
+        end
+
+        "_query_:\"{!terms f=#{field_name}}#{escaped_values.join(',')}\""
       end
 
       def set_page_params(params={})
