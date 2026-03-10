@@ -174,7 +174,7 @@ module Sinatra
           valueset_root_ids = get_valueset_root_ids(onts, params)
 
           unless valueset_root_ids.empty?
-            valueset_root_ids_clause = get_quoted_field_query_param(valueset_root_ids, "OR", "resource_id")
+            valueset_root_ids_clause = get_terms_field_query_param(valueset_root_ids, "resource_id")
             valueset_root_ids_clause = valueset_exclude_roots == "true" ? "AND -#{valueset_root_ids_clause}" : "AND #{valueset_root_ids_clause}"
             filter_query = "#{filter_query} #{valueset_root_ids_clause}"
           end
