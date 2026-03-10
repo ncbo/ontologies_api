@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: e86ece03c2d80604cdea4d96bd1de6899f6b4762
+  revision: 9da3081170369e842aecef94a5bde242d85bf6db
   branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_annotator (0.0.1)
@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 9957238f24ad58b8f10c8011f3765bd4fbdbe4b9
+  revision: ec1cfbb4f2153a00a06afc0b567cf9648e10db5a
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ncbo_cron (0.0.1)
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 911f88f75814618f2c39d602c56d9f57245f46da
+  revision: 47bd7c6eb253f93d5a06266725a99bcb70688b8f
   branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_ontology_recommender (0.0.1)
@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: d6b87047562c9cd3773fcd79114d792b14fdc8c4
+  revision: 95126578b6a62ecba0cabbbb4b8795e665810a2e
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
@@ -199,7 +199,6 @@ GEM
     ffi (1.17.3-x86-linux-musl)
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
-    ffi (1.17.3-x86_64-linux-musl)
     fugit (1.12.1)
       et-orbi (~> 1.4)
       raabro (~> 1.4)
@@ -536,7 +535,6 @@ PLATFORMS
   x86_64-darwin
   x86_64-linux
   x86_64-linux-gnu
-  x86_64-linux-musl
 
 DEPENDENCIES
   activesupport
@@ -646,7 +644,6 @@ CHECKSUMS
   ffi (1.17.3-x86-linux-musl) sha256=f0286aa6ef40605cf586e61406c446de34397b85dbb08cc99fdaddaef8343945
   ffi (1.17.3-x86_64-darwin) sha256=1f211811eb5cfaa25998322cdd92ab104bfbd26d1c4c08471599c511f2c00bb5
   ffi (1.17.3-x86_64-linux-gnu) sha256=3746b01f677aae7b16dc1acb7cb3cc17b3e35bdae7676a3f568153fb0e2c887f
-  ffi (1.17.3-x86_64-linux-musl) sha256=086b221c3a68320b7564066f46fed23449a44f7a1935f1fe5a245bd89d9aea56
   fugit (1.12.1) sha256=5898f478ede9b415f0804e42b8f3fd53f814bd85eebffceebdbc34e1107aaf68
   gapic-common (1.1.0) sha256=3270ab3c5135012a4ab4d8848f945cf35014192f24504cdb40c66fc67f1beaa3
   get_process_mem (0.2.7) sha256=4afd3c3641dd6a817c09806c7d6d509d8a9984512ac38dea8b917426bbf77eba
