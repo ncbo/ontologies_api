@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: f401adcae742b96a8f702314fdab1c400d714703
-  branch: ontoportal-lirmm-development
+  revision: 2411deb0143c773b9e6d89b3232c9cca0d50e2bd
+  branch: main
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 9da3081170369e842aecef94a5bde242d85bf6db
+  revision: 2b4efe17a95b5be42ead4d4507c50c244ef24e0f
   branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_annotator (0.0.1)
@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: ec1cfbb4f2153a00a06afc0b567cf9648e10db5a
+  revision: f668a62b60ca6002a45779ac2afd39600ec35f00
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ncbo_cron (0.0.1)
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 47bd7c6eb253f93d5a06266725a99bcb70688b8f
+  revision: 70e49a2d3951b7d326e9ada01a4f6b9bd4df395e
   branch: chore/ruby3.2-minitest6-compat
   specs:
     ncbo_ontology_recommender (0.0.1)
@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 95126578b6a62ecba0cabbbb4b8795e665810a2e
+  revision: e7310135a510369384204d873ba8b1c5039fcdbc
   branch: chore/ontoportal-lirmm-goo-compat
   specs:
     ontologies_linked_data (0.0.1)
@@ -88,8 +88,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/sparql-client.git
-  revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
-  branch: ontoportal-lirmm-development
+  revision: fa69937120104bafb3d3b8350e4f2df2efb7c247
+  branch: main
   specs:
     sparql-client (3.2.2)
       net-http-persistent (~> 4.0, >= 4.0.2)
