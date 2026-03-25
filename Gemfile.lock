@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 2411deb0143c773b9e6d89b3232c9cca0d50e2bd
-  branch: main
+  revision: fa850f46c94e09b6368ed47728b9cce05b7e9d54
+  branch: ontoportal-lirmm-development
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -268,7 +268,7 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
-    json (2.19.2)
+    json (2.19.3)
     json-canonicalization (0.4.0)
     json-ld (3.2.5)
       htmlentities (~> 4.3)
@@ -652,7 +652,7 @@ CHECKSUMS
   http-cookie (1.1.0) sha256=38a5e60d1527eebc396831b8c4b9455440509881219273a6c99943d29eadbb19
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
-  json (2.19.2) sha256=e7e1bd318b2c37c4ceee2444841c86539bc462e81f40d134cf97826cb14e83cf
+  json (2.19.3) sha256=289b0bb53052a1fa8c34ab33cc750b659ba14a5c45f3fcf4b18762dc67c78646
   json-canonicalization (0.4.0) sha256=73ea88b68f210d1a09c2116d4cd1ff5a39684c6a409f7ccac70d5b1a426a8bef
   json-ld (3.2.5) sha256=98b96f1831b0fe9c7d2568a7d43b64f6b8c3f5892d55ccf91640e32a99c273fc
   json-schema (6.2.0) sha256=e8bff46ed845a22c1ab2bd0d7eccf831c01fe23bb3920caa4c74db4306813666
