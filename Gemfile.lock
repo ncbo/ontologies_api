@@ -26,8 +26,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 2b4efe17a95b5be42ead4d4507c50c244ef24e0f
-  branch: chore/ruby3.2-minitest6-compat
+  revision: 7755a51ce891763a0ba174813796df116abca8a9
+  branch: develop
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -55,8 +55,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 70e49a2d3951b7d326e9ada01a4f6b9bd4df395e
-  branch: chore/ruby3.2-minitest6-compat
+  revision: 2cce61a8e0db96fed9a2a8c4c5b585c385cd8a2c
+  branch: develop
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
