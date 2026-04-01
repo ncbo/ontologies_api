@@ -22,7 +22,7 @@ class TestBatchController < TestCase
         "display" => "prefLabel,synonym"
       }
     }
-    post "/batch/", call_params
+    post "/batch", call_params
     assert last_response.ok?
     data = MultiJson.load(last_response.body)
     classes = data["http://www.w3.org/2002/07/owl#Class"]
@@ -48,7 +48,7 @@ class TestBatchController < TestCase
         "display" => "prefLabel,synonym"
       }
     }
-    post "/batch/", call_params
+    post "/batch", call_params
     assert_equal 422, last_response.status
   end
 
@@ -72,7 +72,7 @@ class TestBatchController < TestCase
         "display" => "prefLabel"
       }
     }
-    post "/batch/", call_params
+    post "/batch", call_params
     assert last_response.ok?
     data = MultiJson.load(last_response.body)
     classes = data["http://www.w3.org/2002/07/owl#Class"]
@@ -101,7 +101,7 @@ class TestBatchController < TestCase
         "display" => "prefLabel"
       }
     }
-    post "/batch/", call_params
+    post "/batch", call_params
     assert last_response.ok?
 #    refute last_response.ok?
     data = MultiJson.load(last_response.body)

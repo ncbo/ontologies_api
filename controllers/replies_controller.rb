@@ -12,7 +12,7 @@ class RepliesController < ApplicationController
   namespace "/replies" do
 
     # Display all replies
-    get "?:include_threads?" do
+    get '' do
       check_last_modified_collection(LinkedData::Models::Notes::Reply)
       replies = LinkedData::Models::Notes::Reply.where.include(LinkedData::Models::Notes::Reply.goo_attrs_to_load(includes_param)).to_a
       reply replies

@@ -29,11 +29,11 @@ Rack::Attack.safelist('mark administrators as safe') do |request|
   request.env['REMOTE_USER']&.admin?
 end
 
-Rack::Attack.throttle('req/ip/heavy', limit: limit_req_ip_heavy, period: 1.second) do |req|
+Rack::Attack.throttle('req/ip/heavy', limit: limit_req_ip_heavy, period: 1) do |req|
   req.ip if req.path.include?('/recommender') || req.path.include?('/annotator')
 end
 
-Rack::Attack.throttle('req/ip', limit: limit_req_ip, period: 1.second) do |req|
+Rack::Attack.throttle('req/ip', limit: limit_req_ip, period: 1) do |req|
   req.ip
 end
 

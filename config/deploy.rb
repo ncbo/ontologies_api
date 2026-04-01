@@ -106,10 +106,8 @@ namespace :deploy do
     end
   end
 
-  after :publishing, :get_config
-  after :get_config, :restart
-  # after :deploy, :smoke_test
-  after :restart, "newrelic:notice_deployment"
+  after :updating, :get_config
+  after :publishing, :restart
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do

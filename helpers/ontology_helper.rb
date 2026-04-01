@@ -16,7 +16,12 @@ module Sinatra
         ont_submission.submissionId = submission_id
 
         # Get file info
-        add_file_to_submission(ont, ont_submission)
+        filename, tmpfile = add_file_to_submission(ont, ont_submission)
+        # if no actual file was uploaded, we remove the file parameters
+        if filename.nil? && tmpfile.nil?
+          params.delete("uploadFilePath")
+          params.delete("diffFilePath")
+        end
 
         # Add new format if it doesn't exist
         if ont_submission.hasOntologyLanguage.nil?
@@ -36,23 +41,6 @@ module Sinatra
       end
 
       ##
-      # Checks to see if the request has a file attached
-      def request_has_file?
-        @params.any? {|p,v| v.instance_of?(Hash) && v.key?(:tempfile) && v[:tempfile].instance_of?(Tempfile)}
-      end
-
-      ##
-      # Looks for a file that was included as a multipart in a request
-      def file_from_request
-        @params.each do |param, value|
-          if value.instance_of?(Hash) && value.has_key?(:tempfile) && value[:tempfile].instance_of?(Tempfile)
-            return value[:filename], value[:tempfile]
-          end
-        end
-        return nil, nil
-      end
-
-      ##
       # Add a file to the submission if a file exists in the params
       def add_file_to_submission(ont, submission)
         filename, tmpfile = file_from_request
@@ -69,7 +57,7 @@ module Sinatra
           file_location = OntologySubmission.copy_file_repository(ont.acronym, submission.submissionId, tmpfile, filename)
           submission.uploadFilePath = file_location
         end
-        return filename, tmpfile
+        [filename, tmpfile]
       end
     end
   end

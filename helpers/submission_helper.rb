@@ -6,22 +6,31 @@ module Sinatra
       def submission_include_params
         # When asking to display all metadata, we are using bring_remaining on each submission. Slower but best way to retrieve all attrs
         includes = OntologySubmission.goo_attrs_to_load(includes_param)
-        if includes.find { |v| v.is_a?(Hash) && v.keys.include?(:ontology) }
-          includes << { :ontology => [:administeredBy, :acronym, :name, :viewingRestriction, :group, :hasDomain, :notes, :reviews, :projects, :acl, :viewOf] }
+        if includes.find{|v| v.is_a?(Hash) && v.keys.include?(:ontology)}
+          includes << {:ontology=>[:administeredBy, :acronym, :name, :viewingRestriction, :group, :hasDomain,:notes, :reviews, :projects,:acl, :viewOf]}
         end
 
-        if includes.find { |v| v.is_a?(Hash) && v.keys.include?(:contact) }
-          includes << { :contact => [:name, :email] }
+        if includes.find{|v| v.is_a?(Hash) && v.keys.include?(:contact)}
+          includes << {:contact=>[:name, :email]}
         end
 
-        if includes.find { |v| v.is_a?(Hash) && v.keys.include?(:metrics) }
+        if includes.find{|v| v.is_a?(Hash) && v.keys.include?(:metrics)}
           includes << { metrics: [:maxChildCount, :properties, :classesWithMoreThan25Children,
                                   :classesWithOneChild, :individuals, :maxDepth, :classes,
                                   :classesWithNoDefinition, :averageChildCount, :numberOfAxioms,
-                                  :entities] }
+                                  :entities]}
         end
 
         includes
+      end
+
+      def submission_attributes_all
+        out = [LinkedData::Models::OntologySubmission.embed_values_hash]
+        out << {:contact=>[:name, :email]}
+        out << {:ontology=>[:acronym, :name, :administeredBy, :group, :viewingRestriction, :doNotUpdate, :flat,
+                            :hasDomain, :summaryOnly, :acl, :viewOf, :ontologyType]}
+
+        out
       end
 
       def retrieve_submissions(options)
@@ -44,7 +53,9 @@ module Sinatra
 
         submissions_query = submissions_query.order_by(order_by) unless order_by.nil?
 
+        submissions_query = apply_submission_filters(submissions_query)
         submissions_query = submissions_query.filter(Goo::Filter.new(ontology: [:viewOf]).unbound) unless include_views
+        submissions_query = submissions_query.filter(filter) if filter?
 
         submissions = submissions_query.include(submission_include_params)
         if page?
@@ -52,21 +63,6 @@ module Sinatra
         else
           submissions.to_a
         end
-      end
-
-      def retrieve_latest_submissions(options = {})
-        submissions = retrieve_submissions(options)
-
-        latest_submissions = page? ? submissions : {} # latest_submission doest not work with pagination
-        submissions.each do |sub|
-          unless page?
-            next if include_ready?(options) && !sub.ready?
-            next if sub.ontology.nil?
-            latest_submissions[sub.ontology.acronym] ||= sub
-            latest_submissions[sub.ontology.acronym] = sub if sub.submissionId.to_i > latest_submissions[sub.ontology.acronym].submissionId.to_i
-          end
-        end
-        latest_submissions
       end
 
       def include_ready?(options)

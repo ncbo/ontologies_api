@@ -24,7 +24,8 @@ class PropertiesController < ApplicationController
     get '/:property' do
       prop = params[:property]
       ont, submission = get_ontology_and_submission
-      p = ont.property(prop, submission)
+      bring_unmapped = bring_unmapped?(includes_param)
+      p = ont.property(prop, submission, display_all_attributes: bring_unmapped)
       error 404, "Property #{prop} not found in ontology #{ont.id.to_s}" if p.nil?
       reply 200, p
     end
@@ -51,7 +52,7 @@ eso
     get '/:property/tree' do
       prop = params[:property]
       ont, submission = get_ontology_and_submission
-      p = ont.property(prop, submission)
+      p = ont.property(prop, submission, display_all_attributes: false)
       error 404, "Property #{prop} not found in ontology #{ont.id.to_s}" if p.nil?
       root_tree = p.tree
 
@@ -79,7 +80,7 @@ eso
     get '/:property/ancestors' do
       prop = params[:property]
       ont, submission = get_ontology_and_submission
-      p = ont.property(prop, submission)
+      p = ont.property(prop, submission, display_all_attributes: false)
       error 404, "Property #{prop} not found in ontology #{ont.id.to_s}" if p.nil?
       ancestors = p.ancestors
       p.class.in(submission).models(ancestors).include(:label, :definition).all
@@ -91,7 +92,7 @@ eso
     get '/:property/descendants' do
       prop = params[:property]
       ont, submission = get_ontology_and_submission
-      p = ont.property(prop, submission)
+      p = ont.property(prop, submission, display_all_attributes: false)
       error 404, "Property #{prop} not found in ontology #{ont.id.to_s}" if p.nil?
       descendants = p.descendants
       p.class.in(submission).models(descendants).include(:label, :definition).all
@@ -103,7 +104,7 @@ eso
     get '/:property/parents' do
       prop = params[:property]
       ont, submission = get_ontology_and_submission
-      p = ont.property(prop, submission)
+      p = ont.property(prop, submission, display_all_attributes: false)
       error 404, "Property #{prop} not found in ontology #{ont.id.to_s}" if p.nil?
 
       p.bring(:parents)
@@ -120,7 +121,7 @@ eso
     get '/:property/children' do
       prop = params[:property]
       ont, submission = get_ontology_and_submission
-      p = ont.property(prop, submission)
+      p = ont.property(prop, submission, display_all_attributes: false)
       error 404, "Property #{prop} not found in ontology #{ont.id.to_s}" if p.nil?
 
       p.bring(:children)

@@ -1,38 +1,41 @@
 source 'https://rubygems.org'
 
-gem 'activesupport', '~> 5'
+gem 'activesupport'
 # see https://github.com/ncbo/ontologies_api/issues/69
 gem 'bigdecimal'
-# gem 'faraday', '~> 1.9'
-gem 'json-schema', '~> 2.0'
+gem 'json-schema'
 gem 'multi_json'
 gem 'oj'
 gem 'parseconfig'
 gem 'rack'
-gem 'rake', '~> 10.0'
+gem 'rake'
 gem 'rexml' # Investigate why unicorn fails to start under ruby 3 without adding rexml gem to the Gemfile
-gem 'sinatra', '~> 1.0'
-gem 'sinatra-advanced-routes'
-gem 'sinatra-contrib', '~> 1.0'
+gem 'rackup'
+gem 'sinatra'
+gem 'sinatra-contrib'
+
+gem 'request_store'
+gem 'parallel'
+gem 'google-protobuf', '3.25.3'
+gem 'grpc', '1.70.1'
+gem 'net-ftp'
+gem 'json-ld', '~> 3.2.0'
+gem 'rdf-raptor', github:'ruby-rdf/rdf-raptor', ref: '6392ceabf71c3233b0f7f0172f662bd4a22cd534' # use version 3.3.0 when available
 
 # Rack middleware
 gem 'ffi'
-gem 'rack-accept', '~> 0.4'
-gem 'rack-attack', '~> 6.6.1', require: 'rack/attack'
-gem 'rack-cache', '~> 1.13.0' # see https://github.com/ncbo/ontologies_api/issues/118
+gem 'rack-accept'
+gem 'rack-attack', require: 'rack/attack'
+gem 'rack-cache' # see https://github.com/ncbo/ontologies_api/issues/118
 gem 'rack-cors', require: 'rack/cors'
 # GitHub dependency can be removed when https://github.com/niko/rack-post-body-to-params/pull/6 is merged and released
 gem 'rack-post-body-to-params', github: 'palexander/rack-post-body-to-params', branch: 'multipart_support'
 gem 'rack-timeout'
-gem 'redis-rack-cache', '~> 2.0'
+gem 'redis-rack-cache'
 
 # Data access (caching)
 gem 'redis'
-gem 'redis-store', '~>1.10'
-
-# Monitoring
-gem 'cube-ruby', require: 'cube'
-gem 'newrelic_rpm', group: [:default, :deployment]
+gem 'redis-store'
 
 # HTTP server
 gem 'unicorn'
@@ -40,19 +43,19 @@ gem 'unicorn-worker-killer'
 
 # Templating
 gem 'haml', '~> 5.2.2' # pin see https://github.com/ncbo/ontologies_api/pull/107
-gem 'redcarpet'
+gem 'rack-contrib'
+gem 'pandoc-ruby'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
-gem 'goo', github: 'ncbo/goo', branch: 'develop'
-gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'develop'
-gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'develop'
-gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'develop'
-gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
-gem 'sparql-client', github: 'ncbo/sparql-client', tag: 'v6.3.0'
+gem 'goo', github: 'ncbo/goo', branch: 'ontoportal-lirmm-development'
+gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'main'
+gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'chore/ruby3.2-minitest6-compat'
+gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'chore/ontoportal-lirmm-goo-compat'
+gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'chore/ruby3.2-minitest6-compat'
+gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'chore/ontoportal-lirmm-goo-compat'
 
 group :development do
-  # bcrypt_pbkdf and ed35519 is required for capistrano deployments when using ed25519 keys; see https://github.com/miloserdow/capistrano-deploy/issues/42
-  gem 'shotgun', github: 'palexander/shotgun', branch: 'ncbo'
+  gem 'shotgun', github: 'syphax-bouazzouni/shotgun', branch: 'master'
   gem 'rubocop'
 end
 
@@ -73,13 +76,14 @@ end
 group :test do
   gem 'byebug', '~> 12.0'
   gem 'crack', '0.4.5'
-  gem 'minitest', '~> 5.0'
-  gem 'minitest-hooks', "~> 1.5"
+  gem 'minitest'
+  gem 'minitest-hooks'
+  gem 'minitest-reporters'
   gem 'minitest-stub_any_instance'
+  gem 'ontoportal_testkit', github: 'alexskr/ontoportal_testkit', branch: 'main'
   gem 'rack-test'
   gem 'simplecov', require: false
   gem 'simplecov-cobertura' # for codecov.io
-  gem 'webmock', '~> 3.19.1'
+  gem 'webmock'
   gem 'webrick'
-  gem 'minitest-bisect'
 end

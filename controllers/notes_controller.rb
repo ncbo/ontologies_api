@@ -1,7 +1,7 @@
 class NotesController < ApplicationController
   ##
   # Ontology notes
-  get "/ontologies/:ontology/notes?:include_threads?" do
+  get '/ontologies/:ontology/notes' do
     ont = Ontology.find(params["ontology"]).include(:acronym).first
     error 404, "You must provide a valid id to retrieve notes for an ontology" if ont.nil?
     check_last_modified_segment(LinkedData::Models::Note, [ont.acronym])
@@ -13,7 +13,7 @@ class NotesController < ApplicationController
 
   ##
   # Class notes
-  get "/ontologies/:ontology/classes/:cls/notes?:include_threads?" do
+  get "/ontologies/:ontology/classes/:cls/notes" do
     ont = Ontology.find(params["ontology"]).include(:submissions, :acronym).first
     error 404, "You must provide a valid id to retrieve notes for an ontology" if ont.nil?
     check_last_modified_segment(LinkedData::Models::Note, [ont.acronym])
@@ -27,7 +27,7 @@ class NotesController < ApplicationController
 
   namespace "/notes" do
     # Display all notes
-    get "?:include_threads?" do
+    get '' do
       check_last_modified_collection(LinkedData::Models::Note)
       notes = LinkedData::Models::Note.where.include(LinkedData::Models::Note.goo_attrs_to_load(includes_param)).to_a
       recurse_replies(notes) if params["include_threads"]
@@ -35,7 +35,7 @@ class NotesController < ApplicationController
     end
 
     # Display a single note
-    get '/:noteid?:include_threads?' do
+    get '/:noteid' do
       noteid = params["noteid"]
       note = LinkedData::Models::Note.find(noteid).include(relatedOntology: [:acronym]).first
       error 404, "Note #{noteid} not found" if note.nil?
@@ -124,3 +124,4 @@ class NotesController < ApplicationController
     end
   end
 end
+
