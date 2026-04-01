@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 2411deb0143c773b9e6d89b3232c9cca0d50e2bd
-  branch: main
+  revision: 2cd237f26202649e4d5cc569aac6272b8448858c
+  branch: feature/solrcloud-alias-indexing-codex
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -26,8 +26,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 2b4efe17a95b5be42ead4d4507c50c244ef24e0f
-  branch: chore/ruby3.2-minitest6-compat
+  revision: 7755a51ce891763a0ba174813796df116abca8a9
+  branch: develop
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: f668a62b60ca6002a45779ac2afd39600ec35f00
-  branch: chore/ontoportal-lirmm-goo-compat
+  revision: cba1e427240f3909789f263f2105a35f50423176
+  branch: feature/solrcloud-alias-indexing-codex
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -55,8 +55,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 70e49a2d3951b7d326e9ada01a4f6b9bd4df395e
-  branch: chore/ruby3.2-minitest6-compat
+  revision: 2cce61a8e0db96fed9a2a8c4c5b585c385cd8a2c
+  branch: develop
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: e7310135a510369384204d873ba8b1c5039fcdbc
-  branch: chore/ontoportal-lirmm-goo-compat
+  revision: 8d5090aeeb78d6cd2bf5133ff926d0c1bac44f94
+  branch: feature/solrcloud-alias-indexing-codex
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -88,8 +88,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/sparql-client.git
-  revision: fa69937120104bafb3d3b8350e4f2df2efb7c247
-  branch: main
+  revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
+  branch: development
   specs:
     sparql-client (3.2.2)
       net-http-persistent (~> 4.0, >= 4.0.2)
