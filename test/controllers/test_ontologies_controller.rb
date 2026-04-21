@@ -97,7 +97,7 @@ class TestOntologiesController < TestCase
     assert last_response.status == 201
 
     delete "/ontologies/#{@@acronym}"
-    post "/ontologies/", @@file_params.merge(acronym: @@acronym)
+    post "/ontologies", @@file_params.merge(acronym: @@acronym)
     assert last_response.status == 201
   end
 

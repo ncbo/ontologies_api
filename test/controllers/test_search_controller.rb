@@ -4,6 +4,10 @@ class TestSearchController < TestCase
 
   def before_suite
      self.backend_4s_delete
+     LinkedData::Models::Ontology.indexClear
+     LinkedData::Models::Class.indexClear
+     LinkedData::Models::OntologyProperty.indexClear
+
      count, acronyms, bro = LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
       process_submission: true,
       acronym: "BROSEARCHTEST",
@@ -265,7 +269,7 @@ class TestSearchController < TestCase
       # mdorf, 3/2/2024, when the : is followed by a LETTER, as in NCIT:C20480,
       # then Solr does not split the query on the tokens,
       # but when the : is followed by a number, as in OGMS:0000071,
-      # then Solr does split this on tokens and shows the other resuluts
+      # then Solr does split this on tokens and shows the other results
       get "/search?q=OGMS:0000071"
       assert last_response.ok?
       results = MultiJson.load(last_response.body)
@@ -436,11 +440,11 @@ class TestSearchController < TestCase
     assert last_response.ok?
     assert_equal 1, results["collection"].size
     doc = results["collection"][0]
-    assert doc["prefLabel"].kind_of?(Array)
+    assert doc["prefLabel"].kind_of?(Hash)
     assert_equal 3, doc["prefLabel"].size
-    assert doc["synonym"].kind_of?(Array)
+    assert doc["synonym"].kind_of?(Hash)
     assert_equal 1, doc["synonym"].size
-    assert doc["definition"].kind_of?(Array)
+    assert doc["definition"].kind_of?(Hash)
     assert_equal 2, doc["definition"].size
   end
 

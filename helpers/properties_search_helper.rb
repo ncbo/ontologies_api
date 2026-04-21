@@ -45,7 +45,7 @@ module Sinatra
 
         onts.select! { |o| ont_type = o.ontologyType.nil? ? "ONTOLOGY" : o.ontologyType.get_code_from_id; ontology_types.include?(ont_type) } unless ontology_types.empty?
         acronyms = restricted_ontologies_to_acronyms(params, onts)
-        filter_query = get_quoted_field_query_param(acronyms, "OR", "submissionAcronym")
+        filter_query = get_terms_field_query_param(acronyms, "submissionAcronym")
 
         ontology_types_clause = ontology_types.empty? ? "" : get_quoted_field_query_param(ontology_types, "OR", "ontologyType")
         filter_query = "#{filter_query} AND #{ontology_types_clause}" unless (ontology_types_clause.empty?)

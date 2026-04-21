@@ -1,10 +1,11 @@
+$VERBOSE = false
+
 # sinatra-base
 require 'sinatra'
 
 # sinatra-contrib
 require 'sinatra/respond_with'
 require 'sinatra/namespace'
-require 'sinatra/advanced_routes'
 require 'sinatra/multi_route'
 
 # Other gem dependencies
@@ -24,7 +25,6 @@ require 'rack/post-body-to-params'
 require 'rack-timeout'
 require 'rack/cors'
 require_relative 'lib/rack/slow_requests'
-require_relative 'lib/rack/cube_reporter'
 require_relative 'lib/rack/param_translator'
 require_relative 'lib/rack/slice_detection'
 require_relative 'lib/rack/request_lang'
@@ -48,6 +48,8 @@ set :root, File.dirname(__FILE__)
 use Rack::Static,
   :urls => ["/static"],
   :root => "public"
+set :public_folder, File.expand_path('public', __dir__)
+set :static, true
 
 # Setup the environment
 environment = settings.environment.nil? ? :development : settings.environment
@@ -84,6 +86,9 @@ if [:development, :console].include?(settings.environment)
   set :raise_errors, true
   set :dump_errors, false
   set :show_exceptions, false
+  # use Rack::DowncaseHeaders to ensure headers are downcased for rack > 3.0 compatibility
+  require_relative 'lib/rack/downcase_headers'
+  use Rack::DowncaseHeaders
 end
 
 # mini-profiler sets the etag header to nil, so don't use when caching is enabled
@@ -127,11 +132,6 @@ end
 
 # Monitoring middleware
 if LinkedData::OntologiesAPI.settings.enable_monitoring
-  cube_settings = {
-    cube_host: LinkedData::OntologiesAPI.settings.cube_host,
-    cube_port: LinkedData::OntologiesAPI.settings.cube_port
-  }
-  use Rack::CubeReporter, cube_settings
   use Rack::SlowRequests, log_path: LinkedData::OntologiesAPI.settings.slow_request_log
 end
 
@@ -171,9 +171,6 @@ if LinkedData::OntologiesAPI.settings.enable_unicorn_workerkiller
   require 'unicorn'
   require_relative 'config/unicorn_workerkiller'
 end
-
-# Add New Relic last to allow Rack middleware instrumentation
-require 'newrelic_rpm'
 
 # Initialize the app
 require_relative 'init'

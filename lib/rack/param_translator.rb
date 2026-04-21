@@ -1,6 +1,3 @@
-##
-# This enables collection of request statistics for anaylsis via cube.
-# A cube server is required. See http://square.github.io/cube/ for more info.
 module Rack
   class ParamTranslator
 

@@ -19,7 +19,6 @@ module Sinatra
       VALUESET_ROOTS_ONLY_PARAM = "valueset_roots_only"
       VALUESET_EXCLUDE_ROOTS_PARAM = "valueset_exclude_roots"
       ONTOLOGY_TYPES_PARAM = "ontology_types"
-      LANGUAGES_PARAM = "lang"
 
       ALSO_SEARCH_VIEWS = "also_search_views" # NCBO-961
       MATCH_HTML_PRE = "<em>"
@@ -27,10 +26,8 @@ module Sinatra
       MATCH_TYPE_PREFLABEL = "prefLabel"
       MATCH_TYPE_SYNONYM = "synonym"
       MATCH_TYPE_PROPERTY = "property"
-      MATCH_TYPE_DEFINITION = "definition"
       MATCH_TYPE_LABEL = "label"
       MATCH_TYPE_LABELGENERATED = "labelGenerated"
-      NO_LANGUAGE_SUFFIX = "none"
 
       MATCH_TYPE_MAP = {
           "resource_id" => "id",
@@ -87,10 +84,6 @@ module Sinatra
           end
         end
 
-        lang = params["lang"] || params["language"]
-        lang_suffix  = lang && !lang.eql?("all") ? "_#{lang}" : ""
-
-        query = ""
         params["defType"] = "edismax"
         params["stopwords"] = "true"
         params["lowercaseOperators"] = "true"
@@ -102,29 +95,54 @@ module Sinatra
         params["hl.simple.pre"] = MATCH_HTML_PRE
         params["hl.simple.post"] = MATCH_HTML_POST
 
-        # text.gsub!(/\*+$/, '')
-
         if params[EXACT_MATCH_PARAM] == "true"
           query = "\"#{solr_escape(text)}\""
-          params["qf"] = "resource_id^20 notation^20 oboId^20 prefLabelExact#{lang_suffix}^10 synonymExact#{lang_suffix} #{QUERYLESS_FIELDS_STR_NO_IDS}"
-          params["hl.fl"] = "resource_id prefLabelExact#{lang_suffix} synonymExact#{lang_suffix} #{QUERYLESS_FIELDS_STR}"
+          params["qf"] = "resource_id^20 notation^20 oboId^20 #{add_lang_suffix('prefLabelExact', '^10')} #{add_lang_suffix('synonymExact')} #{QUERYLESS_FIELDS_STR_NO_IDS}"
+          params["hl.fl"] = "resource_id #{add_lang_suffix('prefLabelExact')} #{add_lang_suffix('synonymExact')} #{QUERYLESS_FIELDS_STR}"
         elsif params[SUGGEST_PARAM] == "true" || text[-1] == '*'
           text.gsub!(/\*+$/, '')
           query = "\"#{solr_escape(text)}\""
           params["qt"] = "/suggest_ncbo"
-          params["qf"] = " prefLabelExact#{lang_suffix}^100 prefLabelSuggestEdge#{lang_suffix}^50 synonymSuggestEdge#{lang_suffix}^10 prefLabelSuggestNgram#{lang_suffix} synonymSuggestNgram#{lang_suffix} resource_id #{QUERYLESS_FIELDS_STR}"
-          params["pf"] = "prefLabelSuggest#{lang_suffix}^50"
-          params["hl.fl"] = "prefLabelExact#{lang_suffix} prefLabelSuggestEdge#{lang_suffix} synonymSuggestEdge#{lang_suffix} prefLabelSuggestNgram#{lang_suffix} synonymSuggestNgram#{lang_suffix} resource_id #{QUERYLESS_FIELDS_STR}"
+          params["qf"] = [
+            add_lang_suffix('prefLabelExact', '^100'),
+            add_lang_suffix('prefLabelSuggestEdge', '^50'),
+            add_lang_suffix('synonymSuggestEdge', '^10'),
+            add_lang_suffix('prefLabelSuggestNgram'),
+            add_lang_suffix('synonymSuggestNgram'),
+            "resource_id #{QUERYLESS_FIELDS_STR}"
+          ].join(' ')
+
+          params["pf"] = add_lang_suffix('prefLabelSuggest', '^50')
+
+          params["hl.fl"] = [
+            add_lang_suffix('prefLabelExact'),
+            add_lang_suffix('prefLabelSuggestEdge'),
+            add_lang_suffix('synonymSuggestEdge'),
+            add_lang_suffix('prefLabelSuggestNgram'),
+            add_lang_suffix('synonymSuggestNgram'),
+            "resource_id #{QUERYLESS_FIELDS_STR}"
+          ].join(' ')
         else
           if text.strip.empty?
             query = '*'
           else
             query = solr_escape(text)
           end
-          params["qf"] = "resource_id^100 notation^100 oboId^100 prefLabelExact#{lang_suffix}^90 prefLabel#{lang_suffix}^70 synonymExact#{lang_suffix}^50 synonym#{lang_suffix}^10 #{QUERYLESS_FIELDS_STR_NO_IDS}"
+
+          params["qf"] = [
+            "resource_id^100",
+            "notation^100",
+            "oboId^100",
+            add_lang_suffix('prefLabelExact', '^90'),
+            add_lang_suffix('prefLabel', '^70'),
+            add_lang_suffix('synonymExact', '^50'),
+            add_lang_suffix('synonym', '^10'),
+            QUERYLESS_FIELDS_STR_NO_IDS
+          ].join(' ')
+
           params["qf"] << " property" if params[INCLUDE_PROPERTIES_PARAM] == "true"
           params["bq"] = "idAcronymMatch:true^80"
-          params["hl.fl"] = "resource_id prefLabelExact#{lang_suffix} prefLabel#{lang_suffix} synonymExact#{lang_suffix} synonym#{lang_suffix} #{QUERYLESS_FIELDS_STR}"
+          params["hl.fl"] = "resource_id #{add_lang_suffix('prefLabelExact')} #{ add_lang_suffix('prefLabel')} #{add_lang_suffix('synonymExact')} #{add_lang_suffix('synonym')} #{QUERYLESS_FIELDS_STR}"
           params["hl.fl"] = "#{params["hl.fl"]} property" if params[INCLUDE_PROPERTIES_PARAM] == "true"
         end
 
@@ -139,7 +157,7 @@ module Sinatra
         onts = restricted_ontologies(params)
         onts.select! { |o| ont_type = o.ontologyType.nil? ? "ONTOLOGY" : o.ontologyType.get_code_from_id; ontology_types.include?(ont_type) } unless ontology_types.empty?
         acronyms = restricted_ontologies_to_acronyms(params, onts)
-        filter_query = get_quoted_field_query_param(acronyms, "OR", "submissionAcronym")
+        filter_query = get_terms_field_query_param(acronyms, "submissionAcronym")
 
         # add subtree filter query if not empty
         filter_query << subtree_filter_query
@@ -156,7 +174,7 @@ module Sinatra
           valueset_root_ids = get_valueset_root_ids(onts, params)
 
           unless valueset_root_ids.empty?
-            valueset_root_ids_clause = get_quoted_field_query_param(valueset_root_ids, "OR", "resource_id")
+            valueset_root_ids_clause = get_terms_field_query_param(valueset_root_ids, "resource_id")
             valueset_root_ids_clause = valueset_exclude_roots == "true" ? "AND -#{valueset_root_ids_clause}" : "AND #{valueset_root_ids_clause}"
             filter_query = "#{filter_query} #{valueset_root_ids_clause}"
           end
@@ -184,10 +202,6 @@ module Sinatra
 
         params["fq"] = filter_query
         params["q"] = query
-
-
-        # binding.pry
-
 
         query
       end
@@ -228,6 +242,72 @@ module Sinatra
         end
 
         solr_response["match_types"] = all_matches
+      end
+
+      def portal_language
+        Goo.main_languages.first
+      end
+
+      def request_languages
+        lang = params['lang'] || params['languages']
+
+        return [portal_language] if lang.blank?
+
+        lang.split(',')
+      end
+
+      def request_multiple_languages?
+        request_languages.size > 1 || request_all_languages?
+      end
+
+      def request_languages?
+        !(params['lang'] || params['language']).blank?
+      end
+
+      def request_all_languages?
+        request_languages.first.eql?('all')
+      end
+
+      def add_lang_suffix(attr, rank = "")
+        if request_languages? && !request_all_languages?
+          languages = request_languages
+          languages.map { |lang| "#{attr}_#{lang}#{rank} " }.join
+        else
+          "#{attr}#{rank}"
+        end
+      end
+
+      def pref_label_by_language(doc)
+        Array(doc["prefLabel_#{request_languages.first}".to_sym]).first || Array(doc["prefLabel_none".to_sym]).first || Array(doc[:prefLabel]).first
+      end
+
+      def filter_attrs_by_language(doc)
+        lang_values = {}
+        doc.each do |k, v|
+          attr, lang = k.to_s.split('_')
+
+          next if [:ontology_rank, :resource_id, :resource_model].include?(k)
+          next if lang.blank? || attr.blank?
+          next if !(request_languages + %w[none]).include?(lang) && !request_all_languages?
+
+          lang_values[attr.to_sym] ||= {}
+          lang_values[attr.to_sym][lang] ||= []
+          lang_values[attr.to_sym][lang] += v
+        end
+
+        if request_multiple_languages?
+          lang_values.each do |k, lang_vals|
+            doc[k] = lang_vals
+          end
+        else
+          lang_values.each do |k, lang_vals|
+            doc[k] = lang_vals.map { |l, v| l.eql?('none') ? nil : v }.compact.flatten + Array(lang_vals['none'])
+          end
+
+          doc[:prefLabel] =  pref_label_by_language(doc)
+        end
+
+        doc
       end
 
       # see https://github.com/rsolr/rsolr/issues/101
@@ -305,6 +385,16 @@ module Sinatra
         query
       end
 
+      def get_terms_field_query_param(values, field_name)
+        return "" if values.nil? || values.empty?
+
+        escaped_values = values.map do |value|
+          value.to_s.gsub('\\', '\\\\\\').gsub(',', '\\,').gsub('"', '\\"')
+        end
+
+        "_query_:\"{!terms f=#{field_name}}#{escaped_values.join(',')}\""
+      end
+
       def set_page_params(params={})
         pagenum, pagesize = page_params(params)
         params["page"] = pagenum
@@ -342,7 +432,7 @@ module Sinatra
         params["fq"] << " AND #{get_quoted_field_query_param(class_ids, "OR", "resource_id")}"
         params["rows"] = 99999
         # Replace fake query with wildcard
-        resp = LinkedData::Models::Class.search("*:*", params)
+        resp = LinkedData::Models::Class.submit_search_query("*:*", params)
 
         classes_hash = {}
         resp["response"]["docs"].each do |doc|
@@ -357,38 +447,11 @@ module Sinatra
           doc[:submission] = old_class.submission
           doc[:properties] = MultiJson.load(doc.delete(:propertyRaw)) if include_param_contains?(:properties)
           instance = LinkedData::Models::Class.read_only(doc)
-          filter_language_attributes(@params, instance)
+          instance.prefLabel = pref_label_by_language(doc)
           classes_hash[ont_uri_class_uri] = instance
         end
 
         classes_hash
-      end
-
-      def filter_language_attribute(params, class_instance, attr, is_single)
-        if class_instance.respond_to?(attr)
-          lang_param = (params["lang"] || params["language"])&.downcase
-          lang_suffix  = lang_param && !lang_param.eql?("all") ? "_#{lang_param}" : ""
-
-          if !lang_suffix.empty? && class_instance.respond_to?("#{attr}#{lang_suffix}")
-            class_instance[attr] = is_single ? class_instance["#{attr}#{lang_suffix}"][0] : class_instance["#{attr}#{lang_suffix}"]
-          elsif !lang_param.eql?("all")
-            site_label = Goo.main_languages[0]
-
-            if class_instance.respond_to?("#{attr}_#{site_label}") && class_instance["#{attr}_#{site_label}"]
-              class_instance[attr] = is_single ? class_instance["#{attr}_#{site_label}"][0] : class_instance["#{attr}_#{site_label}"]
-            elsif class_instance.respond_to?("#{attr}_#{NO_LANGUAGE_SUFFIX}") && class_instance["#{attr}_#{NO_LANGUAGE_SUFFIX}"]
-              class_instance[attr] = is_single ? class_instance["#{attr}_#{NO_LANGUAGE_SUFFIX}"][0] : class_instance["#{attr}_#{NO_LANGUAGE_SUFFIX}"]
-            elsif is_single
-              class_instance[attr] = class_instance[attr][0]
-            end
-          end
-        end
-      end
-
-      def filter_language_attributes(params, class_instance)
-        filter_language_attribute(params, class_instance, MATCH_TYPE_PREFLABEL, true)
-        filter_language_attribute(params, class_instance, MATCH_TYPE_SYNONYM, false)
-        filter_language_attribute(params, class_instance, MATCH_TYPE_DEFINITION, false)
       end
 
       def validate_params_solr_population(allowed_includes_params)
@@ -397,6 +460,140 @@ module Sinatra
         message = "The `include` query string parameter cannot accept #{leftover.join(", ")}, please use only #{allowed_includes_params.join(", ")}"
         error 400, message if invalid
       end
+
+      def get_ontology_metadata_search_options(params)
+        groups = params.fetch("groups", "").split(',')
+        categories = params.fetch("hasDomain", "").split(',')
+        languages = params.fetch("languages", "").split(',')
+        status = params.fetch("status", "").split(',')
+        format = params.fetch("hasOntologyLanguage", "").split(',')
+        is_of_type = params.fetch("isOfType", "").split(',')
+        has_format = params.fetch("hasFormat", "").split(',')
+        visibility = params["visibility"]
+        show_views = params["show_views"] == 'true'
+        sort = params.fetch("sort", "score desc, ontology_name_sort asc, ontology_acronym_sort asc")
+        page, page_size = page_params
+
+        fq = [
+          'resource_model:"ontology_submission"',
+          'submissionStatus_txt:ERROR_* OR submissionStatus_txt:"RDF" OR submissionStatus_txt:"UPLOADED"',
+          groups.map { |x| "ontology_group_txt:\"http://data.bioontology.org/groups/#{x.upcase}\"" }.join(' OR '),
+          categories.map { |x| "ontology_hasDomain_txt:\"http://data.bioontology.org/categories/#{x.upcase}\"" }.join(' OR '),
+          languages.map { |x| "naturalLanguage_txt:\"#{x.downcase}\"" }.join(' OR '),
+        ]
+
+        fq << "ontology_viewingRestriction_t:#{visibility}" unless visibility.blank?
+        fq << "!ontology_viewOf_t:*" unless show_views
+
+        fq << format.map { |x| "hasOntologyLanguage_t:\"http://data.bioontology.org/ontology_formats/#{x}\"" }.join(' OR ') unless format.blank?
+
+        fq << status.map { |x| "status_t:#{x}" }.join(' OR ') unless status.blank?
+        fq << is_of_type.map { |x| "isOfType_t:#{x}" }.join(' OR ') unless is_of_type.blank?
+        fq << has_format.map { |x| "hasFormalityLevel_t:#{x}" }.join(' OR ') unless has_format.blank?
+
+        fq.reject!(&:blank?)
+
+        if params[:qf]
+          qf = params[:qf]
+        else
+          qf = [
+            "ontologySuggestEdge^25 ontology_acronymSuggestEdge^25  ontology_nameSuggestEdge^15 descriptionSuggestEdge^10 ", # start of the word first
+            "ontology_t^15 ontology_acronym_text^15  ontology_name_text^10 description_text^5 ", # full word match
+            "ontologySuggestNgram^2 ontology_acronymSuggestNgram^2 ontology_nameSuggestNgram^1.5 descriptionSuggestNgram" # substring match last
+          ].join(' ')
+        end
+
+        options = {
+          fq: fq,
+          qf: qf,
+          page: page,
+          page_size: page_size,
+          sort: sort
+        }
+        options
+      end
+
+      def get_query(params)
+        if params[:query].nil? && params[:q].nil?
+          raise error 400, "The search query must be provided via /search?q=<query>[&page=<pagenum>&pagesize=<pagesize>] /search?query=<query>[&page=<pagenum>&pagesize=<pagesize>]"
+        end
+        query = params[:query] || params[:q]
+        query
+      end
+
+      def search(model, query, params = {})
+        query = query.blank? ? "*" : query
+        resp = model.search(query, search_params(**params))
+        total_found = resp["response"]["numFound"]
+        docs = resp["response"]["docs"]
+
+        page_object(docs, total_found)
+      end
+
+      def search_params(defType: "edismax", fq:, qf:, stopwords: "true", lowercaseOperators: "true", page:, page_size:, fl: '*,score', sort:)
+        {
+          defType: defType,
+          fq: fq,
+          qf: qf,
+          sort: sort,
+          start: (page - 1) * page_size,
+          rows: page_size,
+          fl: fl,
+          stopwords: stopwords,
+          lowercaseOperators: lowercaseOperators,
+        }
+      end
+
+      def process_search(params = nil)
+        params ||= @params
+        params['q'] ||= params['query']
+        params.delete('query')
+        text = params["q"]
+
+        query = get_term_search_query(text, params)
+        # puts "Edismax query: #{query}, params: #{params}"
+        set_page_params(params)
+
+        docs = Array.new
+        resp = LinkedData::Models::Class.search(query, params)
+        total_found = resp["response"]["numFound"]
+        add_matched_fields(resp, Sinatra::Helpers::SearchHelper::MATCH_TYPE_PREFLABEL)
+        ontology_rank = LinkedData::Models::Ontology.rank
+
+        resp["response"]["docs"].each do |doc|
+          doc = doc.symbolize_keys
+          # NCBO-974
+          doc[:matchType] = resp["match_types"][doc[:id]]
+          resource_id = doc[:resource_id]
+          doc.delete :resource_id
+          doc[:id] = resource_id
+          # TODO: The `rescue next` on the following line shouldn't be here
+          # However, at some point we didn't store the ontologyId in the index
+          # and these records haven't been cleared out so this is getting skipped
+          ontology_uri = doc[:ontologyId].sub(/\/submissions\/.*/, "") rescue next
+          ontology = LinkedData::Models::Ontology.read_only(id: ontology_uri, acronym: doc[:submissionAcronym])
+          submission = LinkedData::Models::OntologySubmission.read_only(id: doc[:ontologyId], ontology: ontology)
+          doc[:submission] = submission
+          doc[:ontology_rank] = (ontology_rank[doc[:submissionAcronym]] && !ontology_rank[doc[:submissionAcronym]].empty?) ? ontology_rank[doc[:submissionAcronym]][:normalizedScore] : 0.0
+          doc[:properties] = MultiJson.load(doc.delete(:propertyRaw)) if include_param_contains?(:properties)
+
+          doc = filter_attrs_by_language(doc)
+
+          instance = doc[:provisional] ? LinkedData::Models::ProvisionalClass.read_only(doc) : LinkedData::Models::Class.read_only(doc)
+          docs.push(instance)
+        end
+
+        unless params['sort']
+          if !text.nil? && text[-1] == '*'
+            docs.sort! { |a, b| [b[:score], a[:prefLabelExact].downcase, b[:ontology_rank]] <=> [a[:score], b[:prefLabelExact].downcase, a[:ontology_rank]] }
+          else
+            docs.sort! { |a, b| [b[:score], b[:ontology_rank]] <=> [a[:score], a[:ontology_rank]] }
+          end
+        end
+
+        page_object(docs, total_found)
+      end
+
     end
   end
 end

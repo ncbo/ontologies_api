@@ -1,5 +1,4 @@
 require 'haml'
-require 'redcarpet'
 
 class HomeController < ApplicationController
 
@@ -18,7 +17,9 @@ class HomeController < ApplicationController
       routes.each do |route|
         next if route.length < 3 || route.split("/").length > 2
         route_no_slash = route.gsub("/", "")
-        context[route_no_slash] = route_to_class_map[route].type_uri.to_s if route_to_class_map[route] && route_to_class_map[route].respond_to?(:type_uri)
+        mapped_class = route_to_class_map[route]
+        mapped_type_uri = safe_type_uri(mapped_class)
+        context[route_no_slash] = mapped_type_uri.to_s unless mapped_type_uri.nil?
         routes_hash[route_no_slash] = LinkedData.settings.rest_url_prefix+route_no_slash
       end
       routes_hash["@context"] = context
@@ -132,7 +133,7 @@ class HomeController < ApplicationController
 
         cls_info = {
           attributes: attributes_info,
-          uri: cls.type_uri,
+          uri: safe_type_uri(cls),
           cls: cls
         }
 
@@ -161,8 +162,10 @@ class HomeController < ApplicationController
       routes_by_file = {}
       all_routes.each do |method, routes|
         routes.each do |route|
-          routes_by_file[route.file] ||= []
-          routes_by_file[route.file] << route
+          route_info = parse_route(method, route)
+          next if route_info[:file].nil?
+          routes_by_file[route_info[:file]] ||= []
+          routes_by_file[route_info[:file]] << route_info
         end
       end
       routes_by_class = {}
@@ -188,9 +191,9 @@ class HomeController < ApplicationController
         next if cls.nil?
 
         routes.each do |route|
-          next if route.verb == "HEAD"
+          next if route[:verb] == "HEAD"
           routes_by_class[cls] ||= []
-          routes_by_class[cls] << [route.verb, route.path]
+          routes_by_class[cls] << [route[:verb], route[:path]]
         end
       end
       @routes_by_class = routes_by_class
@@ -211,17 +214,52 @@ class HomeController < ApplicationController
 
     def routes_list
       return @navigable_routes if @navigable_routes
-      routes = Sinatra::Application.routes["GET"]
-      navigable_routes = []
-      Sinatra::Application.each_route do |route|
-        if route.verb.eql?("GET")
-          navigable_routes << route.path.split("?").first
-        end
-      end
+      all_routes = Sinatra::Application.routes
+      get_routes = all_routes["GET"] || all_routes[:GET] || []
+      navigable_routes = get_routes.map { |route| parse_route("GET", route)[:path] }.uniq
       @navigable_routes = navigable_routes
       navigable_routes
     end
 
+    # Sinatra < 4 routes are route objects; Sinatra 4 routes are arrays.
+    # Normalize both to a common shape.
+    def parse_route(method, route)
+      if route.respond_to?(:path) && route.respond_to?(:file)
+        return { verb: route.verb.to_s, path: route.path.to_s.split("?").first, file: route.file }
+      end
+
+      if route.is_a?(Array)
+        pattern = route[0]
+        wrapper_proc = route[-1]
+        original_block = nil
+        file = nil
+
+        if wrapper_proc.respond_to?(:binding)
+          begin
+            route_binding = wrapper_proc.binding
+            if route_binding.local_variables.include?(:block)
+              original_block = route_binding.local_variable_get(:block)
+            end
+          rescue StandardError
+            # ignore and leave file nil
+          end
+        end
+
+        if original_block.respond_to?(:source_location)
+          file = original_block.source_location&.first
+        end
+        return { verb: method.to_s, path: pattern.to_s.split("?").first, file: file }
+      end
+
+      { verb: method.to_s, path: "", file: nil }
+    end
+
+    def safe_type_uri(cls)
+      return nil if cls.nil? || !cls.respond_to?(:type_uri)
+      cls.type_uri
+    rescue NoMethodError
+      nil
+    end
+
   end
 end
-

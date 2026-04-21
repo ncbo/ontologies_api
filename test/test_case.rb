@@ -28,21 +28,24 @@ require 'rack/test'
 require 'multi_json'
 require 'oj'
 require 'json-schema'
-
+require 'minitest/reporters'
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new(:color => true), Minitest::Reporters::MeanTimeReporter.new]
 MAX_TEST_REDIS_SIZE = 10_000
 
 # Check to make sure you want to run if not pointed at localhost
 safe_hosts = Regexp.new(/localhost|-ut|ncbo-dev*|ncbo-unittest*/)
+
 def safe_redis_hosts?(sh)
   return [LinkedData.settings.http_redis_host,
-   Annotator.settings.annotator_redis_host,
-   LinkedData.settings.goo_redis_host].select { |x|
+          Annotator.settings.annotator_redis_host,
+          LinkedData.settings.goo_redis_host].select { |x|
     x.match(sh)
   }.length == 3
 end
+
 unless LinkedData.settings.goo_host.match(safe_hosts) &&
-        safe_redis_hosts?(safe_hosts) &&
-        LinkedData.settings.search_server_url.match(safe_hosts)
+    safe_redis_hosts?(safe_hosts) &&
+    LinkedData.settings.search_server_url.match(safe_hosts)
   print "\n\n================================== WARNING ==================================\n"
   print "** TESTS CAN BE DESTRUCTIVE -- YOU ARE POINTING TO A POTENTIAL PRODUCTION/STAGE SERVER **\n"
   print "Servers:\n"
@@ -76,12 +79,14 @@ class AppUnit < Minitest::Test
 
   def backend_4s_delete
     if count_pattern("?s ?p ?o") < 400000
-      LinkedData::Models::Ontology.where.include(:acronym).each do |o|
-        query = "submissionAcronym:#{o.acronym}"
-        LinkedData::Models::Ontology.unindexByQuery(query)
+      puts 'clear backend & index'
+      raise StandardError, 'Too many triples in KB, does not seem right to run tests' unless count_pattern('?s ?p ?o') < 400000
+
+      graphs = Goo.sparql_query_client.query("SELECT DISTINCT  ?g WHERE  { GRAPH ?g { ?s ?p ?o . } }")
+      graphs.each_solution do |sol|
+        Goo.sparql_data_client.delete_graph(sol[:g])
       end
-      LinkedData::Models::Ontology.indexCommit()
-      Goo.sparql_update_client.update("DELETE {?s ?p ?o } WHERE { ?s ?p ?o }")
+
       LinkedData::Models::SubmissionStatus.init_enum
       LinkedData::Models::OntologyType.init_enum
       LinkedData::Models::OntologyFormat.init_enum
@@ -107,17 +112,36 @@ class AppUnit < Minitest::Test
   end
 
   def after_all
+    self.class.disable_security
     after_suite
     super
   end
+
+  def _run_suite(suite, type)
+    begin
+      backend_4s_delete
+      LinkedData::Models::Ontology.indexClear
+      LinkedData::Models::Class.indexClear
+      LinkedData::Models::OntologyProperty.indexClear
+      suite.before_suite if suite.respond_to?(:before_suite)
+      super(suite, type)
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.join("\n\t")
+      puts "Traced from:"
+      raise e
+    ensure
+      backend_4s_delete
+      suite.after_suite if suite.respond_to?(:after_suite)
+    end
+  end
 end
+
 # All tests should inherit from this class.
 # Use 'rake test' from the command line to run tests.
 # See http://www.sinatrarb.com/testing.html for testing information
 class TestCase < AppUnit
   include Rack::Test::Methods
-
-
 
   def app
     Sinatra::Application
@@ -132,7 +156,7 @@ class TestCase < AppUnit
   # @option options [TrueClass, FalseClass] :process_submission Parse the test ontology file
   def create_ontologies_and_submissions(options = {})
     if options[:process_submission] && options[:process_options].nil?
-      options[:process_options] =  { process_rdf: true, extract_metadata: false, generate_missing_labels: false }
+      options[:process_options] = { process_rdf: true, extract_metadata: false, generate_missing_labels: false }
     end
     LinkedData::SampleData::Ontology.create_ontologies_and_submissions(options)
   end
@@ -157,13 +181,13 @@ class TestCase < AppUnit
   # @param [String] jsonData a json string that will be parsed by MultiJson.load
   # @param [String] jsonSchemaString a json schema string that will be parsed by MultiJson.load
   # @param [boolean] list set it true for jsonObj array of items to validate against jsonSchemaString
-  def validate_json(jsonData, jsonSchemaString, list=false)
+  def validate_json(jsonData, jsonSchemaString, list = false)
     schemaVer = :draft3
     jsonObj = MultiJson.load(jsonData)
     jsonSchema = MultiJson.load(jsonSchemaString)
     assert(
-        JSON::Validator.validate(jsonSchema, jsonObj, :list => list, :version => schemaVer),
-        JSON::Validator.fully_validate(jsonSchema, jsonObj, :list => list, :version => schemaVer, :validate_schema => true).to_s
+      JSON::Validator.validate(jsonSchema, jsonObj, list: list, version: schemaVer),
+      JSON::Validator.fully_validate(jsonSchema, jsonObj, list: list, version: schemaVer, validate_schema: true).to_s
     )
   end
 
@@ -187,25 +211,28 @@ class TestCase < AppUnit
     LinkedData.settings.enable_security = true
   end
 
-  def self.reset_security(old_security =  @@old_security_setting)
+  def self.disable_security
+    LinkedData.settings.enable_security = false
+  end
+
+  def self.reset_security(old_security = @@old_security_setting)
     LinkedData.settings.enable_security = old_security
   end
 
  # Ensure a user exists; return it. Safe to call from anywhere.
-  def create_user(username, email: nil, password: "password")
+  def self.create_user(username, email: nil, password: "password")
     user = User.new(username: username, email: email || "#{username}@example.org", password: password)
     user.save if user.valid?
     user
   end
 
-  def ensure_user(username, email: nil, password: "password")
+  def self.ensure_user(username, email: nil, password: "password")
     User.find(username).first || create_user(username, email: email, password: password)
   end
 
-  def delete_user(username)
+  def self.delete_user(username)
     User.find(username).first&.delete
   end
-
 
   def self.make_admin(user)
     user.bring_remaining
@@ -227,6 +254,7 @@ class TestCase < AppUnit
   end
 
   private
+
   def port_in_use?(port)
     server = TCPServer.new(port)
     server.close
@@ -236,3 +264,4 @@ class TestCase < AppUnit
   end
 
 end
+

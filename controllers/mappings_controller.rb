@@ -166,11 +166,13 @@ class MappingsController < ApplicationController
       persistent_counts = {}
       f = Goo::Filter.new(:pair_count) == false
       LinkedData::Models::MappingCount.where.filter(f)
-      .include(:ontologies,:count)
-      .all
-      .each do |m|
+                                      .include(:ontologies, :count)
+                                      .all
+                                      .each do |m|
         persistent_counts[m.ontologies.first] = m.count
       end
+      ont_acronyms = restricted_ontologies_to_acronyms(params)
+      persistent_counts = persistent_counts.select { |key, _| ont_acronyms.include?(key) || key.start_with?("http://") }
       reply persistent_counts
     end
 
@@ -189,9 +191,9 @@ class MappingsController < ApplicationController
       persistent_counts = {}
       LinkedData::Models::MappingCount.where(pair_count: true)
                                       .and(ontologies: ontology.acronym)
-      .include(:ontologies,:count)
-      .all
-      .each do |m|
+                                      .include(:ontologies, :count)
+                                      .all
+                                      .each do |m|
         other = m.ontologies.first
         if other == ontology.acronym
           other = m.ontologies[1]
@@ -200,5 +202,7 @@ class MappingsController < ApplicationController
       end
       reply persistent_counts
     end
+
   end
 end
+
