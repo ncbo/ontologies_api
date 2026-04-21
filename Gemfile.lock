@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/alexskr/ontoportal_testkit.git
-  revision: b930b550bc8c98ca566c5f71b4f91f6703721240
+  revision: 4e86e455af6a9d515a54d9d82cbecf2e7cac34e8
   branch: main
   specs:
     ontoportal_testkit (0.1.0)
@@ -394,7 +394,7 @@ GEM
       rack (>= 3)
     rainbow (3.1.1)
     raindrops (0.20.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rdf (3.3.1)
       bcp47_spec (~> 0.2)
       link_header (~> 0.0, >= 0.0.8)
@@ -723,7 +723,7 @@ CHECKSUMS
   rackup (2.3.1) sha256=6c79c26753778e90983761d677a48937ee3192b3ffef6bc963c0950f94688868
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   raindrops (0.20.1) sha256=aa0eb9ff6834f2d9e232ba688bd49cb30be893bc5a3452e74722c94c1fab4730
-  rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
+  rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
   rdf (3.3.1) sha256=dda6a2c95198915fc63d66ee270e35d4a76d431720747a2cf97ecd92062fa150
   rdf-raptor (3.3.0)
   rdf-rdfxml (3.3.0) sha256=11647f6111b97b6a9b82413bd9810d4bb5524aa7dd06b3c1330bf58ec3aa6a9a
