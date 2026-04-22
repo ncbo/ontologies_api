@@ -25,7 +25,7 @@ module Sinatra
         slice = current_slice
         return true unless slice
 
-        ont_id = (LinkedData::Models::Ontology.id_prefix + acronym).to_s
+        ont_id = LinkedData::Models::Ontology.id_from_unique_attribute(:acronym, acronym).to_s
         slice.ontology_id_set.include?(ont_id)
       end
 
