@@ -50,12 +50,12 @@ gem 'rack-contrib'
 gem 'pandoc-ruby'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
-gem 'goo', github: 'ncbo/goo', branch: 'development'
-gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'development'
-gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'develop'
-gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'develop'
-gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'develop'
-gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
+gem 'goo', github: 'ncbo/goo', branch: 'main'
+gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'main'
+gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'master'
+gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'master'
+gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'master'
+gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'master'
 
 group :development do
   gem 'shotgun', github: 'syphax-bouazzouni/shotgun', branch: 'master'
