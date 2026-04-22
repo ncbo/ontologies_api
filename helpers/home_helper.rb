@@ -88,8 +88,7 @@ module Sinatra
                 shows_default: shows_default || "&nbsp;",
                 unique: cls.unique?(attribute) || "&nbsp;",
                 required: cls.required?(attribute) || "&nbsp;",
-                list: cls.list?(attribute) || "&nbsp;",
-                cardinality: cls.cardinality(attribute) || "&nbsp;"
+                list: cls.list?(attribute) || "&nbsp;"
               }
             else
               attributes_info[attribute] = {
@@ -97,8 +96,7 @@ module Sinatra
                 shows_default: "&nbsp;",
                 unique: "&nbsp;",
                 required: "&nbsp;",
-                list: "&nbsp;",
-                cardinality: "&nbsp;"
+                list: "&nbsp;"
               }
             end
           end
