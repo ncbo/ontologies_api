@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: a4768dd3e85ab853765a6825760fc950f72b9ae4
+  revision: e8952f8bc089609f7e38479d5c573d0e580ed556
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -350,6 +350,8 @@ GEM
       net-protocol
     net-ssh (7.3.2)
     netrc (0.11.0)
+    newrelic_rpm (10.4.0)
+      logger
     oj (3.17.0)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -561,6 +563,7 @@ DEPENDENCIES
   ncbo_cron!
   ncbo_ontology_recommender!
   net-ftp
+  newrelic_rpm
   oj
   ontologies_linked_data!
   ontoportal_testkit!
@@ -713,6 +716,7 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   net-ssh (7.3.2) sha256=65029e213c380e20e5fd92ece663934ab0a0fe888e0cd7cc6a5b664074362dd4
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
+  newrelic_rpm (10.4.0) sha256=36e3bc31adc89c3fe2056d1014a4d93b38bb63050050a1a442b35c4559531291
   oj (3.17.0) sha256=5684b2127fb70e650fae90df521b91336ff8e55e2e1011ed80eb0283beac5360
   omni_logger (0.1.4) sha256=b61596f7d96aa8426929e46c3500558d33e838e1afd7f4735244feb4d082bb3e
   ontologies_linked_data (0.0.1)
