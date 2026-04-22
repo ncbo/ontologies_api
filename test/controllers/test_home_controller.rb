@@ -13,6 +13,17 @@ class TestHomeController < TestCase
     assert_operator body['links']['@context'].length, :>, 0
   end
 
+  # Regression: ncbo/ontologies_api#212
+  # Under sinatra-contrib 4.2.1, `namespace "/"`'s before-filter pattern
+  # does not match sub-paths, so helpers defined inside the namespace
+  # block are not mixed into the request instance and the route handler
+  # raises NameError: undefined local variable or method `metadata_all'.
+  def test_documentation_route_renders
+    get '/documentation'
+    assert last_response.ok?, get_errors(last_response)
+    assert_match(/<html/i, last_response.body)
+  end
+
   def test_home_index_handles_type_uri_failures
     bad_class = Class.new do
       def self.type_uri
