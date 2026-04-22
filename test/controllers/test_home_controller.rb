@@ -24,6 +24,24 @@ class TestHomeController < TestCase
     assert_match(/<html/i, last_response.body)
   end
 
+  # Regression: ncbo/ontologies_api#212 / #37
+  # Valid `/metadata/:class` paths were 500-ing under sinatra-contrib 4.2.1
+  # for the same namespace-helper-resolution reason as /documentation, and
+  # had been listed as broken in #37 since 2017.
+  def test_metadata_route_renders_for_model_class
+    get '/metadata/Metrics'
+    assert last_response.ok?, get_errors(last_response)
+    assert_match(/<html/i, last_response.body)
+  end
+
+  # Exercises the sub-module lookup branch in HomeHelper#routes_by_class
+  # (LinkedData::Models::Notes::Reply rather than a top-level model).
+  def test_metadata_route_resolves_submodule_class
+    get '/metadata/Reply'
+    assert last_response.ok?, get_errors(last_response)
+    assert_match(/<html/i, last_response.body)
+  end
+
   def test_home_index_handles_type_uri_failures
     bad_class = Class.new do
       def self.type_uri
