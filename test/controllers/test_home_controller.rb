@@ -42,6 +42,19 @@ class TestHomeController < TestCase
     assert_match(/<html/i, last_response.body)
   end
 
+  # /metadata/:class for names that aren't model classes (attribute/property
+  # names, arbitrary typos) should return 404, not 500. Several paths of this
+  # shape are listed in ncbo/ontologies_api#37.
+  def test_metadata_route_returns_404_for_non_class_names
+    %w[created body prefixIRI name omvacronym Nonexistent].each do |name|
+      get "/metadata/#{name}"
+      assert_equal 404, last_response.status,
+        "expected 404 for /metadata/#{name}, got #{last_response.status}: #{last_response.body[0, 200]}"
+      assert_match(/not a documented media type/i, last_response.body,
+        "expected /metadata/#{name} 404 body to mention 'media type'; got: #{last_response.body[0, 200]}")
+    end
+  end
+
   def test_home_index_handles_type_uri_failures
     bad_class = Class.new do
       def self.type_uri

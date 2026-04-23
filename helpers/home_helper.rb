@@ -44,20 +44,24 @@ module Sinatra
         unless cls.is_a?(Class)
           cls = resolve_model_class(cls.singularize)
         end
+        return nil if cls.nil?
         metadata_all[cls]
       end
 
       # Resolve a model class by bare name, checking LinkedData::Models first
       # and falling back to sub-modules (e.g. LinkedData::Models::Notes::Reply
       # for "Reply"). Mirrors the sub-module search in `routes_by_class`.
+      # Returns nil when the name is not a valid constant or does not resolve
+      # to a class (e.g. attribute/property names like "created", "body").
       def resolve_model_class(name)
-        LinkedData::Models.const_get(name)
-      rescue NameError
+        klass = LinkedData::Models.const_get(name) rescue nil
+        return klass if klass.is_a?(Class)
+
         LinkedData::Models.constants.each do |const|
           sub_cls = LinkedData::Models.const_get(const).const_get(name) rescue nil
           return sub_cls if sub_cls.is_a?(Class)
         end
-        raise
+        nil
       end
 
       def sample_objects

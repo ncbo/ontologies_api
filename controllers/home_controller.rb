@@ -29,6 +29,9 @@ class HomeController < ApplicationController
 
     get "metadata/:class" do
       @metadata = metadata(params["class"])
+      if @metadata.nil?
+        error 404, "'#{params["class"]}' is not a documented media type. See /documentation or try /metadata/Ontology."
+      end
       haml "documentation/metadata".to_sym, :layout => "documentation/layout".to_sym
     end
 
