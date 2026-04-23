@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: fa850f46c94e09b6368ed47728b9cce05b7e9d54
-  branch: main
+  revision: 90365864f67a9458011f16e1b9f44a73af0d3739
+  branch: development
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -26,8 +26,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: b216bdde2de471fc0f851556ffa2327333516e79
-  branch: master
+  revision: 5243ea8db4302ca756c66bf50233e88606830326
+  branch: develop
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: bbc91e4864630e46ab2e31451b71fbea4b879832
-  branch: master
+  revision: d92fd430629eb070ef5a2e01b4f613b3b1f05a5a
+  branch: develop
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -55,8 +55,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: ddf6e3b207417e694727c2be3e0431687b1758d0
-  branch: master
+  revision: fa30fe29838cc40377e05c663ca50ef260071e93
+  branch: develop
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: fb7a292c7a97b9d19e359e20fe93c46131850d18
-  branch: master
+  revision: 25b2776dfd71e3ca329ced716760cfaf8ef3bc9a
+  branch: develop
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -89,7 +89,7 @@ GIT
 GIT
   remote: https://github.com/ncbo/sparql-client.git
   revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
-  branch: main
+  branch: development
   specs:
     sparql-client (3.2.2)
       net-http-persistent (~> 4.0, >= 4.0.2)
@@ -284,6 +284,8 @@ GEM
     jwt (3.1.2)
       base64
     kgio (2.11.4)
+    kramdown (2.5.2)
+      rexml (>= 3.4.4)
     language_server-protocol (3.17.0.5)
     libxml-ruby (6.0.0)
     link_header (0.0.8)
@@ -349,7 +351,6 @@ GEM
       logger
     os (1.1.4)
     ostruct (0.6.3)
-    pandoc-ruby (2.1.10)
     parallel (1.28.0)
     parseconfig (1.1.2)
     parser (3.3.11.1)
@@ -535,6 +536,7 @@ DEPENDENCIES
   haml (~> 5.2.2)
   json-ld (~> 3.2.0)
   json-schema
+  kramdown
   minitest
   minitest-hooks
   minitest-reporters
@@ -548,7 +550,6 @@ DEPENDENCIES
   oj
   ontologies_linked_data!
   ontoportal_testkit!
-  pandoc-ruby
   parallel
   parseconfig
   rack
@@ -657,6 +658,7 @@ CHECKSUMS
   json-schema (6.2.0) sha256=e8bff46ed845a22c1ab2bd0d7eccf831c01fe23bb3920caa4c74db4306813666
   jwt (3.1.2) sha256=af6991f19a6bb4060d618d9add7a66f0eeb005ac0bc017cd01f63b42e122d535
   kgio (2.11.4) sha256=bda7a2146115998a5b07154e708e0ac02c38dcee7e793c33e2e14f600fdfffc6
+  kramdown (2.5.2) sha256=1ba542204c66b6f9111ff00dcc26075b95b220b07f2905d8261740c82f7f02fa
   language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   libxml-ruby (6.0.0) sha256=a9d9458d018dee591d0995fdc1110cd67ec32b7be67d36fdb9e0b01a4ca9dac4
   link_header (0.0.8) sha256=15c65ce43b29f739b30d05e5f25c22c23797e89cf6f905dbb595fb4c70cb55f9
@@ -696,7 +698,6 @@ CHECKSUMS
   ontoportal_testkit (0.1.0)
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
-  pandoc-ruby (2.1.10) sha256=37653d6b5e71657fb25b3cb230e6eebbfb8c925c7f1fcf69dfb6b929d12b74b2
   parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970
   parseconfig (1.1.2) sha256=e52247d15070fb47f9e58f44f7888d1e7f65775274cd60f9ab4b7acd7943b291
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
