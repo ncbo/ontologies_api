@@ -42,10 +42,22 @@ module Sinatra
 
       def metadata(cls)
         unless cls.is_a?(Class)
-          cls = cls.singularize
-          cls = LinkedData::Models.const_get(cls)
+          cls = resolve_model_class(cls.singularize)
         end
         metadata_all[cls]
+      end
+
+      # Resolve a model class by bare name, checking LinkedData::Models first
+      # and falling back to sub-modules (e.g. LinkedData::Models::Notes::Reply
+      # for "Reply"). Mirrors the sub-module search in `routes_by_class`.
+      def resolve_model_class(name)
+        LinkedData::Models.const_get(name)
+      rescue NameError
+        LinkedData::Models.constants.each do |const|
+          sub_cls = LinkedData::Models.const_get(const).const_get(name) rescue nil
+          return sub_cls if sub_cls.is_a?(Class)
+        end
+        raise
       end
 
       def sample_objects
