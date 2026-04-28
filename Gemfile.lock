@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: d728fdc87974fb21d5aaad09e070f0b1fdf682d9
-  branch: fix/users-endpoint-perf-with-security
+  revision: 9c2cfd9f240a376382944cf3ccc5a7cda2ff57df
+  branch: develop
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
