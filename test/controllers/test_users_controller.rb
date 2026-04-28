@@ -35,9 +35,29 @@ class TestUsersController < TestCase
   def test_all_users
     get '/users'
     assert last_response.ok?
-    users = MultiJson.load(last_response.body)
+    users_page = MultiJson.load(last_response.body)
+    users = users_page["collection"]
+    assert_equal 1, users_page["page"]
     assert users.any? {|u| u["username"].eql?("fred")}
-    assert users.length >= @@usernames.length
+    assert users_page["totalCount"] >= @@usernames.length
+  end
+
+  def test_all_users_pagination
+    get '/users?pagesize=2'
+    assert last_response.ok?
+    users_page = MultiJson.load(last_response.body)
+    assert_equal 1, users_page["page"]
+    assert_equal 2, users_page["collection"].length
+    assert_equal 2, users_page["nextPage"]
+  end
+
+  def test_all_users_include_all_is_paged
+    get '/users?include=all&pagesize=2'
+    assert last_response.ok?
+    users_page = MultiJson.load(last_response.body)
+    assert_equal 1, users_page["page"]
+    assert_equal 2, users_page["collection"].length
+    assert users_page["collection"].all? { |u| u.key?("created") }
   end
 
   def test_single_user
