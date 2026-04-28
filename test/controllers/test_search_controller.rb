@@ -101,6 +101,18 @@ class TestSearchController < TestCase
     end
   end
 
+  # Regression: when the acronyms list filters down to empty (here via an
+  # ontology_types filter that matches no seeded ontology), the Solr fq used
+  # to start with " AND obsolete:false ..." — a malformed query rejected by
+  # Solr (400) and surfaced as 500 by the API. Fix substitutes Solr's
+  # match-all literal so the AND'd clauses concatenate cleanly.
+  def test_search_with_empty_acronym_filter_returns_ok
+    get "/search?q=anything&ontology_types=NONEXISTENT_TYPE"
+    assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 200]}"
+    results = MultiJson.load(last_response.body)
+    assert_equal 0, results["collection"].length
+  end
+
   def test_search_other_filters
     acronym = "MCCLSEARCHTEST-0"
     get "/search?q=receptor%20antagonists&ontologies=#{acronym}&require_exact_match=true"
