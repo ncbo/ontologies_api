@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 90365864f67a9458011f16e1b9f44a73af0d3739
-  branch: development
+  revision: ee72f43daa37f02362da1b747f037c442cfbf112
+  branch: main
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -26,8 +26,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 5243ea8db4302ca756c66bf50233e88606830326
-  branch: develop
+  revision: b216bdde2de471fc0f851556ffa2327333516e79
+  branch: master
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: b0236e0f2ef9a2083a9c9a2c9df6da817d03aa84
-  branch: develop
+  revision: 8e43d5c2a053accffe801ff523e14b29743a079a
+  branch: master
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -55,8 +55,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: fa30fe29838cc40377e05c663ca50ef260071e93
-  branch: develop
+  revision: ddf6e3b207417e694727c2be3e0431687b1758d0
+  branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: cdbf8f6990f10181f3efa11afada051a8283978e
-  branch: develop
+  revision: 32023829506089164a27da1e6aa05b901a019079
+  branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -89,7 +89,7 @@ GIT
 GIT
   remote: https://github.com/ncbo/sparql-client.git
   revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
-  branch: development
+  branch: main
   specs:
     sparql-client (3.2.2)
       net-http-persistent (~> 4.0, >= 4.0.2)
@@ -173,7 +173,7 @@ GEM
     date (3.5.1)
     docile (1.4.1)
     domain_name (0.6.20240107)
-    down (5.5.0)
+    down (5.6.0)
       addressable (~> 2.8)
       base64 (~> 0.3)
     drb (2.2.3)
@@ -192,15 +192,9 @@ GEM
       faraday (~> 2.0)
     ffi (1.17.4)
     ffi (1.17.4-aarch64-linux-gnu)
-    ffi (1.17.4-aarch64-linux-musl)
-    ffi (1.17.4-arm-linux-gnu)
-    ffi (1.17.4-arm-linux-musl)
     ffi (1.17.4-arm64-darwin)
-    ffi (1.17.4-x86-linux-gnu)
-    ffi (1.17.4-x86-linux-musl)
     ffi (1.17.4-x86_64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
-    ffi (1.17.4-x86_64-linux-musl)
     fugit (1.12.1)
       et-orbi (~> 1.4)
       raabro (~> 1.4)
@@ -233,7 +227,6 @@ GEM
     google-protobuf (3.25.3)
     google-protobuf (3.25.3-aarch64-linux)
     google-protobuf (3.25.3-arm64-darwin)
-    google-protobuf (3.25.3-x86-linux)
     google-protobuf (3.25.3-x86_64-darwin)
     google-protobuf (3.25.3-x86_64-linux)
     googleapis-common-protos (1.8.0)
@@ -257,9 +250,6 @@ GEM
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     grpc (1.70.1-arm64-darwin)
-      google-protobuf (>= 3.25, < 5.0)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.70.1-x86-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     grpc (1.70.1-x86_64-darwin)
@@ -337,7 +327,7 @@ GEM
       uri (>= 0.11.1)
     net-http-persistent (4.0.8)
       connection_pool (>= 2.2.4, < 4)
-    net-imap (0.6.3)
+    net-imap (0.6.4)
       date
       net-protocol
     net-pop (0.1.2)
@@ -524,18 +514,10 @@ GEM
 PLATFORMS
   aarch64-linux
   aarch64-linux-gnu
-  aarch64-linux-musl
-  arm-linux-gnu
-  arm-linux-musl
   arm64-darwin
   ruby
-  x86-linux
-  x86-linux-gnu
-  x86-linux-musl
   x86_64-darwin
   x86_64-linux
-  x86_64-linux-gnu
-  x86_64-linux-musl
 
 DEPENDENCIES
   activesupport
@@ -628,7 +610,7 @@ CHECKSUMS
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   docile (1.4.1) sha256=96159be799bfa73cdb721b840e9802126e4e03dfc26863db73647204c727f21e
   domain_name (0.6.20240107) sha256=5f693b2215708476517479bf2b3802e49068ad82167bcd2286f899536a17d933
-  down (5.5.0) sha256=787e14fcfe7824b8cac676c608359e4083b2e4d6e1d3b1745b79f27bcf931585
+  down (5.6.0) sha256=48ec6ddb078cbf3b425d02596bb388303316f976143c6e94a7b3169d6712b593
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   ed25519 (1.4.0) sha256=16e97f5198689a154247169f3453ef4cfd3f7a47481fde0ae33206cdfdcac506
   et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc
@@ -638,15 +620,9 @@ CHECKSUMS
   faraday-retry (2.4.0) sha256=7b79c48fb7e56526faf247b12d94a680071ff40c9fda7cf1ec1549439ad11ebe
   ffi (1.17.4) sha256=bcd1642e06f0d16fc9e09ac6d49c3a7298b9789bcb58127302f934e437d60acf
   ffi (1.17.4-aarch64-linux-gnu) sha256=b208f06f91ffd8f5e1193da3cae3d2ccfc27fc36fba577baf698d26d91c080df
-  ffi (1.17.4-aarch64-linux-musl) sha256=9286b7a615f2676245283aef0a0a3b475ae3aae2bb5448baace630bb77b91f39
-  ffi (1.17.4-arm-linux-gnu) sha256=d6dbddf7cb77bf955411af5f187a65b8cd378cb003c15c05697f5feee1cb1564
-  ffi (1.17.4-arm-linux-musl) sha256=9d4838ded0465bef6e2426935f6bcc93134b6616785a84ffd2a3d82bc3cf6f95
   ffi (1.17.4-arm64-darwin) sha256=19071aaf1419251b0a46852abf960e77330a3b334d13a4ab51d58b31a937001b
-  ffi (1.17.4-x86-linux-gnu) sha256=38e150df5f4ca555e25beca4090823ae09657bceded154e3c52f8631c1ed72cf
-  ffi (1.17.4-x86-linux-musl) sha256=fbeec0fc7c795bcf86f623bb18d31ea1820f7bd580e1703a3d3740d527437809
   ffi (1.17.4-x86_64-darwin) sha256=aa70390523cf3235096cf64962b709b4cfbd5c082a2cb2ae714eb0fe2ccda496
   ffi (1.17.4-x86_64-linux-gnu) sha256=9d3db14c2eae074b382fa9c083fe95aec6e0a1451da249eab096c34002bc752d
-  ffi (1.17.4-x86_64-linux-musl) sha256=3fdf9888483de005f8ef8d1cf2d3b20d86626af206cbf780f6a6a12439a9c49e
   fugit (1.12.1) sha256=5898f478ede9b415f0804e42b8f3fd53f814bd85eebffceebdbc34e1107aaf68
   gapic-common (1.1.0) sha256=3270ab3c5135012a4ab4d8848f945cf35014192f24504cdb40c66fc67f1beaa3
   get_process_mem (0.2.7) sha256=4afd3c3641dd6a817c09806c7d6d509d8a9984512ac38dea8b917426bbf77eba
@@ -660,7 +636,6 @@ CHECKSUMS
   google-protobuf (3.25.3) sha256=39bd97cbc7631905e76cdf8f1bf3dda1c3d05200d7e23f575aced78930fbddd6
   google-protobuf (3.25.3-aarch64-linux) sha256=5ea9d20d60e5d3bef8d881b426946345e5ac6cf4779ac81cd900e45f40567243
   google-protobuf (3.25.3-arm64-darwin) sha256=c42cddd21c4f09fd756fe0efd70ab6c8006dd67ffbb04e99fe7310f49923d18c
-  google-protobuf (3.25.3-x86-linux) sha256=7a0e74f14affbce6024595cdb55e7e8c5a51716f0bb11b103c63cbe3a3a0e348
   google-protobuf (3.25.3-x86_64-darwin) sha256=13d27e96e89835f642c444e32414fd50fabc29a125d78760ad067d6536214f02
   google-protobuf (3.25.3-x86_64-linux) sha256=ceeba879d9313a2bd0600a97d6fe3cf529a9b37d12ca026f891996c118b7ffb2
   googleapis-common-protos (1.8.0) sha256=bfe89cb75d1a8f13e4591d262a20333e145481d803adb74dd13ac0517decdffe
@@ -669,7 +644,6 @@ CHECKSUMS
   grpc (1.70.1) sha256=174594605c96df3caed44a83221665aa6e11f554e56028f89bef82c07ffb83cb
   grpc (1.70.1-aarch64-linux) sha256=48e0b22b8b96e61ca7054a7fea894a4845498e6bf366b50eff03e588f714ed96
   grpc (1.70.1-arm64-darwin) sha256=eeb6758dd58135e4e5fcd78726b9a18d34d7313e41bc81528ff4b3dce65cf525
-  grpc (1.70.1-x86-linux) sha256=cb7921614fec4f90f888637736b7ede85305ad94a869f736176f9ebede98c4f1
   grpc (1.70.1-x86_64-darwin) sha256=628cb929542c277b6e5f638b6b8575b3bdcde250a2a70bddf8c0be1bf77e6781
   grpc (1.70.1-x86_64-linux) sha256=ed12eea749127119c9761a58ba17ce92aadbc35b0b4fa27e4bd8ec84047d63be
   haml (5.2.2) sha256=6e759246556145642ef832d670fc06f9bd8539159a0e600847a00291dd7aae0c
@@ -710,7 +684,7 @@ CHECKSUMS
   net-ftp (0.3.9) sha256=307817ccf7f428f79d083f7e36dbb46a9d1d375e0d23027824de1866f0b13b65
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
   net-http-persistent (4.0.8) sha256=ef3de8319d691537b329053fae3a33195f8b070bbbfae8bf1a58c796081960e6
-  net-imap (0.6.3) sha256=9bab75f876596d09ee7bf911a291da478e0cd6badc54dfb82874855ccc82f2ad
+  net-imap (0.6.4) sha256=9a5598c67a3022c284d98430ef1d4948e7dbdb62596f61081ea8ca933270a02b
   net-pop (0.1.2) sha256=848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3
   net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
   net-scp (4.1.0) sha256=a99b0b92a1e5d360b0de4ffbf2dc0c91531502d3d4f56c28b0139a7c093d1a5d
