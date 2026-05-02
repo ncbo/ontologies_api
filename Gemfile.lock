@@ -512,11 +512,12 @@ GEM
     webrick (1.9.2)
 
 PLATFORMS
+  aarch64-linux
   aarch64-linux-gnu
   arm64-darwin
   ruby
   x86_64-darwin
-  x86_64-linux-gnu
+  x86_64-linux
 
 DEPENDENCIES
   activesupport

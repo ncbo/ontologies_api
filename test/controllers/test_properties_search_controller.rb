@@ -76,4 +76,14 @@ class TestPropertiesSearchController < TestCase
     results = MultiJson.load(last_response.body)
     assert_equal 2, results["collection"].length
   end
+
+  # Regression: same empty-acronym Solr fq bug as in /search — when
+  # ontology_types filters all candidates out, filter_query was "" and
+  # the subsequent " AND <clause>" appends produced a malformed fq.
+  def test_property_search_with_empty_acronym_filter_returns_ok
+    get '/property_search?q=anything&ontology_types=NONEXISTENT_TYPE'
+    assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 200]}"
+    results = MultiJson.load(last_response.body)
+    assert_equal 0, results["collection"].length
+  end
 end

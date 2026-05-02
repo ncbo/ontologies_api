@@ -4,7 +4,7 @@ module Sinatra
   module Helpers
     module UsersHelper
       def get_users
-        attributes, page, size, _, _ = settings_params(LinkedData::Models::User)
+        attributes, page, size, order_by, _ = settings_params(LinkedData::Models::User)
         query = User.where.include(attributes)
 
         if params['search']
@@ -12,7 +12,8 @@ module Sinatra
           query = query.filter(filter)
         end
 
-        query = query.page(page, size) if page?
+        query = query.order_by(order_by || { username: :asc })
+        query = query.page(page, size)
 
         query.all
       end
