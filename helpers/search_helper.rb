@@ -158,6 +158,10 @@ module Sinatra
         onts.select! { |o| ont_type = o.ontologyType.nil? ? "ONTOLOGY" : o.ontologyType.get_code_from_id; ontology_types.include?(ont_type) } unless ontology_types.empty?
         acronyms = restricted_ontologies_to_acronyms(params, onts)
         filter_query = get_terms_field_query_param(acronyms, "submissionAcronym")
+        # No acronym restriction: provide Solr's match-all literal so the
+        # subsequent `filter_query << " AND <clause>"` appends produce a
+        # well-formed `fq` instead of starting with a stray AND.
+        filter_query = "*:*" if filter_query.empty?
 
         # add subtree filter query if not empty
         filter_query << subtree_filter_query

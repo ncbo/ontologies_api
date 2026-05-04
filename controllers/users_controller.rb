@@ -57,7 +57,7 @@ class UsersController < ApplicationController
       end
     end
 
-    # Display all users
+    # Display users
     get do
       check_last_modified_collection(User)
       reply get_users
