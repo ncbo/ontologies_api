@@ -24,6 +24,59 @@ class TestHomeController < TestCase
     assert_match(/<html/i, last_response.body)
   end
 
+  # Regression: ncbo/ontologies_api#217
+  # Behind a TLS-terminating proxy, request.scheme is `http` under Rack 3,
+  # so the trailing-slash 301 was emitting `Location: http://...` for an
+  # https:// request and getting blocked as mixed content by the browser.
+  def test_trailing_slash_redirect_preserves_forwarded_https_scheme
+    get '/documentation/?apikey=test-key', {}, { 'HTTP_X_FORWARDED_PROTO' => 'https' }
+
+    assert_equal 301, last_response.status
+    assert_equal "https://#{last_request.host_with_port}/documentation?apikey=test-key",
+      last_response.headers['Location']
+  end
+
+  def test_trailing_slash_redirect_falls_back_to_request_scheme_without_forwarded_header
+    get '/documentation/'
+
+    assert_equal 301, last_response.status
+    assert_equal "http://#{last_request.host_with_port}/documentation",
+      last_response.headers['Location']
+  end
+
+  def test_trailing_slash_redirect_ignores_invalid_forwarded_proto
+    get '/documentation/', {}, { 'HTTP_X_FORWARDED_PROTO' => 'javascript' }
+
+    assert_equal 301, last_response.status
+    assert_equal "http://#{last_request.host_with_port}/documentation",
+      last_response.headers['Location']
+  end
+
+  # Per RFC 7239, a request that traversed multiple proxies appends to
+  # X-Forwarded-Proto as a comma-separated list (`https, http`); the leftmost
+  # value is the original client-facing scheme.
+  def test_trailing_slash_redirect_uses_first_value_in_chained_forwarded_proto
+    get '/documentation/', {}, { 'HTTP_X_FORWARDED_PROTO' => 'https, http' }
+
+    assert_equal 301, last_response.status
+    assert_equal "https://#{last_request.host_with_port}/documentation",
+      last_response.headers['Location']
+  end
+
+  # Regression: ncbo/ontologies_api#217 reproduction case. The bug was first
+  # observed against `/ontologies/:ont/classes/<encoded-IRI>/paths_to_root/`,
+  # so the encoded `%2F`s in the class IRI must round-trip through the redirect
+  # unchanged.
+  def test_trailing_slash_redirect_preserves_url_encoded_path_segments
+    encoded_cls = 'http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FSTY%2FT071'
+    get "/ontologies/STY/classes/#{encoded_cls}/paths_to_root/?apikey=test-key",
+      {}, { 'HTTP_X_FORWARDED_PROTO' => 'https' }
+
+    assert_equal 301, last_response.status
+    assert_equal "https://#{last_request.host_with_port}/ontologies/STY/classes/#{encoded_cls}/paths_to_root?apikey=test-key",
+      last_response.headers['Location']
+  end
+
   # Regression: ncbo/ontologies_api#212 / #37
   # Valid `/metadata/:class` paths were 500-ing under sinatra-contrib 4.2.1
   # for the same namespace-helper-resolution reason as /documentation, and
