@@ -22,9 +22,26 @@ Sinatra.register do
         app.public_send(http_verb, "#{pattern}/") do
           pass unless request.path_info.end_with?('/')
           redirect_path = request.path_info.chomp('/')
-          redirect redirect_path, 301
+          redirect canonical_redirect_url(redirect_path), 301
         end
       end
     end
+  end
+end
+
+helpers do
+  def canonical_redirect_url(path)
+    url = +"#{external_request_scheme}://#{request.host_with_port}#{path}"
+    url << "?#{request.query_string}" unless request.query_string.empty?
+    url
+  end
+
+  # Rack 3 no longer trusts X-Forwarded-Proto on `request.scheme`, so a
+  # TLS-terminating proxy that forwards to the app over HTTP would otherwise
+  # cause us to emit `Location: http://...` for an https:// request.
+  def external_request_scheme
+    forwarded = request.get_header('HTTP_X_FORWARDED_PROTO').to_s
+                       .split(',').first.to_s.strip.downcase
+    %w[http https].include?(forwarded) ? forwarded : request.scheme
   end
 end
