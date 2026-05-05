@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 0d1532220408006bd8e28f5017523db00abc87b0
-  branch: develop
+  revision: 8e43d5c2a053accffe801ff523e14b29743a079a
+  branch: master
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: cdbf8f6990f10181f3efa11afada051a8283978e
-  branch: develop
+  revision: 32023829506089164a27da1e6aa05b901a019079
+  branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
