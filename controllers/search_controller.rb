@@ -85,7 +85,7 @@ class SearchController < ApplicationController
 
         fq = []
 
-        fq << ontologies.map { |x| "ontology_t:\"#{x}\"" }.join(' OR ') unless ontologies.blank?
+        fq << get_terms_field_query_param(ontologies, "ontology_t") unless ontologies.blank?
         fq << types.map { |x| "type_t:\"#{x}\" OR type_txt:\"#{x}\"" }.join(' OR ') unless types.blank?
 
 

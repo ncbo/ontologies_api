@@ -68,6 +68,42 @@ class TestSearchController < TestCase
     LinkedData::Models::Ontology.indexCommit
   end
 
+  # Follow-up regression for issue #221. The /search/ontologies/content endpoint
+  # auto-populates `ontologies` with all accessible acronyms when none is supplied
+  # by a non-admin caller. With BioPortal-scale data that list can exceed Solr's
+  # default `maxBooleanClauses` (1024), so the fq must route through the Solr
+  # `terms` parser, not a boolean OR expansion.
+  def test_content_search_uses_terms_parser_for_ontologies_fq
+    captured = nil
+    fake_connector = Object.new
+    fake_connector.define_singleton_method(:search) do |_query, params = {}|
+      captured = params.dup
+      { "response" => { "numFound" => 0, "docs" => [] } }
+    end
+
+    original_new = SOLR::SolrConnector.method(:new)
+    SOLR::SolrConnector.define_singleton_method(:new) { |*_args, **_kw| fake_connector }
+
+    acronyms = @@ontologies.map { |o| o.bring(:acronym).acronym }.join(",")
+
+    begin
+      get "/search/ontologies/content?q=test&ontologies=#{acronyms}"
+      assert last_response.ok?,
+             "expected /content to succeed (got #{last_response.status}: #{last_response.body[0..200]})"
+    ensure
+      SOLR::SolrConnector.define_singleton_method(:new, original_new)
+    end
+
+    refute_nil captured, "expected SolrConnector#search to be invoked"
+    fq_array = Array(captured[:fq])
+    ontology_clause = fq_array.find { |f| f.to_s.include?("ontology_t") }
+    refute_nil ontology_clause, "expected an ontology_t filter in fq"
+    assert_match(/\{!terms f=ontology_t\}/, ontology_clause,
+                 "fq must use the Solr terms parser to avoid 'too many boolean clauses' (issue #221 follow-up)")
+    refute ontology_clause.include?(" OR "),
+           "fq must not contain boolean OR-clauses for ontology acronyms (issue #221 follow-up)"
+  end
+
   def test_search
     get '/search?q=ontology'
     assert last_response.ok?

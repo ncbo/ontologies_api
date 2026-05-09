@@ -433,7 +433,7 @@ module Sinatra
         params.delete("ontology_acronyms")
         params.delete("q")
         params["qf"] = "resource_id"
-        params["fq"] << " AND #{get_quoted_field_query_param(class_ids, "OR", "resource_id")}"
+        params["fq"] << " AND #{get_terms_field_query_param(class_ids, "resource_id")}"
         params["rows"] = 99999
         # Replace fake query with wildcard
         resp = LinkedData::Models::Class.submit_search_query("*:*", params)
