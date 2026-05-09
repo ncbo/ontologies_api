@@ -450,8 +450,11 @@ module Sinatra
           next unless old_class
           doc[:submission] = old_class.submission
           doc[:properties] = MultiJson.load(doc.delete(:propertyRaw)) if include_param_contains?(:properties)
+          # `read_only` derives Struct fields from `doc.keys`, so `prefLabel`
+          # must be seeded as a hash key — assigning it post-construction
+          # raises NoMethodError for docs whose Solr index lacks `prefLabel*`.
+          doc[:prefLabel] = pref_label_by_language(doc)
           instance = LinkedData::Models::Class.read_only(doc)
-          instance.prefLabel = pref_label_by_language(doc)
           classes_hash[ont_uri_class_uri] = instance
         end
 
