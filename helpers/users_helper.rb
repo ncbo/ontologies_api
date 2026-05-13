@@ -4,6 +4,7 @@ module Sinatra
   module Helpers
     module UsersHelper
       USER_SEARCH_FIELDS = %i[username email firstName lastName].freeze
+      DEFAULT_USER_SEARCH_FIELDS = %i[username].freeze
 
       def get_users
         attributes, page, size, order_by, _ = settings_params(LinkedData::Models::User)
@@ -20,12 +21,28 @@ module Sinatra
       end
 
       def user_search_filter(term)
-        field, *remaining_fields = USER_SEARCH_FIELDS
+        field, *remaining_fields = user_search_fields
         filter = Goo::Filter.new(field).regex(term)
         remaining_fields.each do |search_field|
           filter = filter.or(Goo::Filter.new(search_field).regex(term))
         end
         filter
+      end
+
+      def user_search_fields
+        return DEFAULT_USER_SEARCH_FIELDS if params['search_fields'].blank?
+
+        fields = params['search_fields'].split(',').map(&:strip).reject(&:empty?).map(&:to_sym)
+        return DEFAULT_USER_SEARCH_FIELDS if fields.empty?
+
+        unknown_fields = fields - USER_SEARCH_FIELDS
+        unless unknown_fields.empty?
+          unsupported_fields = unknown_fields.join(', ')
+          allowed_fields = USER_SEARCH_FIELDS.join(', ')
+          error 400, "Unsupported search_fields: #{unsupported_fields}. Allowed fields: #{allowed_fields}"
+        end
+
+        fields
       end
 
       def filter_for_user_onts(obj)

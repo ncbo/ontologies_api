@@ -80,8 +80,16 @@ class TestUsersController < TestCase
     assert_equal 1, users_page['pageCount']
   end
 
-  def test_search_users_by_email
+  def test_search_users_defaults_to_username_only
     users_page = search_users('mailmarker')
+
+    assert_equal [], users_page['collection']
+    assert_equal 0, users_page['totalCount']
+    assert_equal 0, users_page['pageCount']
+  end
+
+  def test_search_users_by_email
+    users_page = search_users('mailmarker', search_fields: 'username,email,firstName,lastName')
     usernames = users_page['collection'].map { |user| user['username'] }
 
     assert_equal ['email_account'], usernames
@@ -90,7 +98,7 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_by_first_name
-    users_page = search_users('given_marker')
+    users_page = search_users('given_marker', search_fields: 'username,email,firstName,lastName')
     usernames = users_page['collection'].map { |user| user['username'] }
 
     assert_equal ['first_name_account'], usernames
@@ -99,7 +107,7 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_by_last_name
-    users_page = search_users('family_marker')
+    users_page = search_users('family_marker', search_fields: 'username,email,firstName,lastName')
     usernames = users_page['collection'].map { |user| user['username'] }
 
     assert_equal ['last_name_account'], usernames
@@ -108,7 +116,7 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_no_match
-    users_page = search_users('not_a_search_match')
+    users_page = search_users('not_a_search_match', search_fields: 'username,email,firstName,lastName')
 
     assert_equal [], users_page['collection']
     assert_equal 0, users_page['totalCount']
@@ -298,8 +306,11 @@ class TestUsersController < TestCase
     LinkedData::Models::User.find(@@username).first&.delete
   end
 
-  def search_users(term)
-    get '/users', search: term, pagesize: 100
+  def search_users(term, search_fields: nil)
+    query_params = { search: term, pagesize: 100 }
+    query_params[:search_fields] = search_fields if search_fields
+
+    get '/users', query_params
     assert last_response.ok?
     MultiJson.load(last_response.body)
   end
