@@ -3,19 +3,29 @@ require 'sinatra/base'
 module Sinatra
   module Helpers
     module UsersHelper
+      USER_SEARCH_FIELDS = %i[username email firstName lastName].freeze
+
       def get_users
         attributes, page, size, order_by, _ = settings_params(LinkedData::Models::User)
         query = User.where.include(attributes)
 
         if params['search']
-          filter = Goo::Filter.new(:username).regex(params['search'])
-          query = query.filter(filter)
+          query = query.filter(user_search_filter(params['search']))
         end
 
         query = query.order_by(order_by || { username: :asc })
         query = query.page(page, size)
 
         query.all
+      end
+
+      def user_search_filter(term)
+        field, *remaining_fields = USER_SEARCH_FIELDS
+        filter = Goo::Filter.new(field).regex(term)
+        remaining_fields.each do |search_field|
+          filter = filter.or(Goo::Filter.new(search_field).regex(term))
+        end
+        filter
       end
 
       def filter_for_user_onts(obj)
