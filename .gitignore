@@ -56,6 +56,9 @@ test/data/ontology_files/repo/**/*
 .classpath
 .project
 
+# Claude Code
+.claude/
+
 *.swp
 
 config/environments/console.rb
