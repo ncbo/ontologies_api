@@ -89,7 +89,7 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_by_email
-    users_page = search_users('mailmarker', search_fields: 'username,email,firstName,lastName')
+    users_page = search_users('mailmarker', search_fields: 'all')
     usernames = users_page['collection'].map { |user| user['username'] }
 
     assert_equal ['email_account'], usernames
@@ -98,7 +98,7 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_by_first_name
-    users_page = search_users('given_marker', search_fields: 'username,email,firstName,lastName')
+    users_page = search_users('given_marker', search_fields: 'all')
     usernames = users_page['collection'].map { |user| user['username'] }
 
     assert_equal ['first_name_account'], usernames
@@ -107,7 +107,7 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_by_last_name
-    users_page = search_users('family_marker', search_fields: 'username,email,firstName,lastName')
+    users_page = search_users('family_marker', search_fields: 'all')
     usernames = users_page['collection'].map { |user| user['username'] }
 
     assert_equal ['last_name_account'], usernames
@@ -116,11 +116,17 @@ class TestUsersController < TestCase
   end
 
   def test_search_users_no_match
-    users_page = search_users('not_a_search_match', search_fields: 'username,email,firstName,lastName')
+    users_page = search_users('not_a_search_match', search_fields: 'all')
 
     assert_equal [], users_page['collection']
     assert_equal 0, users_page['totalCount']
     assert_equal 0, users_page['pageCount']
+  end
+
+  def test_search_users_rejects_all_with_other_fields
+    get '/users', search: 'mailmarker', search_fields: 'all,email'
+
+    assert_equal 400, last_response.status
   end
 
   def test_single_user

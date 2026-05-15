@@ -5,6 +5,7 @@ module Sinatra
     module UsersHelper
       USER_SEARCH_FIELDS = %i[username email firstName lastName].freeze
       DEFAULT_USER_SEARCH_FIELDS = %i[username].freeze
+      ALL_USER_SEARCH_FIELDS = 'all'
 
       def get_users
         attributes, page, size, order_by, _ = settings_params(LinkedData::Models::User)
@@ -32,8 +33,18 @@ module Sinatra
       def user_search_fields
         return DEFAULT_USER_SEARCH_FIELDS if params['search_fields'].blank?
 
-        fields = params['search_fields'].split(',').map(&:strip).reject(&:empty?).map(&:to_sym)
+        fields = params['search_fields'].split(',').map(&:strip).reject(&:empty?)
         return DEFAULT_USER_SEARCH_FIELDS if fields.empty?
+
+        return USER_SEARCH_FIELDS if fields == [ALL_USER_SEARCH_FIELDS]
+
+        if fields.include?(ALL_USER_SEARCH_FIELDS)
+          error_message = "Unsupported search_fields: #{params['search_fields']}. "
+          error_message += 'Use all by itself or list individual fields'
+          error 400, error_message
+        end
+
+        fields = fields.map(&:to_sym)
 
         unknown_fields = fields - USER_SEARCH_FIELDS
         unless unknown_fields.empty?
