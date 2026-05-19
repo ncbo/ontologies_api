@@ -18,12 +18,28 @@ module Sinatra
         obj.select { |o| slice.ontology_id_set.include?(o.id.to_s) }
       end
 
+      def ontology_in_slice?(acronym)
+        return true unless LinkedData.settings.enable_slices
+        return true unless slice_request?
+
+        slice = current_slice
+        return true unless slice
+
+        ont_id = LinkedData::Models::Ontology.id_from_unique_attribute(:acronym, acronym).to_s
+        slice.ontology_id_set.include?(ont_id)
+      end
+
       def slice_request?
-        env['ncbo.slice'] && !LinkedData::Models::Slice.find(env['ncbo.slice']).first.nil?
+        return env['ncbo.slice.is_request'] if env.key?('ncbo.slice.is_request')
+
+        env['ncbo.slice.is_request'] = !!(env['ncbo.slice'] && current_slice)
       end
 
       def current_slice
-        LinkedData::Models::Slice.find(env['ncbo.slice']).include(LinkedData::Models::Slice.attributes).first
+        return env['ncbo.slice.object'] if env.key?('ncbo.slice.object')
+
+        env['ncbo.slice.object'] = LinkedData::Models::Slice.find(env['ncbo.slice'])
+                                     .include(LinkedData::Models::Slice.attributes).first
       end
 
       def current_slice_acronyms

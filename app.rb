@@ -172,6 +172,9 @@ if LinkedData::OntologiesAPI.settings.enable_unicorn_workerkiller
   require_relative 'config/unicorn_workerkiller'
 end
 
+# Add New Relic last to allow Rack middleware instrumentation
+require 'newrelic_rpm'
+
 # Initialize the app
 require_relative 'init'
 

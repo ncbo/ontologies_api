@@ -29,6 +29,9 @@ class TestSlicesHelper < TestCaseHelpers
 
     @@group.bring(:ontologies)
 
+    # TODO: This test uses @@group_acronym as the slice identifier throughout. Consider
+    # introducing a @@slice_acronym variable to better reflect that slices and groups are
+    # distinct concepts — not all groups become slices (only those with ontologies).
     LinkedData::Models::Slice.synchronize_groups_to_slices
   end
 
@@ -74,6 +77,41 @@ class TestSlicesHelper < TestCaseHelpers
     results = MultiJson.load(last_response.body)["collection"]
     group_ids = @@group.ontologies.map {|o| o.id.to_s}
     assert results.all? {|r| group_ids.include?(r["links"]["ontology"])}
+  end
+
+  def test_single_ontology_in_slice_returns_200
+    ont = @@onts[0]
+    ont.bring(:acronym)
+    get "http://#{@@group_acronym}.dev/ontologies/#{ont.acronym}"
+    assert last_response.ok?, "Expected 200 for ontology in slice, got #{last_response.status}"
+  end
+
+  def test_single_ontology_not_in_slice_returns_404
+    ont = @@onts[3]
+    ont.bring(:acronym)
+    get "http://#{@@group_acronym}.dev/ontologies/#{ont.acronym}"
+    assert_equal 404, last_response.status
+  end
+
+  def test_single_ontology_not_in_slice_via_header_returns_404
+    ont = @@onts[3]
+    ont.bring(:acronym)
+    get "/ontologies/#{ont.acronym}", {}, "HTTP_NCBO_SLICE" => @@group_acronym
+    assert_equal 404, last_response.status
+  end
+
+  def test_single_ontology_without_slice_returns_200
+    ont = @@onts[3]
+    ont.bring(:acronym)
+    get "/ontologies/#{ont.acronym}"
+    assert last_response.ok?, "Expected 200 without slice context, got #{last_response.status}"
+  end
+
+  def test_ontology_sub_route_not_in_slice_returns_404
+    ont = @@onts[3]
+    ont.bring(:acronym)
+    get "http://#{@@group_acronym}.dev/ontologies/#{ont.acronym}/submissions"
+    assert_equal 404, last_response.status
   end
 
   def test_mappings_slices

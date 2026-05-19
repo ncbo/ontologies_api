@@ -37,6 +37,9 @@ gem 'redis-rack-cache'
 gem 'redis'
 gem 'redis-store'
 
+# Monitoring
+gem 'newrelic_rpm'
+
 # HTTP server
 gem 'unicorn'
 gem 'unicorn-worker-killer'
@@ -44,7 +47,7 @@ gem 'unicorn-worker-killer'
 # Templating
 gem 'haml', '~> 5.2.2' # pin see https://github.com/ncbo/ontologies_api/pull/107
 gem 'rack-contrib'
-gem 'pandoc-ruby'
+gem 'kramdown'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
 gem 'goo', github: 'ncbo/goo', branch: 'feature/solrcloud-alias-indexing-codex'

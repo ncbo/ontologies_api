@@ -5,8 +5,13 @@ class ApplicationController
   extend Sinatra::Delegator
 
   # Run before route
-  before {
-  }
+  before %r{/ontologies/([^/]+).*} do |acronym|
+    if LinkedData.settings.enable_slices && request.get?
+      unless ontology_in_slice?(acronym)
+        error 404, "Ontology not found"
+      end
+    end
+  end
 
   # Run after route
   after {

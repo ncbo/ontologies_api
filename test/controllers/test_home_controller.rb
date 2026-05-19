@@ -13,6 +13,112 @@ class TestHomeController < TestCase
     assert_operator body['links']['@context'].length, :>, 0
   end
 
+  # Regression: ncbo/ontologies_api#212
+  # Under sinatra-contrib 4.2.1, `namespace "/"`'s before-filter pattern
+  # does not match sub-paths, so helpers defined inside the namespace
+  # block are not mixed into the request instance and the route handler
+  # raises NameError: undefined local variable or method `metadata_all'.
+  def test_documentation_route_renders
+    get '/documentation'
+    assert last_response.ok?, get_errors(last_response)
+    assert_match(/<html/i, last_response.body)
+  end
+
+  # Regression: ncbo/ontologies_api#217
+  # Behind a TLS-terminating proxy, request.scheme is `http` under Rack 3,
+  # so the trailing-slash 301 was emitting `Location: http://...` for an
+  # https:// request and getting blocked as mixed content by the browser.
+  def test_trailing_slash_redirect_preserves_forwarded_https_scheme
+    get '/documentation/?apikey=test-key', {}, { 'HTTP_X_FORWARDED_PROTO' => 'https' }
+
+    assert_equal 301, last_response.status
+    assert_equal "https://#{last_request.host_with_port}/documentation?apikey=test-key",
+      last_response.headers['Location']
+  end
+
+  def test_trailing_slash_redirect_falls_back_to_request_scheme_without_forwarded_header
+    get '/documentation/'
+
+    assert_equal 301, last_response.status
+    assert_equal "http://#{last_request.host_with_port}/documentation",
+      last_response.headers['Location']
+  end
+
+  def test_trailing_slash_redirect_ignores_invalid_forwarded_proto
+    get '/documentation/', {}, { 'HTTP_X_FORWARDED_PROTO' => 'javascript' }
+
+    assert_equal 301, last_response.status
+    assert_equal "http://#{last_request.host_with_port}/documentation",
+      last_response.headers['Location']
+  end
+
+  # Per RFC 7239, a request that traversed multiple proxies appends to
+  # X-Forwarded-Proto as a comma-separated list (`https, http`); the leftmost
+  # value is the original client-facing scheme.
+  def test_trailing_slash_redirect_uses_first_value_in_chained_forwarded_proto
+    get '/documentation/', {}, { 'HTTP_X_FORWARDED_PROTO' => 'https, http' }
+
+    assert_equal 301, last_response.status
+    assert_equal "https://#{last_request.host_with_port}/documentation",
+      last_response.headers['Location']
+  end
+
+  # Regression: ncbo/ontologies_api#217 reproduction case. The bug was first
+  # observed against `/ontologies/:ont/classes/<encoded-IRI>/paths_to_root/`,
+  # so the encoded `%2F`s in the class IRI must round-trip through the redirect
+  # unchanged.
+  def test_trailing_slash_redirect_preserves_url_encoded_path_segments
+    encoded_cls = 'http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FSTY%2FT071'
+    get "/ontologies/STY/classes/#{encoded_cls}/paths_to_root/?apikey=test-key",
+      {}, { 'HTTP_X_FORWARDED_PROTO' => 'https' }
+
+    assert_equal 301, last_response.status
+    assert_equal "https://#{last_request.host_with_port}/ontologies/STY/classes/#{encoded_cls}/paths_to_root?apikey=test-key",
+      last_response.headers['Location']
+  end
+
+  # Regression: ncbo/ontologies_api#212 / #37
+  # Valid `/metadata/:class` paths were 500-ing under sinatra-contrib 4.2.1
+  # for the same namespace-helper-resolution reason as /documentation, and
+  # had been listed as broken in #37 since 2017.
+  def test_metadata_route_renders_for_model_class
+    %w[Ontology Metrics Class].each do |name|
+      get "/metadata/#{name}"
+      assert last_response.ok?,
+        "expected 200 for /metadata/#{name}, got #{last_response.status}: #{get_errors(last_response)}"
+      assert_match(/<html/i, last_response.body)
+    end
+  end
+
+  # Exercises the sub-module lookup branch in HomeHelper#routes_by_class
+  # (LinkedData::Models::Notes::Reply rather than a top-level model).
+  def test_metadata_route_resolves_submodule_class
+    get '/metadata/Reply'
+    assert last_response.ok?, get_errors(last_response)
+    assert_match(/<html/i, last_response.body)
+  end
+
+  # /metadata/:class for genuinely bogus names (arbitrary typos, identifiers
+  # not emitted by the API anywhere) should always return 404.
+  #
+  # Attribute URIs that the API *does* emit in JSON-LD @context (e.g.
+  # /metadata/created, /metadata/name, /metadata/prefixIRI, /metadata/omv*)
+  # are intentionally NOT asserted here. Those currently 404 as a stop-gap
+  # (commit d2e5b64), but ncbo/bioportal-project#388 tracks making them
+  # render actual attribute documentation. When that lands this test should
+  # not silently flip from "correctly 404" to "incorrectly 404 — feature
+  # regressed"; a new assertion covering attribute URIs will live alongside
+  # that feature work instead.
+  def test_metadata_route_returns_404_for_bogus_names
+    %w[DefinitelyNotAModel nonexistent_thing xyzqux123].each do |name|
+      get "/metadata/#{name}"
+      assert_equal 404, last_response.status,
+        "expected 404 for /metadata/#{name}, got #{last_response.status}: #{last_response.body[0, 200]}"
+      assert_match(/not a documented media type/i, last_response.body,
+        "expected /metadata/#{name} 404 body to mention 'media type'; got: #{last_response.body[0, 200]}")
+    end
+  end
+
   def test_home_index_handles_type_uri_failures
     bad_class = Class.new do
       def self.type_uri

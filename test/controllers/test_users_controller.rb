@@ -10,6 +10,17 @@ class TestUsersController < TestCase
       User.new(username: username, email: "#{username}@example.org", password: "pass_word").save
     end
 
+    search_users = [
+      { username: 'username_marker_account', email: 'search@example.org', firstName: 'Username', lastName: 'Search' },
+      { username: 'email_account', email: 'mailmarker@example.org', firstName: 'Email', lastName: 'Search' },
+      { username: 'first_name_account', email: 'search@example.org', firstName: 'given_marker', lastName: 'Search' },
+      { username: 'last_name_account', email: 'search@example.org', firstName: 'Last', lastName: 'family_marker' }
+    ]
+
+    @@users.concat(search_users.map do |user_params|
+      User.new(user_params.merge(password: 'pass_word')).save
+    end)
+
     # Test data
     @@username = "test_user"
   end
@@ -35,9 +46,87 @@ class TestUsersController < TestCase
   def test_all_users
     get '/users'
     assert last_response.ok?
-    users = MultiJson.load(last_response.body)
+    users_page = MultiJson.load(last_response.body)
+    users = users_page["collection"]
+    assert_equal 1, users_page["page"]
     assert users.any? {|u| u["username"].eql?("fred")}
-    assert users.length >= @@usernames.length
+    assert users_page["totalCount"] >= @@usernames.length
+  end
+
+  def test_all_users_pagination
+    get '/users?pagesize=2'
+    assert last_response.ok?
+    users_page = MultiJson.load(last_response.body)
+    assert_equal 1, users_page["page"]
+    assert_equal 2, users_page["collection"].length
+    assert_equal 2, users_page["nextPage"]
+  end
+
+  def test_all_users_include_all_is_paged
+    get '/users?include=all&pagesize=2'
+    assert last_response.ok?
+    users_page = MultiJson.load(last_response.body)
+    assert_equal 1, users_page["page"]
+    assert_equal 2, users_page["collection"].length
+    assert users_page["collection"].all? { |u| u.key?("created") }
+  end
+
+  def test_search_users_by_username
+    users_page = search_users('username_marker')
+    usernames = users_page['collection'].map { |user| user['username'] }
+
+    assert_equal ['username_marker_account'], usernames
+    assert_equal 1, users_page['totalCount']
+    assert_equal 1, users_page['pageCount']
+  end
+
+  def test_search_users_defaults_to_username_only
+    users_page = search_users('mailmarker')
+
+    assert_equal [], users_page['collection']
+    assert_equal 0, users_page['totalCount']
+    assert_equal 0, users_page['pageCount']
+  end
+
+  def test_search_users_by_email
+    users_page = search_users('mailmarker', search_fields: 'all')
+    usernames = users_page['collection'].map { |user| user['username'] }
+
+    assert_equal ['email_account'], usernames
+    assert_equal 1, users_page['totalCount']
+    assert_equal 1, users_page['pageCount']
+  end
+
+  def test_search_users_by_first_name
+    users_page = search_users('given_marker', search_fields: 'all')
+    usernames = users_page['collection'].map { |user| user['username'] }
+
+    assert_equal ['first_name_account'], usernames
+    assert_equal 1, users_page['totalCount']
+    assert_equal 1, users_page['pageCount']
+  end
+
+  def test_search_users_by_last_name
+    users_page = search_users('family_marker', search_fields: 'all')
+    usernames = users_page['collection'].map { |user| user['username'] }
+
+    assert_equal ['last_name_account'], usernames
+    assert_equal 1, users_page['totalCount']
+    assert_equal 1, users_page['pageCount']
+  end
+
+  def test_search_users_no_match
+    users_page = search_users('not_a_search_match', search_fields: 'all')
+
+    assert_equal [], users_page['collection']
+    assert_equal 0, users_page['totalCount']
+    assert_equal 0, users_page['pageCount']
+  end
+
+  def test_search_users_rejects_all_with_other_fields
+    get '/users', search: 'mailmarker', search_fields: 'all,email'
+
+    assert_equal 400, last_response.status
   end
 
   def test_single_user
@@ -221,6 +310,15 @@ class TestUsersController < TestCase
 
   def _delete_user(username)
     LinkedData::Models::User.find(@@username).first&.delete
+  end
+
+  def search_users(term, search_fields: nil)
+    query_params = { search: term, pagesize: 100 }
+    query_params[:search_fields] = search_fields if search_fields
+
+    get '/users', query_params
+    assert last_response.ok?
+    MultiJson.load(last_response.body)
   end
 
   def _create_admin_user(apikey: nil)
