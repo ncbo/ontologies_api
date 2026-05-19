@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: a0bf1225d4140297fdebcd1f38bfb235fc8ce88e
+  revision: 3d1a4cf89b045037a2cbd3eb321ec432c7f88a15
   branch: feature/solrcloud-alias-indexing-codex
   specs:
     ncbo_cron (0.0.1)
@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 55c4603029aede943af7ada1806d76b621899dd4
+  revision: e152f6363587a579b2141484bf7d1053b1072642
   branch: feature/solrcloud-alias-indexing-codex
   specs:
     ontologies_linked_data (0.0.1)
