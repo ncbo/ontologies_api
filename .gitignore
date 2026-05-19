@@ -59,6 +59,9 @@ test/data/ontology_files/repo/**/*
 # Claude Code
 .claude/
 
+# Serena
+.serena/
+
 *.swp
 
 config/environments/console.rb
