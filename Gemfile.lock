@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: c3eaf856b25dc6ba5b9a7ca40bcfe340a42c543c
-  branch: development
+  revision: ceb7598cca8e869b48611bb09b4fb28d21590ec9
+  branch: feature/solrcloud-alias-indexing-codex
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 0d1532220408006bd8e28f5017523db00abc87b0
-  branch: develop
+  revision: 3d1a4cf89b045037a2cbd3eb321ec432c7f88a15
+  branch: feature/solrcloud-alias-indexing-codex
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: fa30fe29838cc40377e05c663ca50ef260071e93
+  revision: 722a70afe43daea2be96ba46850d6c917e9d4132
   branch: develop
   specs:
     ncbo_ontology_recommender (0.0.1)
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: cdbf8f6990f10181f3efa11afada051a8283978e
-  branch: develop
+  revision: e152f6363587a579b2141484bf7d1053b1072642
+  branch: feature/solrcloud-alias-indexing-codex
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
