@@ -31,29 +31,37 @@ module Sinatra
       end
 
       def user_search_fields
-        return DEFAULT_USER_SEARCH_FIELDS if params['search_fields'].blank?
-
-        fields = params['search_fields'].split(',').map(&:strip).reject(&:empty?)
+        fields = requested_user_search_fields
         return DEFAULT_USER_SEARCH_FIELDS if fields.empty?
 
+        validate_all_user_search_fields!(fields)
         return USER_SEARCH_FIELDS if fields == [ALL_USER_SEARCH_FIELDS]
 
-        if fields.include?(ALL_USER_SEARCH_FIELDS)
-          error_message = "Unsupported search_fields: #{params['search_fields']}. "
-          error_message += 'Use all by itself or list individual fields'
-          error 400, error_message
-        end
-
         fields = fields.map(&:to_sym)
-
-        unknown_fields = fields - USER_SEARCH_FIELDS
-        unless unknown_fields.empty?
-          unsupported_fields = unknown_fields.join(', ')
-          allowed_fields = USER_SEARCH_FIELDS.join(', ')
-          error 400, "Unsupported search_fields: #{unsupported_fields}. Allowed fields: #{allowed_fields}"
-        end
+        validate_known_user_search_fields!(fields)
 
         fields
+      end
+
+      def requested_user_search_fields
+        params['search_fields'].to_s.split(',').map(&:strip).reject(&:empty?)
+      end
+
+      def validate_all_user_search_fields!(fields)
+        return unless fields.include?(ALL_USER_SEARCH_FIELDS) && fields != [ALL_USER_SEARCH_FIELDS]
+
+        error_message = "Unsupported search_fields: #{params['search_fields']}. "
+        error_message += 'Use all by itself or list individual fields'
+        error 400, error_message
+      end
+
+      def validate_known_user_search_fields!(fields)
+        unknown_fields = fields - USER_SEARCH_FIELDS
+        return if unknown_fields.empty?
+
+        unsupported_fields = unknown_fields.join(', ')
+        allowed_fields = USER_SEARCH_FIELDS.join(', ')
+        error 400, "Unsupported search_fields: #{unsupported_fields}. Allowed fields: #{allowed_fields}"
       end
 
       def filter_for_user_onts(obj)
