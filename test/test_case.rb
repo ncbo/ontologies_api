@@ -29,7 +29,11 @@ require 'multi_json'
 require 'oj'
 require 'json-schema'
 require 'minitest/reporters'
-Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new(:color => true), Minitest::Reporters::MeanTimeReporter.new]
+unless ENV['RM_INFO']
+  Minitest::Reporters.use! [
+    Minitest::Reporters::SpecReporter.new(color: true),
+    Minitest::Reporters::MeanTimeReporter.new]
+end
 MAX_TEST_REDIS_SIZE = 10_000
 
 # Check to make sure you want to run if not pointed at localhost
