@@ -26,8 +26,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 5243ea8db4302ca756c66bf50233e88606830326
-  branch: develop
+  revision: b216bdde2de471fc0f851556ffa2327333516e79
+  branch: master
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -55,8 +55,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 722a70afe43daea2be96ba46850d6c917e9d4132
-  branch: develop
+  revision: e63da099a5d69cf08d2c1c0d58b2f80bd5d41bb0
+  branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -89,7 +89,7 @@ GIT
 GIT
   remote: https://github.com/ncbo/sparql-client.git
   revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
-  branch: development
+  branch: main
   specs:
     sparql-client (3.2.2)
       net-http-persistent (~> 4.0, >= 4.0.2)
