@@ -291,7 +291,7 @@ module Sinatra
         doc.each do |k, v|
           attr, lang = k.to_s.split('_')
 
-          next if [:ontology_rank, :resource_id, :resource_model].include?(k)
+          next if [:resource_id, :resource_model].include?(k)
           next if lang.blank? || attr.blank?
           next if !(request_languages + %w[none]).include?(lang) && !request_all_languages?
 
@@ -566,7 +566,6 @@ module Sinatra
         resp = LinkedData::Models::Class.search(query, params)
         total_found = resp["response"]["numFound"]
         add_matched_fields(resp, Sinatra::Helpers::SearchHelper::MATCH_TYPE_PREFLABEL)
-        ontology_rank = LinkedData::Models::Ontology.rank
 
         resp["response"]["docs"].each do |doc|
           doc = doc.symbolize_keys
@@ -582,7 +581,6 @@ module Sinatra
           ontology = LinkedData::Models::Ontology.read_only(id: ontology_uri, acronym: doc[:submissionAcronym])
           submission = LinkedData::Models::OntologySubmission.read_only(id: doc[:ontologyId], ontology: ontology)
           doc[:submission] = submission
-          doc[:ontology_rank] = (ontology_rank[doc[:submissionAcronym]] && !ontology_rank[doc[:submissionAcronym]].empty?) ? ontology_rank[doc[:submissionAcronym]][:normalizedScore] : 0.0
           doc[:properties] = MultiJson.load(doc.delete(:propertyRaw)) if include_param_contains?(:properties)
 
           doc = filter_attrs_by_language(doc)
