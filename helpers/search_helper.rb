@@ -88,6 +88,7 @@ module Sinatra
         params["stopwords"] = "true"
         params["lowercaseOperators"] = "true"
         params["fl"] = "*,score"
+        params["boost"] = "sum(ontologyRank,1)"
         params[INCLUDE_VIEWS_PARAM] = params[ALSO_SEARCH_VIEWS] if params[ALSO_SEARCH_VIEWS]
 
         # highlighting is used to determine the field that got matched, NCBO-974

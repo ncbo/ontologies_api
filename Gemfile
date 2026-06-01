@@ -50,12 +50,12 @@ gem 'rack-contrib'
 gem 'kramdown'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
-gem 'goo', github: 'ncbo/goo', branch: 'development'
+gem 'goo', github: 'ncbo/goo', branch: 'fix/incorrect-search-result-ranking'
 gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'development'
 gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'develop'
-gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'develop'
+gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'fix/incorrect-search-result-ranking'
 gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'develop'
-gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
+gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'fix/incorrect-search-result-ranking'
 
 group :development do
   gem 'shotgun', github: 'syphax-bouazzouni/shotgun', branch: 'master'
