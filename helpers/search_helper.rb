@@ -591,14 +591,6 @@ module Sinatra
           docs.push(instance)
         end
 
-        unless params['sort']
-          if !text.nil? && text[-1] == '*'
-            docs.sort! { |a, b| [b[:score], a[:prefLabelExact].downcase, b[:ontology_rank]] <=> [a[:score], b[:prefLabelExact].downcase, a[:ontology_rank]] }
-          else
-            docs.sort! { |a, b| [b[:score], b[:ontology_rank]] <=> [a[:score], a[:ontology_rank]] }
-          end
-        end
-
         page_object(docs, total_found)
       end
 
