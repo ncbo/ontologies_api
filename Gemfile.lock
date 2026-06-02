@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 4561b0423465324bd7d84e042f721ab7b144e9e3
+  revision: a1627e10e9367633dc5b7390fe1da7f11be2d642
   branch: fix/incorrect-search-result-ranking
   specs:
     ontologies_linked_data (0.0.1)
