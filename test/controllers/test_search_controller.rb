@@ -101,6 +101,80 @@ class TestSearchController < TestCase
     end
   end
 
+  def test_search_rank_uses_case_insensitive_exact_match_before_page_sorting
+    ranked_ontologies = [
+      ["RANKHIGH", 1.0, "./test/data/ontology_files/search_rank_melanoma_upper.owl"],
+      ["RANKMIDHI", 0.7, "./test/data/ontology_files/search_rank_melanoma_lower.owl"],
+      ["RANKMIDLO", 0.4, "./test/data/ontology_files/search_rank_melanoma_lower.owl"],
+      ["RANKLOW", 0.1, "./test/data/ontology_files/search_rank_melanoma_lower.owl"]
+    ]
+    ranking = ranked_ontologies.to_h do |acronym, bioportal_score, _|
+      [acronym, { bioportalScore: bioportal_score, umlsScore: 0.0 }]
+    end
+    rank_redis = Redis.new(host: LinkedData.settings.ontology_analytics_redis_host,
+                           port: LinkedData.settings.ontology_analytics_redis_port,
+                           timeout: 30)
+
+    begin
+      rank_redis.set(LinkedData::Models::Ontology::ONTOLOGY_RANK_REDIS_FIELD, Marshal.dump(ranking))
+
+      rank_search_process_options = {
+        process_rdf: true,
+        extract_metadata: false,
+        generate_missing_labels: false,
+        run_metrics: false,
+        reasoning: false,
+        index_search: true,
+        index_properties: false
+      }
+
+      ranked_ontologies.each do |acronym, _, file_path|
+        LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
+          process_submission: true,
+          process_options: rank_search_process_options,
+          acronym: acronym,
+          acronym_suffix: "",
+          name: "#{acronym} Search Test",
+          file_path: file_path,
+          ont_count: 1,
+          submission_count: 1
+        })
+      end
+
+      schema = Goo.search_client(:term_search).fetch_schema
+      pref_label_exact = schema["fields"].find { |field| field["name"] == "prefLabelExact" }
+      synonym_exact = schema["fields"].find { |field| field["name"] == "synonymExact" }
+
+      assert_equal "string_ci", pref_label_exact["type"]
+      assert_equal "string_ci", synonym_exact["type"]
+
+      exact_match_resp = LinkedData::Models::Class.search(
+        'prefLabelExact:"melanoma"',
+        {
+          fq: "submissionAcronym:RANKHIGH AND obsolete:false AND -provisional:true",
+          fl: "submissionAcronym,prefLabel,score",
+          rows: 10
+        }
+      )
+      assert_equal 1, exact_match_resp["response"]["numFound"]
+
+      get "/search?q=melanoma&pagesize=3"
+      assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 200]}"
+      results = MultiJson.load(last_response.body)
+      acronyms = results["collection"].map { |doc| doc["links"]["ontology"].split("/")[-1] }
+
+      assert_operator results["totalCount"], :>, 3
+      assert_equal 3, results["collection"].length
+      assert_equal %w[RANKHIGH RANKMIDHI RANKMIDLO], acronyms
+    ensure
+      rank_redis.del(LinkedData::Models::Ontology::ONTOLOGY_RANK_REDIS_FIELD)
+      ranked_ontologies.map(&:first).each do |acronym|
+        ont = LinkedData::Models::Ontology.find(acronym).first
+        ont.delete if ont
+      end
+    end
+  end
+
   # Regression: when the acronyms list filters down to empty (here via an
   # ontology_types filter that matches no seeded ontology), the Solr fq used
   # to start with " AND obsolete:false ..." — a malformed query rejected by
