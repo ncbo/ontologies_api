@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 5c3a3aca915ebed7cd4ca70be049889756eb47da
+  revision: 684fbe06f8dd9daad10010dc460e06c7ad3a946c
   branch: fix/incorrect-search-result-ranking
   specs:
     goo (0.0.2)
