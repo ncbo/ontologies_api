@@ -88,6 +88,7 @@ module Sinatra
         params["stopwords"] = "true"
         params["lowercaseOperators"] = "true"
         params["fl"] = "*,score"
+        params["boost"] = "sum(ontologyRank,1)"
         params[INCLUDE_VIEWS_PARAM] = params[ALSO_SEARCH_VIEWS] if params[ALSO_SEARCH_VIEWS]
 
         # highlighting is used to determine the field that got matched, NCBO-974
@@ -290,7 +291,7 @@ module Sinatra
         doc.each do |k, v|
           attr, lang = k.to_s.split('_')
 
-          next if [:ontology_rank, :resource_id, :resource_model].include?(k)
+          next if [:resource_id, :resource_model].include?(k)
           next if lang.blank? || attr.blank?
           next if !(request_languages + %w[none]).include?(lang) && !request_all_languages?
 
@@ -565,7 +566,6 @@ module Sinatra
         resp = LinkedData::Models::Class.search(query, params)
         total_found = resp["response"]["numFound"]
         add_matched_fields(resp, Sinatra::Helpers::SearchHelper::MATCH_TYPE_PREFLABEL)
-        ontology_rank = LinkedData::Models::Ontology.rank
 
         resp["response"]["docs"].each do |doc|
           doc = doc.symbolize_keys
@@ -581,21 +581,12 @@ module Sinatra
           ontology = LinkedData::Models::Ontology.read_only(id: ontology_uri, acronym: doc[:submissionAcronym])
           submission = LinkedData::Models::OntologySubmission.read_only(id: doc[:ontologyId], ontology: ontology)
           doc[:submission] = submission
-          doc[:ontology_rank] = (ontology_rank[doc[:submissionAcronym]] && !ontology_rank[doc[:submissionAcronym]].empty?) ? ontology_rank[doc[:submissionAcronym]][:normalizedScore] : 0.0
           doc[:properties] = MultiJson.load(doc.delete(:propertyRaw)) if include_param_contains?(:properties)
 
           doc = filter_attrs_by_language(doc)
 
           instance = doc[:provisional] ? LinkedData::Models::ProvisionalClass.read_only(doc) : LinkedData::Models::Class.read_only(doc)
           docs.push(instance)
-        end
-
-        unless params['sort']
-          if !text.nil? && text[-1] == '*'
-            docs.sort! { |a, b| [b[:score], a[:prefLabelExact].downcase, b[:ontology_rank]] <=> [a[:score], b[:prefLabelExact].downcase, a[:ontology_rank]] }
-          else
-            docs.sort! { |a, b| [b[:score], b[:ontology_rank]] <=> [a[:score], a[:ontology_rank]] }
-          end
         end
 
         page_object(docs, total_found)

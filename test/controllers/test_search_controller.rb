@@ -101,6 +101,82 @@ class TestSearchController < TestCase
     end
   end
 
+  # Phase 1 invariant: prefLabelExact and synonymExact use the string_ci
+  # field type so a lowercase query matches a mixed-case stored label.
+  # The schemaless-to-static migration regressed this field type to plain
+  # `string`, breaking lowercase searches for terms like "melanoma" against
+  # docs whose prefLabel was "Melanoma". This test exercises only the
+  # schema/case-insensitive fix; the rank-ordering boost is verified
+  # separately in test_search_rank_orders_results_via_solr_side_boost.
+  def test_schema_uses_case_insensitive_string_ci_exact_fields
+    with_ranked_melanoma_ontologies([
+      ["RANKHIGH", 1.0, "./test/data/ontology_files/search_rank_melanoma_upper.owl"]
+    ]) do
+      schema = Goo.search_client(:term_search).fetch_schema
+      pref_label_exact = schema["fields"].find { |field| field["name"] == "prefLabelExact" }
+      synonym_exact = schema["fields"].find { |field| field["name"] == "synonymExact" }
+
+      assert_equal "string_ci", pref_label_exact["type"],
+                   "prefLabelExact must be string_ci so lowercase queries match mixed-case stored labels"
+      assert_equal "string_ci", synonym_exact["type"],
+                   "synonymExact must be string_ci for the same case-insensitive guarantee"
+
+      # Lowercase query against RANKHIGH, whose prefLabel is "Melanoma".
+      # With string_ci this returns 1; with the pre-fix plain `string` type
+      # it would return 0 and the original ranking regression would surface.
+      exact_match_resp = LinkedData::Models::Class.search(
+        'prefLabelExact:"melanoma"',
+        {
+          fq: "submissionAcronym:RANKHIGH AND obsolete:false AND -provisional:true",
+          fl: "submissionAcronym,prefLabel,score",
+          rows: 10
+        }
+      )
+      assert_equal 1, exact_match_resp["response"]["numFound"],
+                   "lowercase 'melanoma' must match mixed-case 'Melanoma' via string_ci prefLabelExact"
+    end
+  end
+
+  # Phase 2 mechanism: BioPortal ontology rank participates in Solr scoring
+  # via boost=sum(ontologyRank,1) BEFORE pagination. Seeds four ontologies
+  # with synthetic ranks (1.0, 0.7, 0.4, 0.1) and queries with pagesize=3.
+  # Expects the three returned acronyms to be the three highest-ranked, in
+  # rank order, with the lowest-ranked excluded from page 1 but still
+  # counted in totalCount.
+  #
+  # This passes deterministically only because the Solr-side boost multiplies
+  # each doc's intrinsic score by (1 + rank), producing distinct combined
+  # scores (2.0x, 1.7x, 1.4x, 1.1x). Without the boost — and given that the
+  # post-hoc Ruby tiebreaker has been removed — the four near-identical-score
+  # docs would tie at the Solr layer and which three landed on page 1 would
+  # be governed by Solr's internal tie-breaking, not by ontology rank.
+  #
+  # Coverage gap (deferred): with only 4 fixtures this does not exercise the
+  # original issue #230 failure mode where high-rank docs are stranded beyond
+  # Solr's first page (50+ matching docs would be needed to force that).
+  def test_search_rank_orders_results_via_solr_side_boost
+    with_ranked_melanoma_ontologies([
+      ["RANKHIGH", 1.0, "./test/data/ontology_files/search_rank_melanoma_upper.owl"],
+      ["RANKMIDHI", 0.7, "./test/data/ontology_files/search_rank_melanoma_lower.owl"],
+      ["RANKMIDLO", 0.4, "./test/data/ontology_files/search_rank_melanoma_lower.owl"],
+      ["RANKLOW", 0.1, "./test/data/ontology_files/search_rank_melanoma_lower.owl"]
+    ]) do
+      get "/search?q=melanoma&pagesize=3"
+      assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 200]}"
+      results = MultiJson.load(last_response.body)
+      acronyms = results["collection"].map { |doc| doc["links"]["ontology"].split("/")[-1] }
+
+      assert_operator results["totalCount"], :>=, 4,
+                      "all four seeded ontologies must match q=melanoma (totalCount counts pre-pagination)"
+      assert_equal 3, results["collection"].length,
+                   "pagesize=3 must return exactly 3 docs on page 1"
+      assert_equal %w[RANKHIGH RANKMIDHI RANKMIDLO], acronyms,
+                   "Solr-side boost must order page 1 by descending ontologyRank"
+      refute_includes acronyms, "RANKLOW",
+                      "the lowest-ranked ontology must be excluded from page 1 even though it matches the query"
+    end
+  end
+
   # Regression: when the acronyms list filters down to empty (here via an
   # ontology_types filter that matches no seeded ontology), the Solr fq used
   # to start with " AND obsolete:false ..." — a malformed query rejected by
@@ -499,5 +575,55 @@ class TestSearchController < TestCase
     refute_nil res["collection"].select{|doc| doc["@id"].eql?('http://bioontology.org/ontologies/Activity.owl#Activity')}.first
   end
 
+  private
+
+  # Helper for ranking-quality tests: seed BioPortal ontology rank into Redis
+  # for the given ontologies, index them into the term_search Solr collection,
+  # yield to the block to run assertions, then clean up Redis and ontologies.
+  #
+  # Each entry is [acronym, bioportal_score, owl_file_path].
+  def with_ranked_melanoma_ontologies(ranked_ontologies)
+    ranking = ranked_ontologies.to_h do |acronym, bioportal_score, _|
+      [acronym, { bioportalScore: bioportal_score, umlsScore: 0.0 }]
+    end
+    rank_redis = Redis.new(host: LinkedData.settings.ontology_analytics_redis_host,
+                           port: LinkedData.settings.ontology_analytics_redis_port,
+                           timeout: 30)
+
+    begin
+      rank_redis.set(LinkedData::Models::Ontology::ONTOLOGY_RANK_REDIS_FIELD, Marshal.dump(ranking))
+
+      process_options = {
+        process_rdf: true,
+        extract_metadata: false,
+        generate_missing_labels: false,
+        run_metrics: false,
+        reasoning: false,
+        index_search: true,
+        index_properties: false
+      }
+
+      ranked_ontologies.each do |acronym, _, file_path|
+        LinkedData::SampleData::Ontology.create_ontologies_and_submissions({
+          process_submission: true,
+          process_options: process_options,
+          acronym: acronym,
+          acronym_suffix: "",
+          name: "#{acronym} Search Test",
+          file_path: file_path,
+          ont_count: 1,
+          submission_count: 1
+        })
+      end
+
+      yield
+    ensure
+      rank_redis.del(LinkedData::Models::Ontology::ONTOLOGY_RANK_REDIS_FIELD)
+      ranked_ontologies.map(&:first).each do |acronym|
+        ont = LinkedData::Models::Ontology.find(acronym).first
+        ont.delete if ont
+      end
+    end
+  end
 
 end
