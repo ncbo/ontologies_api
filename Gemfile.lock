@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 684fbe06f8dd9daad10010dc460e06c7ad3a946c
-  branch: fix/incorrect-search-result-ranking
+  revision: 137af25608de38c6605e163c24d195c64059d41d
+  branch: development
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 9a789cb6957f9903cf2d8ff7fdb24e50eddcf63a
-  branch: fix/incorrect-search-result-ranking
+  revision: 4fa1829dee15a04f05d81568f348e50e340e511e
+  branch: develop
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: a1627e10e9367633dc5b7390fe1da7f11be2d642
-  branch: fix/incorrect-search-result-ranking
+  revision: 752e7dfeea06fa91e076447acb9dbd8420894523
+  branch: develop
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
