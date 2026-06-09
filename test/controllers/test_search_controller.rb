@@ -116,14 +116,15 @@ class TestSearchController < TestCase
       pref_label_exact = schema["fields"].find { |field| field["name"] == "prefLabelExact" }
       synonym_exact = schema["fields"].find { |field| field["name"] == "synonymExact" }
 
-      assert_equal "string_ci", pref_label_exact["type"],
-                   "prefLabelExact must be string_ci so lowercase queries match mixed-case stored labels"
-      assert_equal "string_ci", synonym_exact["type"],
-                   "synonymExact must be string_ci for the same case-insensitive guarantee"
+      assert_equal "string_ci_exact", pref_label_exact["type"],
+                   "prefLabelExact must be string_ci_exact (case-insensitive exact match + binary scoring) so lowercase queries match mixed-case stored labels without multilingual term-frequency skew"
+      assert_equal "string_ci_exact", synonym_exact["type"],
+                   "synonymExact must be string_ci_exact for the same case-insensitive, binary-scoring guarantee"
 
       # Lowercase query against RANKHIGH, whose prefLabel is "Melanoma".
-      # With string_ci this returns 1; with the pre-fix plain `string` type
-      # it would return 0 and the original ranking regression would surface.
+      # With string_ci_exact this returns 1 (still case-insensitive via the
+      # KeywordTokenizer + LowerCaseFilter); with the pre-fix plain `string`
+      # type it would return 0 and the original ranking regression would surface.
       exact_match_resp = LinkedData::Models::Class.search(
         'prefLabelExact:"melanoma"',
         {
@@ -133,7 +134,7 @@ class TestSearchController < TestCase
         }
       )
       assert_equal 1, exact_match_resp["response"]["numFound"],
-                   "lowercase 'melanoma' must match mixed-case 'Melanoma' via string_ci prefLabelExact"
+                   "lowercase 'melanoma' must match mixed-case 'Melanoma' via string_ci_exact prefLabelExact"
     end
   end
 
