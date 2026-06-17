@@ -126,4 +126,20 @@ class TestSearchHelper < TestCaseHelpers
                       "fq must include each class id in the terms-parser values"
     end
   end
+
+  def test_populate_classes_from_search_returns_empty_hash_without_query_for_empty_classes
+    h = helper
+
+    klass = LinkedData::Models::Class
+    original_search = klass.method(:submit_search_query)
+    klass.define_singleton_method(:submit_search_query) do |_query, _params|
+      flunk "empty class population should not submit a Solr query"
+    end
+
+    begin
+      assert_equal({}, h.populate_classes_from_search([], ["TEST"]))
+    ensure
+      klass.define_singleton_method(:submit_search_query, original_search)
+    end
+  end
 end
