@@ -421,6 +421,8 @@ module Sinatra
       # Populate an array of classes. Returns a hash where the key is ontology_uri + class_id:
       # "http://data.bioontology.org/ontologies/ONThttp://ont.org/class1" => cls
       def populate_classes_from_search(classes, ontology_acronyms=nil)
+        return {} if classes.nil? || classes.empty?
+
         class_ids = []
         acronyms = (ontology_acronyms.nil?) ? [] : ontology_acronyms
         classes.each {|c| class_ids << c.id.to_s; acronyms << c.submission.ontology.acronym.to_s unless ontology_acronyms}
