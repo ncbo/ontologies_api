@@ -1,6 +1,22 @@
 require_relative '../test_case'
 
 class TestHomeController < TestCase
+  # Regression: ncbo/bioportal-internal-tracker#18
+  def test_requests_are_written_to_common_access_log
+    log_path = File.expand_path('../../log/test.log', __dir__)
+    File.truncate(log_path, 0) if File.exist?(log_path)
+
+    get '/documentation'
+    assert last_response.ok?, get_errors(last_response)
+
+    access_log = File.read(log_path)
+    common_log_line = %r{\S+ - \S+ \[\d{2}/[A-Z][a-z]{2}/\d{4}:\d{2}:\d{2}:\d{2} [+-]\d{4}\] "GET /documentation HTTP/1\.[01]" 200 \S+ \d+\.\d{4}}
+    assert_match(
+      common_log_line,
+      access_log
+    )
+  end
+
   def test_home_index_returns_links_hash
     get '/'
     assert last_response.ok?, get_errors(last_response)
