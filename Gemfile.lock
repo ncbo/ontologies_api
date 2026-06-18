@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 5aac04055d835dabbf58c5fb745449d4dd6a26ac
+  revision: ef442cfab577f7323bde79c00964fc023b4d7842
   branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
