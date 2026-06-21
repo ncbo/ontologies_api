@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 00d32fb1e2a9908a5baee2d740b882246d04ae5e
+  revision: 2d215bcb12793a3958acf7ae7f805f2fcc033ba5
   branch: feature/optimize-class-tree-has-children
   specs:
     ontologies_linked_data (0.0.1)
