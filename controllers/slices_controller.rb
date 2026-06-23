@@ -17,20 +17,20 @@ class SlicesController < ApplicationController
     ##
     # Create a new slice
     post do
-      error 403, "Access denied" unless current_user && current_user.admin?
+      admin_only!
       create_slice
     end
 
     # Delete a slice
     delete '/:slice' do
-      error 403, "Access denied" unless current_user && current_user.admin?
+      admin_only!
       LinkedData::Models::Slice.find(params[:slice]).first.delete
       halt 204
     end
 
     # Update an existing slice
     patch '/:slice' do
-      error 403, "Access denied" unless current_user && current_user.admin?
+      admin_only!
       slice = LinkedData::Models::Slice.find(params[:slice]).include(LinkedData::Models::Slice.attributes(:all)).first
       populate_from_params(slice, params)
       if slice.valid?
@@ -44,7 +44,7 @@ class SlicesController < ApplicationController
 
     # Check to make sure each group has a corresponding slice (and ontologies match)
     get '/synchronize_groups' do
-      error 403, "Access denied" unless current_user && current_user.admin?
+      admin_only!
 
       groups = LinkedData::Models::Group.where.include(LinkedData::Models::Group.attributes(:all)).all
       groups.each do |g|

@@ -471,6 +471,12 @@ module Sinatra
         env["REMOTE_USER"] || LinkedData::Models::User.new
       end
 
+      ##
+      # Halt with 403 unless the current user is an administrator
+      def admin_only!
+        error 403, "Access denied" unless current_user && current_user.admin?
+      end
+
       def include_param_contains?(str)
         str = str.to_s unless str.is_a?(String)
         class_params_include = params["include_for_class"] && params["include_for_class"].include?(str.to_sym)
