@@ -35,12 +35,11 @@ class TestHTTPCacheHelper < TestCaseHelpers
     })
     @@note_alt.save
 
-    @orig_enable_cache = LinkedData.settings.enable_http_cache
+    # enable_http_cache is restored by the per-suite snapshot net (see AppUnit).
     LinkedData.settings.enable_http_cache = true
   end
 
   def after_suite
-    LinkedData.settings.enable_http_cache = @orig_enable_cache
     LinkedData::HTTPCache.invalidate_all
   end
 

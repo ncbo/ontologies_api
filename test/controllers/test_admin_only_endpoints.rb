@@ -25,30 +25,34 @@ class TestAdminOnlyEndpoints < TestCase
   ].freeze
 
   def before_suite
-    self.class.enable_security
     self.class.delete_user("test-admin-gate")
     @@user = self.class.create_user("test-admin-gate")
   end
 
   def after_suite
     self.class.delete_user("test-admin-gate")
-    self.class.reset_security
   end
 
   def setup
-    self.class.enable_security
-    self.class.reset_to_not_admin(@@user)
+    # Reset the role with security off: user.save runs a write permission check
+    # when security is on, which denies outside an authenticated request. The
+    # request under test enables security itself.
+    with_settings(enable_security: false) do
+      self.class.reset_to_not_admin(@@user)
+    end
   end
 
   def test_admin_only_endpoints_forbidden_for_non_admin
-    ADMIN_ONLY_ENDPOINTS.each do |verb, path|
-      send(verb, "#{path}?apikey=#{@@user.apikey}")
+    with_settings(enable_security: true) do
+      ADMIN_ONLY_ENDPOINTS.each do |verb, path|
+        send(verb, "#{path}?apikey=#{@@user.apikey}")
 
-      assert_equal 403, last_response.status,
-                   "expected 403 for #{verb.upcase} #{path} as a non-admin user, " \
-                   "got #{last_response.status}: #{last_response.body}"
-      assert_match(/access denied/i, last_response.body,
-                   "expected an 'Access denied' body for #{verb.upcase} #{path}")
+        assert_equal 403, last_response.status,
+                     "expected 403 for #{verb.upcase} #{path} as a non-admin user, " \
+                     "got #{last_response.status}: #{last_response.body}"
+        assert_match(/access denied/i, last_response.body,
+                     "expected an 'Access denied' body for #{verb.upcase} #{path}")
+      end
     end
   end
 end

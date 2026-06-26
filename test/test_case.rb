@@ -109,15 +109,77 @@ class AppUnit < Minitest::Test
     # code to run after the last test (gets inherited in sub-tests)
   end
 
+  # --- Test isolation for process-wide settings ------------------------------
+  #
+  # Settings like enable_security live on global singletons (LinkedData.settings
+  # et al.), so a test or suite that flips one -- or errors after flipping it --
+  # would otherwise leak the changed value into whatever runs next. Three things
+  # guard against that, so suites can just set what they need and never restore:
+  #
+  #   1. with_settings -- the sanctioned way to change a setting for the
+  #      duration of a block; restores the prior value even if the block raises.
+  #   2. a per-test snapshot/restore net (before_setup/after_teardown).
+  #   3. a per-suite snapshot/restore net (before_all/after_all), so values set
+  #      in before_suite are rolled back when the suite finishes.
+
+  # Process-wide settings that suites flip on/off, as [settings_object, attr].
+  # Resolved at call time (not a constant) so every settings singleton is loaded.
+  def sandboxed_settings
+    [
+      [LinkedData.settings,                :enable_security],
+      [LinkedData.settings,                :enable_http_cache],
+      [LinkedData.settings,                :enable_slices],
+      [LinkedData::OntologiesAPI.settings, :restrict_download],
+      [LinkedData::OntologiesAPI.settings, :enable_throttling],
+      [LinkedData::OntologiesAPI.settings, :req_per_second_per_ip],
+      [LinkedData::OntologiesAPI.settings, :safe_ips],
+      [Annotator.settings,                 :supported_recognizers]
+    ]
+  end
+
+  def snapshot_settings
+    sandboxed_settings.map { |obj, attr| [obj, attr, obj.send(attr)] }
+  end
+
+  def restore_settings(snapshot)
+    snapshot&.each { |obj, attr, value| obj.send("#{attr}=", value) }
+  end
+
+  # Temporarily override settings for the duration of the block, restoring the
+  # prior values even if the block raises -- the sanctioned way for a test to
+  # change a process-wide setting (bare assignment leaks across tests).
+  #
+  #   with_settings(enable_security: true) { post "/slices", ... }
+  #   with_settings(LinkedData::OntologiesAPI.settings, enable_throttling: true) { ... }
+  def with_settings(settings = LinkedData.settings, **overrides)
+    previous = overrides.keys.to_h { |k| [k, settings.send(k)] }
+    overrides.each { |k, v| settings.send("#{k}=", v) }
+    yield
+  ensure
+    previous.each { |k, v| settings.send("#{k}=", v) }
+  end
+
+  def before_setup
+    super
+    @settings_snapshot = snapshot_settings
+  end
+
+  def after_teardown
+    restore_settings(@settings_snapshot)
+    super
+  end
+
   def before_all
     super
     backend_4s_delete
+    # Snapshot before before_suite runs so suite-level settings roll back too.
+    self.class.instance_variable_set(:@suite_settings_snapshot, snapshot_settings)
     before_suite
   end
 
   def after_all
-    self.class.disable_security
     after_suite
+    restore_settings(self.class.instance_variable_get(:@suite_settings_snapshot))
     super
   end
 
@@ -208,19 +270,6 @@ class TestCase < AppUnit
       # pass
     end
     return errors.strip
-  end
-
-  def self.enable_security
-    @@old_security_setting = LinkedData.settings.enable_security
-    LinkedData.settings.enable_security = true
-  end
-
-  def self.disable_security
-    LinkedData.settings.enable_security = false
-  end
-
-  def self.reset_security(old_security = @@old_security_setting)
-    LinkedData.settings.enable_security = old_security
   end
 
  # Ensure a user exists; return it. Safe to call from anywhere.

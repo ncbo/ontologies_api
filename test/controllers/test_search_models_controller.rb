@@ -113,9 +113,7 @@ class TestSearchModelsController < TestCase
     bro.viewingRestriction = "private"
     bro.save
 
-    begin
-      self.class.enable_security
-
+    with_settings(enable_security: true) do
       get "/search/ontologies?query=#{bro.acronym}&apikey=#{blocked_user.apikey}"
       response = MultiJson.load(last_response.body)["collection"]
       assert_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
@@ -133,10 +131,6 @@ class TestSearchModelsController < TestCase
       assert last_response.ok?
       res = MultiJson.load(last_response.body)
       assert_equal 1, res['totalCount']
-
-      self.class.reset_security(false)
-    ensure
-      self.class.disable_security
     end
   end
 
