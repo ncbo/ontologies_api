@@ -178,8 +178,12 @@ class AppUnit < Minitest::Test
   end
 
   def after_all
-    after_suite
+    # Restore settings BEFORE after_suite: teardown often does privileged
+    # cleanup (deleting users/ontologies) that must run with the suite's
+    # settings rolled back (e.g. security off). Restoring first also means a
+    # raising after_suite can't leak a flipped setting into the next suite.
     restore_settings(self.class.instance_variable_get(:@suite_settings_snapshot))
+    after_suite
     super
   end
 
