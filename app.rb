@@ -28,6 +28,7 @@ require_relative 'lib/rack/slow_requests'
 require_relative 'lib/rack/param_translator'
 require_relative 'lib/rack/slice_detection'
 require_relative 'lib/rack/request_lang'
+require_relative 'lib/rack/trailing_slash_redirect'
 
 # Logging setup
 require_relative "config/logging"
@@ -171,6 +172,10 @@ if LinkedData::OntologiesAPI.settings.enable_unicorn_workerkiller
   require 'unicorn'
   require_relative 'config/unicorn_workerkiller'
 end
+
+# Canonicalize trailing slashes (301/308 redirect) before Sinatra routing.
+# Innermost middleware: runs after auth/CORS but before any route or filter.
+use Rack::TrailingSlashRedirect
 
 # Add New Relic last to allow Rack middleware instrumentation
 require 'newrelic_rpm'

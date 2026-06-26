@@ -201,20 +201,15 @@ class TestOntologySubmissionsController < TestCase
     sub = ont.submissions.first
     sub.bring(:submissionId)
     assert_instance_of(OntologySubmission, sub, "sub is not a #{OntologySubmission.class}")
-    # Clear restrictions on downloads
-    LinkedData::OntologiesAPI.settings.restrict_download = []
     # Download the specific submission
     get "/ontologies/#{ont.acronym}/submissions/#{sub.submissionId}/download"
     assert_equal(200, last_response.status, "failed download for specific submission : " + get_errors(last_response))
-    # Add restriction on download
+    # With the acronym restricted, the same download should fail with a 403.
     acronym = created_ont_acronyms.first
-    LinkedData::OntologiesAPI.settings.restrict_download = [acronym]
-    # Try download
-    get "/ontologies/#{ont.acronym}/submissions/#{sub.submissionId}/download"
-    # download should fail with a 403 status
-    assert_equal(403, last_response.status, "failed to restrict download for ontology : " + get_errors(last_response))
-    # Clear restrictions on downloads
-    LinkedData::OntologiesAPI.settings.restrict_download = []
+    with_settings(LinkedData::OntologiesAPI.settings, restrict_download: [acronym]) do
+      get "/ontologies/#{ont.acronym}/submissions/#{sub.submissionId}/download"
+      assert_equal(403, last_response.status, "failed to restrict download for ontology : " + get_errors(last_response))
+    end
     # see also test_ontologies_controller::test_download_ontology
 
     # Test downloads of nonexistent ontology
@@ -265,20 +260,19 @@ class TestOntologySubmissionsController < TestCase
       ont.viewingRestriction = "private"
       ont.save
 
-      LinkedData.settings.enable_security = true
+      with_settings(enable_security: true) do
+        get "/ontologies/#{acronym}/submissions/#{sub.submissionId}/download?apikey=#{allowed_user.apikey}"
+        assert_equal(200, last_response.status, "User who is in ACL couldn't download ontology")
 
-      get "/ontologies/#{acronym}/submissions/#{sub.submissionId}/download?apikey=#{allowed_user.apikey}"
-      assert_equal(200, last_response.status, "User who is in ACL couldn't download ontology")
+        get "/ontologies/#{acronym}/submissions/#{sub.submissionId}/download?apikey=#{blocked_user.apikey}"
+        assert_equal(403, last_response.status, "User who isn't in ACL could download ontology")
 
-      get "/ontologies/#{acronym}/submissions/#{sub.submissionId}/download?apikey=#{blocked_user.apikey}"
-      assert_equal(403, last_response.status, "User who isn't in ACL could download ontology")
-
-      admin = ont.administeredBy.first
-      admin.bring(:apikey)
-      get "/ontologies/#{acronym}/submissions/#{sub.submissionId}/download?apikey=#{admin.apikey}"
-      assert_equal(200, last_response.status, "Admin couldn't download ontology")
+        admin = ont.administeredBy.first
+        admin.bring(:apikey)
+        get "/ontologies/#{acronym}/submissions/#{sub.submissionId}/download?apikey=#{admin.apikey}"
+        assert_equal(200, last_response.status, "Admin couldn't download ontology")
+      end
     ensure
-      LinkedData.settings.enable_security = false
       del = User.find("allowed").first
       del.delete if del
       del = User.find("blocked").first
@@ -390,19 +384,18 @@ class TestOntologySubmissionsController < TestCase
       ont.viewingRestriction = 'private'
       ont.save
 
-      LinkedData.settings.enable_security = true
+      with_settings(enable_security: true) do
+        get "/submissions?apikey=#{allowed_user.apikey}"
+        assert_equal 200, last_response.status
+        submissions = MultiJson.load(last_response.body)
+        assert_equal 2, submissions.size
 
-      get "/submissions?apikey=#{allowed_user.apikey}"
-      assert_equal 200, last_response.status
-      submissions = MultiJson.load(last_response.body)
-      assert_equal 2, submissions.size
-
-      get "/submissions?apikey=#{blocked_user.apikey}"
-      assert_equal 200, last_response.status
-      submissions = MultiJson.load(last_response.body)
-      assert_equal 1, submissions.size
+        get "/submissions?apikey=#{blocked_user.apikey}"
+        assert_equal 200, last_response.status
+        submissions = MultiJson.load(last_response.body)
+        assert_equal 1, submissions.size
+      end
     ensure
-      LinkedData.settings.enable_security = false
       del = User.find('allowed').first
       del.delete if del
       del = User.find('blocked').first

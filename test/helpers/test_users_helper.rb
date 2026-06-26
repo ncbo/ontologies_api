@@ -26,12 +26,8 @@ class TestUsersHelper < TestCaseHelpers
 
     @@custom_ont_ids = [@@user_ont_search.id.to_s, @@user_ont.id.to_s]
 
-    @@old_security_setting = LinkedData.settings.enable_security
+    # enable_security is restored by the per-suite snapshot net (see AppUnit).
     LinkedData.settings.enable_security = true
-  end
-
-  def after_suite
-    LinkedData.settings.enable_security = @@old_security_setting
   end
 
   def test_filtered_list

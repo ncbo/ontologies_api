@@ -6,7 +6,7 @@ class TestSlicesHelper < TestCaseHelpers
     self.backend_4s_delete
     LinkedData::Models::Class.indexClear
 
-    @@orig_slices_setting = LinkedData.settings.enable_slices
+    # enable_slices is restored by the per-suite snapshot net (see AppUnit).
     LinkedData.settings.enable_slices = true
     @@onts = LinkedData::SampleData::Ontology.create_ontologies_and_submissions(ont_count: 5, submission_count: 0)[2]
     @@group_acronym = "test-group"

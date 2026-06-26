@@ -170,20 +170,15 @@ class TestOntologiesController < TestCase
     assert_equal(1, onts.length, msg="Failed to create 1 ontology?")
     ont = onts.first
     assert_instance_of(Ontology, ont, msg="ont is not a #{Ontology.class}")
-    # Clear restrictions on downloads
-    LinkedData::OntologiesAPI.settings.restrict_download = []
     # Download the latest submission (the generic ontology download)
     acronym = created_ont_acronyms.first
     get "/ontologies/#{acronym}/download"
     assert_equal(200, last_response.status, msg='failed download for ontology : ' + get_errors(last_response))
-    # Add restriction on download
-    LinkedData::OntologiesAPI.settings.restrict_download = [acronym]
-    # Try download
-    get "/ontologies/#{acronym}/download"
-    # download should fail with a 403 status
-    assert_equal(403, last_response.status, msg='failed to restrict download for ontology : ' + get_errors(last_response))
-    # Clear restrictions on downloads
-    LinkedData::OntologiesAPI.settings.restrict_download = []
+    # With the acronym restricted, the same download should fail with a 403.
+    with_settings(LinkedData::OntologiesAPI.settings, restrict_download: [acronym]) do
+      get "/ontologies/#{acronym}/download"
+      assert_equal(403, last_response.status, msg='failed to restrict download for ontology : ' + get_errors(last_response))
+    end
     # see also test_ontologies_submissions_controller::test_download_submission
   end
 
@@ -237,20 +232,19 @@ class TestOntologiesController < TestCase
       ont.viewingRestriction = "private"
       ont.save
 
-      LinkedData.settings.enable_security = true
+      with_settings(enable_security: true) do
+        get "/ontologies/#{acronym}/download?apikey=#{allowed_user.apikey}"
+        assert_equal(200, last_response.status, msg="User who is in ACL couldn't download ontology")
 
-      get "/ontologies/#{acronym}/download?apikey=#{allowed_user.apikey}"
-      assert_equal(200, last_response.status, msg="User who is in ACL couldn't download ontology")
+        get "/ontologies/#{acronym}/download?apikey=#{blocked_user.apikey}"
+        assert_equal(403, last_response.status, msg="User who isn't in ACL could download ontology")
 
-      get "/ontologies/#{acronym}/download?apikey=#{blocked_user.apikey}"
-      assert_equal(403, last_response.status, msg="User who isn't in ACL could download ontology")
-
-      admin = ont.administeredBy.first
-      admin.bring(:apikey)
-      get "/ontologies/#{acronym}/download?apikey=#{admin.apikey}"
-      assert_equal(200, last_response.status, msg="Admin couldn't download ontology")
+        admin = ont.administeredBy.first
+        admin.bring(:apikey)
+        get "/ontologies/#{acronym}/download?apikey=#{admin.apikey}"
+        assert_equal(200, last_response.status, msg="Admin couldn't download ontology")
+      end
     ensure
-      LinkedData.settings.enable_security = false
       del = User.find("allowed").first
       del.delete if del
       del = User.find("blocked").first
@@ -276,23 +270,23 @@ class TestOntologiesController < TestCase
       start_server
       sub.pullLocation = RDF::IRI.new(@@server_url)
       sub.save
-      LinkedData.settings.enable_security = true
-      post "/ontologies/#{acronym}/pull?apikey=#{allowed_user.apikey}"
-      assert_equal(204, last_response.status, msg="The ontology admin was unable to execute the on-demand pull")
+      with_settings(enable_security: true) do
+        post "/ontologies/#{acronym}/pull?apikey=#{allowed_user.apikey}"
+        assert_equal(204, last_response.status, msg="The ontology admin was unable to execute the on-demand pull")
 
-      blocked_user = User.new({
-        username: "blocked",
-        email: "test@example.org",
-        password: "12345"
-      })
-      blocked_user.save
-      post "/ontologies/#{acronym}/pull?apikey=#{blocked_user.apikey}"
-      assert_equal(403, last_response.status, msg="An unauthorized user was able to execute the on-demand pull")
+        blocked_user = User.new({
+          username: "blocked",
+          email: "test@example.org",
+          password: "12345"
+        })
+        blocked_user.save
+        post "/ontologies/#{acronym}/pull?apikey=#{blocked_user.apikey}"
+        assert_equal(403, last_response.status, msg="An unauthorized user was able to execute the on-demand pull")
+      end
     ensure
       del = User.find("blocked").first
       del.delete if del
       stop_server
-      LinkedData.settings.enable_security = false
       del = User.find("blocked").first
       del.delete if del
     end
