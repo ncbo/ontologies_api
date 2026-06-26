@@ -94,4 +94,15 @@ class TestTrailingSlashRedirect < Minitest::Test
     _status, location, _body, env = call('GET', '/ontologies/STY/', 'HTTP_X_FORWARDED_PROTO' => 'javascript')
     assert_equal "http://#{host(env)}/ontologies/STY", location
   end
+
+  # --- caching: the scheme-dependent redirect must not be stored by Rack::Cache.
+  # The Location is built from X-Forwarded-Proto, but an outer Rack::Cache keys
+  # entries on path+query only, so a cached redirect could leak the wrong scheme
+  # across http/https clients. no-store keeps it out of the shared cache.
+
+  def test_redirect_sets_cache_control_no_store
+    env = Rack::MockRequest.env_for('/ontologies/STY/', method: 'GET')
+    _status, headers, _body = @app.call(env)
+    assert_equal 'no-store', headers['cache-control']
+  end
 end

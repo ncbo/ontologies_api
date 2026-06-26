@@ -26,7 +26,16 @@ module Rack
       status = %w[GET HEAD].include?(env['REQUEST_METHOD']) ? 301 : 308
       # A HEAD response must not carry a body.
       body = env['REQUEST_METHOD'] == 'HEAD' ? [] : ['Moved Permanently']
-      [status, { 'location' => location, 'content-type' => 'text/plain' }, body]
+      # The Location's scheme depends on X-Forwarded-Proto, but an outer
+      # Rack::Cache keys entries on path+query only. Without no-store it could
+      # serve a cached `Location: https://...` to a plain-http client (or vice
+      # versa). Keep the scheme-dependent redirect out of the shared cache.
+      headers = {
+        'location' => location,
+        'content-type' => 'text/plain',
+        'cache-control' => 'no-store'
+      }
+      [status, headers, body]
     end
 
     private
