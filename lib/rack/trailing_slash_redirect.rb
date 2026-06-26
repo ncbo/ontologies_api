@@ -24,7 +24,9 @@ module Rack
 
       # 301 may turn POST -> GET and drop the body; 308 preserves method + body.
       status = %w[GET HEAD].include?(env['REQUEST_METHOD']) ? 301 : 308
-      [status, { 'location' => location, 'content-type' => 'text/plain' }, ['Moved Permanently']]
+      # A HEAD response must not carry a body.
+      body = env['REQUEST_METHOD'] == 'HEAD' ? [] : ['Moved Permanently']
+      [status, { 'location' => location, 'content-type' => 'text/plain' }, body]
     end
 
     private
