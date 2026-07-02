@@ -12,15 +12,17 @@ module Rack
     end
 
     def call(env)
+      # PATH_INFO and QUERY_STRING are required by the Rack SPEC: always
+      # present, possibly empty, never nil.
       path = env['PATH_INFO']
-      return @app.call(env) unless path && path.length > 1 && path.end_with?('/')
+      return @app.call(env) unless path.length > 1 && path.end_with?('/')
 
       req = Rack::Request.new(env)
       # PATH_INFO keeps percent-encoding (e.g. %2F in class IRIs), so building
       # the location from it round-trips encoded segments unchanged.
       location = +"#{external_scheme(env, req)}://#{req.host_with_port}#{path.chomp('/')}"
       query = env['QUERY_STRING']
-      location << "?#{query}" unless query.nil? || query.empty?
+      location << "?#{query}" unless query.empty?
 
       # 301 may turn POST -> GET and drop the body; 308 preserves method + body.
       status = %w[GET HEAD].include?(env['REQUEST_METHOD']) ? 301 : 308

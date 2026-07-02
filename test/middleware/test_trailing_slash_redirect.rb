@@ -67,7 +67,26 @@ class TestTrailingSlashRedirect < Minitest::Test
     assert_equal DOWNSTREAM, body
   end
 
+  def test_empty_path_info_passes_through_untouched
+    # The Rack SPEC minimum: PATH_INFO may be the empty string (e.g. a request
+    # for the mount point of a mapped app), never nil.
+    env = Rack::MockRequest.env_for('/', method: 'GET')
+    env['PATH_INFO'] = ''
+    status, _headers, body = @app.call(env)
+    buf = +''
+    body.each { |chunk| buf << chunk }
+    assert_equal 200, status
+    assert_equal DOWNSTREAM, buf
+  end
+
   # --- location building: query, percent-encoding, forwarded scheme ----------
+
+  def test_empty_query_string_appends_no_question_mark
+    # QUERY_STRING is the empty string (never nil) when there is no query.
+    _status, location, _body, env = call('GET', '/ontologies/STY/')
+    assert_equal '', env['QUERY_STRING']
+    refute_includes location, '?'
+  end
 
   def test_query_string_preserved
     _status, location, _body, env = call('GET', '/ontologies/STY/?apikey=xyz&include=all')
