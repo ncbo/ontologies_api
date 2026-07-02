@@ -291,15 +291,14 @@ eos
     rest_recognizers = MultiJson.load(last_response.body)
     assert rest_recognizers.length > 0
 
-    default_rec_setting = Annotator.settings.supported_recognizers
-    Annotator.settings.supported_recognizers = recognizers
-
-    get "/annotator/recognizers"
-    assert last_response.ok?
-    rest_recognizers = MultiJson.load(last_response.body)
-    assert rest_recognizers.length > 0
-    assert_equal recognizers.length, rest_recognizers.length
-    assert_equal recognizers.sort, rest_recognizers.map {|r| r.to_sym}.sort
+    with_settings(Annotator.settings, supported_recognizers: recognizers) do
+      get "/annotator/recognizers"
+      assert last_response.ok?
+      rest_recognizers = MultiJson.load(last_response.body)
+      assert rest_recognizers.length > 0
+      assert_equal recognizers.length, rest_recognizers.length
+      assert_equal recognizers.sort, rest_recognizers.map {|r| r.to_sym}.sort
+    end
   end
 
   #TODO: this method is duplicated in NCBO_ANNOTATOR
