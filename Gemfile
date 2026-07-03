@@ -50,8 +50,10 @@ gem 'rack-contrib'
 gem 'kramdown'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
-gem 'goo', github: 'ncbo/goo', branch: 'development'
-gem 'sparql-client', github: 'ncbo/sparql-client', branch: 'development'
+# goo de-fork + observability + resilience stack, under staging integration test. Pins the combined
+# branch and vanilla sparql-client (the fork is gone; caching/logging/breakers are goo bolt-ons).
+gem 'goo', github: 'ncbo/goo', branch: 'feature/sparql-resilience'
+gem 'sparql-client', '3.2.2'
 gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'develop'
 gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'develop'
 gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'develop'
