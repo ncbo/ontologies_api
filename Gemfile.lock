@@ -67,7 +67,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 3f173e959169e91eedc625f54981e20b8829706d
+  revision: 1c316d25161779c3646b0e45247b71ac1d2db442
   branch: fix/tree-scheme-n-plus-1
   specs:
     ontologies_linked_data (0.0.1)
