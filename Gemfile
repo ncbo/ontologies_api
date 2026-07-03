@@ -57,7 +57,8 @@ gem 'sparql-client', '3.2.2'
 gem 'ncbo_annotator', github: 'ncbo/ncbo_annotator', branch: 'develop'
 gem 'ncbo_cron', github: 'ncbo/ncbo_cron', branch: 'develop'
 gem 'ncbo_ontology_recommender', github: 'ncbo/ncbo_ontology_recommender', branch: 'develop'
-gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
+# gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'develop'
+gem 'ontologies_linked_data', github: 'ncbo/ontologies_linked_data', branch: 'fix/tree-scheme-n-plus-1'
 
 group :development do
   gem 'shotgun', github: 'syphax-bouazzouni/shotgun', branch: 'master'
