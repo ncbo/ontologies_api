@@ -4,8 +4,7 @@ class TestAccessControlHelper < TestCaseHelpers
   # Class instance vars with readers/writers
   class << self
     attr_accessor :usernames, :admin, :user1, :user2, :user3, :user,
-                  :restricted_ont, :ont, :ont_patch, :restricted_user,
-                  :old_security_setting
+                  :restricted_ont, :ont, :ont_patch, :restricted_user
   end
 
   def before_suite
@@ -45,15 +44,14 @@ class TestAccessControlHelper < TestCaseHelpers
     self.class.user = self.class.ont.administeredBy.first
     self.class.user.bring_remaining
 
-    self.class.old_security_setting = LinkedData.settings.enable_security
     self.class.ont_patch = onts.shift.bring_remaining
 
+    # enable_security is restored by the per-suite snapshot net (see AppUnit).
     LinkedData.settings.enable_security = true
   end
 
   def after_suite
     self.backend_4s_delete
-    LinkedData.settings.enable_security = self.class.old_security_setting unless self.class.old_security_setting.nil?
   end
 
   def test_filtered_list

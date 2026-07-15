@@ -228,17 +228,17 @@ class TestUsersController < TestCase
   end
 
   def test_delete_user
-    self.class.enable_security
+    with_settings(enable_security: true) do
+      delete "/users/ben?apikey=#{@@users.first.apikey}"
+      assert_equal 403,  last_response.status
 
-    delete "/users/ben?apikey=#{@@users.first.apikey}"
-    assert_equal 403,  last_response.status
-
-    self.class.make_admin(@@users.first)
-    delete "/users/ben?apikey=#{@@users.first.apikey}"
-    assert_equal 204,  last_response.status
+      self.class.make_admin(@@users.first)
+      delete "/users/ben?apikey=#{@@users.first.apikey}"
+      assert_equal 204,  last_response.status
+    end
 
     @@usernames.delete("ben")
-    self.class.reset_security
+    # Security is back at baseline (off) here, so the role reset's save is allowed.
     self.class.reset_to_not_admin(@@users.first)
 
     get "/users/ben"

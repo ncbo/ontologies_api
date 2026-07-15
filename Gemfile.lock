@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 4cfe719b32385e94583f58c0b57904b4e4c03e2f
+  revision: be1300e100101118557d5d1b5b8079eaa8bb3e04
   branch: main
   specs:
     goo (0.0.2)
@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 2d689b10f1be3dc70e890b42c9a62aea8baba5f2
+  revision: 1a5bab6a22f5dcfaf05a4e3d218e5ad4aed13bfc
   branch: master
   specs:
     ncbo_annotator (0.0.1)
@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 62b9cd5678c8c2fd287cf42f55a6906eaf0276bd
+  revision: 195fc402bd27827e3f8ef50d4b57ea5c69361b20
   branch: master
   specs:
     ncbo_cron (0.0.1)
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 5b3f6c90cd5aa5ba0680979770e1d756fc546c72
+  revision: 08e2cc45558b6e62ff42a4ba8e7f7c660e3247fb
   branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 4e1a2c81a96585ba7a440bf0e7f533ee2ee3c94c
+  revision: 867ff0f5194c1593d82645792fb83b6c8725ab03
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -77,12 +77,10 @@ GIT
       json
       libxml-ruby
       multi_json
-      net-ftp
       oj
       omni_logger
       pony
       rack
-      rack-test
       rsolr
       rubyzip (~> 3.0)
 

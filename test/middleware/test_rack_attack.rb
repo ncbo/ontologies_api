@@ -7,12 +7,8 @@ RACK_CONFIG = File.join([settings.root, "config.ru"])
 class TestRackAttack < TestCase
 
   def before_suite
-    # Store app settings
-    @@auth_setting = LinkedData.settings.enable_security
-    @@throttling_setting = LinkedData.settings.enable_throttling
-    @@req_per_sec_limit = LinkedData::OntologiesAPI.settings.req_per_second_per_ip
-    @@safe_ips = LinkedData::OntologiesAPI.settings.safe_ips
-
+    # Settings are restored automatically by the per-suite snapshot net (see
+    # AppUnit), so before_suite just sets what the suite needs.
     LinkedData.settings.enable_security = true
     LinkedData::OntologiesAPI.settings.enable_throttling = true
     LinkedData::OntologiesAPI.settings.req_per_second_per_ip = 1
@@ -62,12 +58,7 @@ class TestRackAttack < TestCase
   end
 
   def after_suite
-    # Restore app settings
-    LinkedData.settings.enable_security = @@auth_setting
-    LinkedData::OntologiesAPI.settings.enable_throttling = @@throttling_setting
-    LinkedData::OntologiesAPI.settings.req_per_second_per_ip = @@req_per_sec_limit
-    LinkedData::OntologiesAPI.settings.safe_ips = @@safe_ips
-
+    # Settings are restored by the per-suite snapshot net (see AppUnit).
     Process.kill("TERM", @@pid1)
     Process.wait(@@pid1)
     Process.kill("TERM", @@pid2)

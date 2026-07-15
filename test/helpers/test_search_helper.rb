@@ -127,6 +127,32 @@ class TestSearchHelper < TestCaseHelpers
     end
   end
 
+  # Cross-component contract guarding the staging incident where a stale
+  # ontologies_linked_data -- one that did not declare the `ontologyRank`
+  # field -- was bundled with an ontologies_api that boosts term search on
+  # `sum(ontologyRank,1)` (see search_helper#get_term_search_query). Every
+  # /search then failed with a Solr 400 "undefined field: ontologyRank".
+  #
+  # Each repo's own suite is green for this: ld unit-tests that its schema
+  # generator declares ontologyRank, and api's boost integration test bundles
+  # a matching ld. The skew is only visible when the two are pinned to
+  # incompatible revisions -- which is exactly what a deployed Gemfile.lock
+  # can do. This test binds the query-layer contract to the *bundled*
+  # linked-data schema, so api CI fails whenever the resolved
+  # ontologies_linked_data does not declare the field the search boost needs.
+  def test_term_search_boost_field_is_declared_by_bundled_linked_data_schema
+    schema_generator = SOLR::SolrSchemaGenerator.new
+    LinkedData::Models::Class.index_schema(schema_generator)
+    declared = schema_generator.fields_to_add.map { |field| field[:name].to_s }
+
+    # search_helper#get_term_search_query unconditionally sets
+    #   params["boost"] = "sum(ontologyRank,1)"
+    assert_includes declared, 'ontologyRank',
+                    'the bundled ontologies_linked_data must declare the ' \
+                    'ontologyRank field that term search boosts on; otherwise ' \
+                    'every /search fails with Solr 400 "undefined field: ontologyRank"'
+  end
+
   def test_populate_classes_from_search_returns_empty_hash_without_query_for_empty_classes
     h = helper
 
