@@ -31,29 +31,41 @@ class MetricsController < ApplicationController
     #    "UPLOADED"]
 
     get '/missing' do
-      missing = Set.new()
-      onts = LinkedData::Models::Ontology.all
-      onts.each do |ont|
-        ont.bring(:summaryOnly)
+      onts = LinkedData::Models::Ontology.where
+                                          .include(:acronym, :summaryOnly,
+                                                   submissions: [:submissionId, :submissionStatus])
+                                          .all
+      ontology_submissions = onts.filter_map do |ont|
         next if ont.summaryOnly
-        # Get the latest submission, but ensure the processing status
-        # doesn't require anything more than RDF parsing.
-        sub = ont.latest_submission(:status => 'RDF')
+
+        sub = ont.submissions
+                 .select { |submission| submission.ready?(status: 'RDF') }
+                 .max_by { |submission| submission.submissionId.to_i }
+        [ont, sub]
+      end
+
+      submissions_with_metrics = ontology_submissions.filter_map do |_ont, sub|
+        next if sub.nil?
+
+        status = sub.submissionStatus.map { |s| s.id.to_s.split('/').last }
+        sub if status.include?('METRICS') && !status.include?('ERROR_METRICS')
+      end
+
+      unless submissions_with_metrics.empty?
+        LinkedData::Models::OntologySubmission.where.models(submissions_with_metrics)
+                                               .include(:metrics).all
+      end
+
+      missing = ontology_submissions.each_with_object(Set.new) do |(ont, sub), result|
         if sub.nil?
-          missing.add(ont)
-        else
-          status = sub.submissionStatus.map {|s| s.id.to_s.split('/').last }
-          if status.include? 'ERROR_METRICS'
-            missing.add(ont)
-          else
-            if status.include? 'METRICS'
-              sub.bring(:metrics)
-              missing.add(ont) if sub.metrics.nil?
-            else
-              missing.add(ont)
-            end
-          end
+          result.add(ont)
+          next
         end
+
+        status = sub.submissionStatus.map { |s| s.id.to_s.split('/').last }
+        result.add(ont) if status.include?('ERROR_METRICS') ||
+                           !status.include?('METRICS') ||
+                           sub.metrics.nil?
       end
       reply missing.to_a
     end
