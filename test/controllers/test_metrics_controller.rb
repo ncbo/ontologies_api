@@ -1,6 +1,26 @@
 require_relative '../test_case'
 
+module MetricsGooQueryCountSpy
+  def query(*args, **kwargs, &block)
+    count = Thread.current[:metrics_goo_query_count]
+    Thread.current[:metrics_goo_query_count] = count + 1 unless count.nil?
+    super
+  end
+end
+
+unless Goo::SPARQL::Client.ancestors.include?(MetricsGooQueryCountSpy)
+  Goo::SPARQL::Client.prepend(MetricsGooQueryCountSpy)
+end
+
 class TestMetricsController < TestCase
+
+  def count_sparql_queries
+    Thread.current[:metrics_goo_query_count] = 0
+    yield
+    Thread.current[:metrics_goo_query_count]
+  ensure
+    Thread.current[:metrics_goo_query_count] = nil
+  end
 
   def before_suite
     if OntologySubmission.all.count > 100
@@ -76,12 +96,12 @@ class TestMetricsController < TestCase
   end
 
   def test_metrics_missing
-    skip "Test takes 160+ seconds to run, disable until we investigate"
     # test for zero ontologies without metrics (created by before_suite)
-    get '/metrics/missing'
+    query_count = count_sparql_queries { get '/metrics/missing' }
     assert last_response.ok?
     ontologies = MultiJson.load(last_response.body)
     assert_equal(0, ontologies.length, msg = 'Failure to detect 0 ontologies with missing metrics.')
+    assert_equal(2, query_count, 'Expected missing metrics lookup to use two batched SPARQL queries.')
     # create ontologies with latest submissions that have no metrics
     delete_ontologies_and_submissions
     options = { ont_count: 2,
@@ -89,10 +109,12 @@ class TestMetricsController < TestCase
                 process_submission: false,
                 random_submission_count: false }
     create_ontologies_and_submissions(options)
-    get '/metrics/missing'
+    query_count = count_sparql_queries { get '/metrics/missing' }
     assert last_response.ok?
     ontologies = MultiJson.load(last_response.body)
     assert_equal(2, ontologies.length, msg = 'Failure to detect 2 ontologies with missing metrics.')
+    assert_equal(%w[TEST-ONT-0 TEST-ONT-1], ontologies.map { |ontology| ontology['acronym'] }.sort)
+    assert_equal(2, query_count, 'Expected missing metrics lookup to use two batched SPARQL queries.')
     # recreate the before_suite data (this test might not be the last one to run in the suite)
     delete_ontologies_and_submissions
     create_ontologies_and_submissions(@@options)
