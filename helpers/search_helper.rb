@@ -560,6 +560,12 @@ module Sinatra
         params.delete('query')
         text = params["q"]
 
+        # The agent strips query strings from request.uri, so record whether
+        # this search is ontology-scoped as a queryable transaction attribute
+        if defined?(::NewRelic::Agent)
+          ::NewRelic::Agent.add_custom_attributes(search_scoped: !params[ONTOLOGIES_PARAM].to_s.empty?)
+        end
+
         query = get_term_search_query(text, params)
         # puts "Edismax query: #{query}, params: #{params}"
         set_page_params(params)
