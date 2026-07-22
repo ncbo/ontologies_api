@@ -8,6 +8,12 @@
 #
 # Must be loaded after init.rb so all traced methods are already defined.
 # When the agent is disabled (development/test), the tracers are no-ops.
+#
+# Kill switch: set NEWRELIC_CUSTOM_TRACERS=off (and restart) to skip
+# registration entirely, e.g. to rule instrumentation out while
+# debugging. Requires a process restart to take effect either way.
+return if ENV['NEWRELIC_CUSTOM_TRACERS'] == 'off'
+
 require 'new_relic/agent/method_tracer'
 
 module Sinatra
