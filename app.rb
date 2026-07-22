@@ -183,6 +183,9 @@ require 'newrelic_rpm'
 # Initialize the app
 require_relative 'init'
 
+# Custom method tracers (must load after init so traced methods exist)
+require_relative 'config/newrelic_method_tracers'
+
 # Enter console mode
 if settings.environment == :console
   require 'rack/test'
