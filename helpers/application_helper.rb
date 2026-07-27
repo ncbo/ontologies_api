@@ -254,15 +254,14 @@ module Sinatra
 
         found_onts = false
         if params["ontologies"] && !params["ontologies"].empty?
+          # Access-control attributes are preloaded by OntologyListCache
           onts = ontology_objects_from_params(params)
           found_onts = onts.length > 0
-          Ontology.where.models(onts).include(*Ontology.access_control_load_attrs).all
         else
-          onts = if params["also_include_views"] == "true"
-            Ontology.where.include(Ontology.goo_attrs_to_load()).to_a
-          else
-            Ontology.where.filter(Goo::Filter.new(:viewOf).unbound).include(Ontology.goo_attrs_to_load()).to_a
-                 end
+          onts = OntologyListCache.all
+          # Views are excluded in Ruby rather than via a Goo viewOf filter
+          # so the cached list can serve both variants
+          onts = onts.select { |o| o.viewOf.nil? } unless params["also_include_views"] == "true"
 
           found_onts = onts.length > 0
 
@@ -367,15 +366,14 @@ module Sinatra
       # Replies 400 if the ontology does not have a parsed submission
       def ontology_objects_from_params(params = nil)
         ontologies = Set.new(ontologies_param(params))
-        all_onts = LinkedData::Models::Ontology.where.include(LinkedData::Models::Ontology.goo_attrs_to_load).to_a
-        all_onts.select { |o| ontologies.include?(o.id.to_s) }
+        OntologyListCache.all.select { |o| ontologies.include?(o.id.to_s) }
       end
 
       def ontology_uri_acronym_map
         cached_map = naive_expiring_cache_read(__method__)
         return cached_map if cached_map
         map = {}
-        LinkedData::Models::Ontology.where.include(:acronym).all.each { |o| map[o.acronym] = o.id.to_s }
+        OntologyListCache.all.each { |o| map[o.acronym] = o.id.to_s }
         naive_expiring_cache_write(__method__, map)
         map
       end
@@ -384,7 +382,7 @@ module Sinatra
         cached_map = naive_expiring_cache_read(__method__)
         return cached_map if cached_map
         map = {}
-        LinkedData::Models::Ontology.where.include(:acronym).all.each { |o| map[o.id.to_s] = o.acronym }
+        OntologyListCache.all.each { |o| map[o.id.to_s] = o.acronym }
         naive_expiring_cache_write(__method__, map)
         map
       end
