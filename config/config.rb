@@ -25,6 +25,8 @@ module LinkedData::OntologiesAPI
     @settings.enable_unicorn_workerkiller ||= false
     @settings.req_per_second_per_ip       ||= 15
     @settings.ontology_report_path        ||= "../ontologies_report.json"
+    # TTL (seconds) for the process-level ontology list cache; 0 disables it
+    @settings.ontology_list_cache_ttl     ||= 300
 
     if @settings.enable_monitoring
       puts "(API) >> Slow queries log enabled: #{@settings.slow_request_log}"

@@ -162,6 +162,9 @@ class AppUnit < Minitest::Test
   def before_setup
     super
     @settings_snapshot = snapshot_settings
+    # Tests create/delete ontologies at will; a list cached by a previous
+    # test would make them invisible to search filters (issue #244 cache)
+    OntologyListCache.invalidate!
   end
 
   def after_teardown

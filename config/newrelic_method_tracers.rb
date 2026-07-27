@@ -37,7 +37,10 @@ module NewRelicMethodTracers
     'LinkedData::Serializer' => %i[build_response serialize],
     # Solr query execution incl. Ruby-side response parsing (the HTTP
     # call itself already appears as an External segment)
-    'LinkedData::Models::Class' => %i[search]
+    'LinkedData::Models::Class' => %i[search],
+    # Ontology list cache: `all` shows per-request cost (near-zero on a
+    # hit), `load_ontologies` fires only on cache misses
+    'OntologyListCache' => %i[all load_ontologies]
   }.freeze
 
   def self.register
