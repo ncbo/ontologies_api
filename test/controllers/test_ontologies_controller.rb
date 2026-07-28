@@ -182,6 +182,16 @@ class TestOntologiesController < TestCase
     # see also test_ontologies_submissions_controller::test_download_submission
   end
 
+  def test_download_ontology_sets_no_store
+    # Downloads must be marked no-store so the global Rack::Cache does not
+    # buffer large ontology file bodies into Redis (see helpers/download_helper.rb).
+    acronym = create_ontologies_and_submissions(ont_count: 1, submission_count: 1, process_submission: true)[1].first
+    get "/ontologies/#{acronym}/download"
+    assert_equal(200, last_response.status, msg='failed download for ontology : ' + get_errors(last_response))
+    assert_includes(last_response.headers['Cache-Control'].to_s, 'no-store',
+      msg="download response must set Cache-Control: no-store to bypass Rack::Cache")
+  end
+
   def test_download_ontology_csv
     num_onts_created, created_ont_acronyms, onts = create_ontologies_and_submissions(ont_count: 1, submission_count: 1,
                                                                                      process_submission: true,
