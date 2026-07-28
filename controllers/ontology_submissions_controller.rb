@@ -192,37 +192,10 @@ class OntologySubmissionsController < ApplicationController
       included = Ontology.goo_attrs_to_load.concat([submissions: submission_attributes])
       ont = Ontology.find(acronym).include(included).first
       error 422, "You must provide an existing `acronym` to download" if ont.nil?
-      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
-      check_access(ont)
-      ont_restrict_downloads = LinkedData::OntologiesAPI.settings.restrict_download
-      error 403, "License restrictions on download for #{acronym}" if ont_restrict_downloads.include? acronym
+      enforce_download_access(ont)
       submission = ont.submission(params['ontology_submission_id'].to_i)
       error 404, "There is no such submission for download" if submission.nil?
-      file_path = submission.uploadFilePath
-      # handle edge case where uploadFilePath is not set
-      error 422, "Upload File Path is not set for this submission" if file_path.to_s.empty?
-      download_format = params["download_format"].to_s.downcase
-      allowed_formats = ["csv", "rdf"]
-      if download_format.empty?
-        file_path = submission.uploadFilePath
-      elsif ([download_format] - allowed_formats).length > 0
-        error 400, "Invalid download format: #{download_format}."
-      elsif download_format.eql?("csv")
-        if ont.latest_submission.id != submission.id
-          error 400, "Invalid download format: #{download_format}."
-        else
-          latest_submission.bring(ontology: [:acronym])
-          file_path = submission.csv_path
-        end
-      elsif download_format.eql?("rdf")
-        file_path = submission.rdf_path
-      end
-
-      if File.readable? file_path
-        send_file file_path, :filename => File.basename(file_path)
-      else
-        error 500, "Cannot read submission upload file: #{file_path}"
-      end
+      send_submission_download(ont, submission, params["download_format"])
     end
 
     ##
@@ -230,20 +203,13 @@ class OntologySubmissionsController < ApplicationController
     get '/:ontology_submission_id/download_diff' do
       acronym = params["acronym"]
       submission_attributes = [:submissionId, :submissionStatus, :diffFilePath]
-      ont = Ontology.find(acronym).include(:submissions => submission_attributes).first
+      included = Ontology.goo_attrs_to_load.concat([submissions: submission_attributes])
+      ont = Ontology.find(acronym).include(included).first
       error 422, "You must provide an existing `acronym` to download" if ont.nil?
-      ont.bring(:viewingRestriction)
-      check_access(ont)
-      ont_restrict_downloads = LinkedData::OntologiesAPI.settings.restrict_download
-      error 403, "License restrictions on download for #{acronym}" if ont_restrict_downloads.include? acronym
+      enforce_download_access(ont)
       submission = ont.submission(params['ontology_submission_id'].to_i)
       error 404, "There is no such submission for download" if submission.nil?
-      file_path = submission.diffFilePath
-      if File.readable? file_path
-        send_file file_path, :filename => File.basename(file_path)
-      else
-        error 500, "Cannot read submission diff file: #{file_path}"
-      end
+      send_submission_download(ont, submission, "diff")
     end
 
     def delete_submissions(startId, endId)
