@@ -114,33 +114,10 @@ class OntologiesController < ApplicationController
       acronym = params["acronym"]
       ont = Ontology.find(acronym).include(Ontology.goo_attrs_to_load).first
       error 422, "You must provide an existing `acronym` to download" if ont.nil?
-      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
-      check_access(ont)
-      restricted_download = LinkedData::OntologiesAPI.settings.restrict_download.include?(acronym)
-      error 403, "License restrictions on download for #{acronym}" if restricted_download && !current_user.admin?
-      error 403, "Ontology #{acronym} is not accessible to your user" if ont.restricted? && !ont.accessible?(current_user)
-      latest_submission = ont.latest_submission(status: :rdf) # Should resolve to latest successfully loaded submission
-      error 404, "There is no latest submission loaded for download" if latest_submission.nil?
-      latest_submission.bring(:uploadFilePath)
-
-      download_format = params["download_format"].to_s.downcase
-      allowed_formats = ["csv", "rdf"]
-      if download_format.empty?
-        file_path = latest_submission.uploadFilePath
-      elsif ([download_format] - allowed_formats).length > 0
-        error 400, "Invalid download format: #{download_format}."
-      elsif download_format.eql?("csv")
-        latest_submission.bring(ontology: [:acronym])
-        file_path = latest_submission.csv_path
-      elsif download_format.eql?("rdf")
-        file_path = latest_submission.rdf_path
-      end
-
-      if File.readable? file_path
-        send_file file_path, :filename => File.basename(file_path)
-      else
-        error 500, "Cannot read latest submission upload file: #{file_path}"
-      end
+      enforce_download_access(ont)
+      submission = ont.latest_submission(status: :rdf) # Should resolve to latest successfully loaded submission
+      error 404, "There is no latest submission loaded for download" if submission.nil?
+      send_submission_download(ont, submission, params["download_format"])
     end
 
     private

@@ -233,6 +233,26 @@ class TestOntologySubmissionsController < TestCase
     assert_equal(400, last_response.status, "Download failure for '#{acronym}' ontology: " + get_errors(last_response))
   end
 
+  def test_download_ontology_submission_csv
+    # Regression: CSV download of the *latest* submission previously raised a
+    # NameError (undefined `latest_submission`) -> 500. It must stream the CSV,
+    # while a non-latest submission (whose CSV the archiver deletes) returns 400.
+    _, created_ont_acronyms, onts = create_ontologies_and_submissions(ont_count: 1, submission_count: 2,
+      process_submission: true,
+      process_options: { process_rdf: true, extract_metadata: true, index_search: true })
+    acronym = created_ont_acronyms.first
+    ont = onts.first
+    ont.bring(:submissions)
+    subs = ont.submissions.each { |s| s.bring(:submissionId) }.sort_by(&:submissionId)
+    older, latest = subs.first, subs.last
+
+    get "/ontologies/#{acronym}/submissions/#{latest.submissionId}/download?download_format=csv"
+    assert_equal(200, last_response.status, "CSV download failed for latest submission: " + get_errors(last_response))
+
+    get "/ontologies/#{acronym}/submissions/#{older.submissionId}/download?download_format=csv"
+    assert_equal(400, last_response.status, "Expected 400 for CSV of non-latest submission: " + get_errors(last_response))
+  end
+
   def test_download_acl_only
     _, created_ont_acronyms, onts = create_ontologies_and_submissions(ont_count: 1, submission_count: 1,
       process_submission: false)
