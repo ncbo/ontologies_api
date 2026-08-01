@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 68f537ca0555613c03a7f442924e0e7afd46078d
+  revision: ad6754030591968998e4fa1be6adaf6268f5e3b3
   branch: main
   specs:
     goo (0.0.2)
@@ -21,12 +21,12 @@ GIT
       redis
       rest-client
       rsolr
-      sparql-client
+      sparql-client (= 3.2.2)
       uuid
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 20e226def438c25ff32185e99b82f3656ba0da23
+  revision: fa40131df0305b39eb75a62bea49e37014b51e42
   branch: master
   specs:
     ncbo_annotator (0.0.1)
@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 893f4d44a04b769f4ad55fa4aef4b9eaf2db17fb
+  revision: 3d0ef7789da2d415b2d62416e035255d0407d428
   branch: master
   specs:
     ncbo_cron (0.0.1)
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 3d8caf9daf348f96110008f12652459be57e562e
+  revision: 0350d51303a1874e3119f8436c56fde853f59b31
   branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
@@ -66,7 +66,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: daf04082c829f7f79765204c4b6c5bdd86542809
+  revision: 8209e6c3bc19550bfdd3f5a38d2cb5ea253de6b6
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -83,15 +83,6 @@ GIT
       rack
       rsolr
       rubyzip (~> 3.0)
-
-GIT
-  remote: https://github.com/ncbo/sparql-client.git
-  revision: 2ac20b217bb7ad2b11305befe0ee77d75e44eac5
-  branch: main
-  specs:
-    sparql-client (3.2.2)
-      net-http-persistent (~> 4.0, >= 4.0.2)
-      rdf (~> 3.2, >= 3.2.11)
 
 GIT
   remote: https://github.com/palexander/rack-post-body-to-params.git
@@ -480,6 +471,9 @@ GEM
       rack-protection (= 4.2.1)
       sinatra (= 4.2.1)
       tilt (~> 2.0)
+    sparql-client (3.2.2)
+      net-http-persistent (~> 4.0, >= 4.0.2)
+      rdf (~> 3.2, >= 3.2.11)
     sshkit (1.25.1)
       base64
       logger
@@ -587,7 +581,6 @@ DEPENDENCIES
   simplecov-cobertura
   sinatra
   sinatra-contrib
-  sparql-client!
   unicorn
   unicorn-worker-killer
   webmock
@@ -770,7 +763,7 @@ CHECKSUMS
   simplecov-cobertura (4.0.0) sha256=e4fb3159b1ecea545b44f5452a8611305323e78ad23eae8aed35924d072e01ea
   sinatra (4.2.1) sha256=b7aeb9b11d046b552972ade834f1f9be98b185fa8444480688e3627625377080
   sinatra-contrib (4.2.1) sha256=10d091c944d268aa910c618ea40a3c3ebe0533e6e32990d84af92235a3d26b4a
-  sparql-client (3.2.2)
+  sparql-client (3.2.2) sha256=d3bac6bea08598dad617c0cdc6d380f9d416ef4ab91ca28309fdf40b93f5a571
   sshkit (1.25.1) sha256=be3f10b9d6eb0b44d5eaba3f7cbe41bc6bb894bce4339688ac20124391455b78
   systemu (2.6.5) sha256=01f7d014b1453b28e5781e15c4d7d63fc9221c29b174b7aae5253207a75ab33e
   temple (0.10.4) sha256=b7a1e94b6f09038ab0b6e4fe0126996055da2c38bec53a8a336f075748fff72c
