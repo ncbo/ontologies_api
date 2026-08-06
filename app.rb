@@ -36,6 +36,10 @@ require_relative "config/logging"
 # Inflector setup
 require_relative "config/inflections"
 
+# Map goo's open-circuit signal to a 503 and route breaker transitions to logging/New Relic.
+# Inert unless OP_SPARQL_CIRCUIT_BREAKER is set (goo de-fork review D1/D2/D15).
+require_relative "config/resilience"
+
 require 'request_store'
 
 # Protection settings
