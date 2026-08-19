@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: 8a80f1cc2c02c26dc2e18653c2c1a19c238dec51
+  revision: 031e976ac5bd8863a57d1af207de10c5f2d11d80
   branch: development
   specs:
     goo (0.0.2)
@@ -69,7 +69,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 8f85ce981eb0736d0c416267423d3980ee857347
+  revision: 93cd8e1c180ad8edafd9586d4df80970f44644b8
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -450,7 +450,7 @@ GEM
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    rubyzip (3.4.1)
+    rubyzip (3.5.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     securerandom (0.4.1)
@@ -490,7 +490,7 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
-    stoplight (5.8.2)
+    stoplight (5.8.3)
       concurrent-ruby
       zeitwerk
     systemu (2.6.5)
@@ -768,7 +768,7 @@ CHECKSUMS
   rubocop-ast (1.49.1) sha256=4412f3ee70f6fe4546cc489548e0f6fcf76cafcfa80fa03af67098ffed755035
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   ruby-xxHash (0.4.0.2) sha256=201d8305ec1bd0bc32abeaecf7b423755dd1f45f4f4d02ef793b6bb71bf20684
-  rubyzip (3.4.1) sha256=0a79e745b5c25872ebd148457df5665da8530ed8626c993b01457128f173ca02
+  rubyzip (3.5.0) sha256=f77c49d737a849b662f6ca4de473f31b4ecd8288f1c9f901a5c820641f0f8d7c
   rufus-scheduler (3.9.2) sha256=55fa9e4db0ff69d7f38c804f17baba0c9bce5cba39984ae3c5cf6c039d1323b9
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   shotgun (0.9.2)
@@ -781,7 +781,7 @@ CHECKSUMS
   sinatra-contrib (4.2.1) sha256=10d091c944d268aa910c618ea40a3c3ebe0533e6e32990d84af92235a3d26b4a
   sparql-client (3.2.2) sha256=d3bac6bea08598dad617c0cdc6d380f9d416ef4ab91ca28309fdf40b93f5a571
   sshkit (1.25.0) sha256=c8c6543cdb60f91f1d277306d585dd11b6a064cb44eab0972827e4311ff96744
-  stoplight (5.8.2) sha256=8072a7f27a3adf1e9eb27ea635a98bc56a80ca615d07a4d68653f428c7a916d6
+  stoplight (5.8.3) sha256=271250ed5cba5ed8c40f97dce2f6e2b63a916290eae9cb5f8c9bf1f57e49ab9b
   systemu (2.6.5) sha256=01f7d014b1453b28e5781e15c4d7d63fc9221c29b174b7aae5253207a75ab33e
   temple (0.10.4) sha256=b7a1e94b6f09038ab0b6e4fe0126996055da2c38bec53a8a336f075748fff72c
   tilt (2.7.0) sha256=0d5b9ba69f6a36490c64b0eee9f6e9aad517e20dcc848800a06eb116f08c6ab3
