@@ -483,7 +483,12 @@ GEM
     zeitwerk (2.8.3)
 
 PLATFORMS
+  aarch64-linux-gnu
+  arm64-darwin
   arm64-darwin-24
+  ruby
+  x86_64-darwin
+  x86_64-linux-gnu
 
 DEPENDENCIES
   activesupport
