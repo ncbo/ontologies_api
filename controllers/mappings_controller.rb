@@ -19,15 +19,9 @@ class MappingsController < ApplicationController
 
   # Get mappings for an ontology
   get '/ontologies/:ontology/mappings' do
-    ontology = ontology_from_acronym(@params[:ontology])
-    if ontology.nil?
-        error(404, "Ontology not found")
-    end
+    # 404 (no ontology) and 400 (no parsed submission) are raised by the helper.
+    _ontology, submission = ontology_and_submission_from_acronym(@params[:ontology])
     page, size = page_params
-    submission = ontology.latest_submission
-    if submission.nil?
-        error(404, "Submission not found for ontology " + ontology.acronym)
-    end
     mappings = LinkedData::Mappings.mappings_ontology(submission,
                                                       page,size,
                                                       nil)

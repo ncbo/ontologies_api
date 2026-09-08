@@ -45,6 +45,7 @@ class TestMappingsController < TestCase
     mappings_between_ontologies
     mappings_for_ontology
     mappings_for_ontology_pages
+    mappings_for_ontology_pagination_validation
     mappings_with_display
     mappings_root
     get_single_mapping
@@ -152,6 +153,25 @@ class TestMappingsController < TestCase
       page = next_page
     end while (next_page)
     assert_equal 18, total
+  end
+
+  def mappings_for_ontology_pagination_validation
+    ontology = "BRO-TEST-MAP-0"
+    # page <= 0 used to produce a negative SPARQL OFFSET (500); a negative or zero pagesize
+    # used to drop the LIMIT clause and return every mapping for the ontology.
+    ["page=0", "page=-1", "pagesize=0", "pagesize=-1", "page=abc", "pagesize=1.5"].each do |q|
+      get "/ontologies/#{ontology}/mappings?#{q}"
+      assert_equal 400, last_response.status, "expected 400 for ?#{q}, got #{last_response.status}"
+    end
+    get "/ontologies/#{ontology}/mappings?pagesize=#{Sinatra::Helpers::PaginationHelper::MAX_PAGE_SIZE + 1}"
+    assert_equal 400, last_response.status
+
+    get "/ontologies/#{ontology}/mappings?page=1&pagesize=1"
+    assert last_response.ok?
+    assert_equal 1, MultiJson.load(last_response.body)["collection"].length
+
+    get "/ontologies/DOES-NOT-EXIST/mappings"
+    assert_equal 404, last_response.status
   end
 
   def mappings_with_display

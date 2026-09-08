@@ -18,6 +18,10 @@ module Sinatra
           error 400, "Page number and page size must be integers. Page number is #{page} and page size is #{size}."
         end
         raise error 400, "Page size limit is #{MAX_PAGE_SIZE}. Page size in request is #{size}" if size > MAX_PAGE_SIZE
+        # A non-positive page produced a negative SPARQL OFFSET (parser error, 500); a negative
+        # page size silently disabled the LIMIT clause and returned the whole result set.
+        raise error 400, "Page number must be 1 or greater. Page number in request is #{page}" if page < 1
+        raise error 400, "Page size must be 1 or greater. Page size in request is #{size}" if size < 1
         return page, size
       end
 
