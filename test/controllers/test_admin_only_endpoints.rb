@@ -16,6 +16,10 @@ class TestAdminOnlyEndpoints < TestCase
   # GET /slices/synchronize_groups also calls admin_only! but is unreachable --
   # the earlier `get '/:slice_id'` route shadows it -- so it is omitted here.
   ADMIN_ONLY_ENDPOINTS = [
+    [:post,   "/groups"],
+    [:put,    "/groups/any"],
+    [:post,   "/categories"],
+    [:put,    "/categories/any"],
     [:post,   "/slices"],
     [:patch,  "/slices/any"],
     [:delete, "/slices/any"],

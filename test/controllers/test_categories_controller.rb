@@ -4,6 +4,10 @@ require "multi_json"
 class TestCategoriesController < TestCase
 
   def setup
+    @user = self.class.create_user('test-category-user')
+    @admin = self.class.create_user('test-category-admin')
+    self.class.make_admin(@admin)
+
     # Create some test categories
     @test_cat = {acronym: "TEST-CAT", name: "Test Category", description: "Description of the Test Category"}
 
@@ -30,8 +34,10 @@ class TestCategoriesController < TestCase
   end
 
   def teardown
-    # Delete groups
+    # Delete categories
     _delete_categories
+    @user.delete
+    @admin.delete
   end
 
   def _delete_categories
@@ -69,27 +75,12 @@ class TestCategoriesController < TestCase
     end
   end
 
-  def test_create_new_category
-    acronym = @test_cat[:acronym]
-    put "/categories/#{acronym}", MultiJson.dump(@test_cat), "CONTENT_TYPE" => "application/json"
+  def test_create_category_with_post_requires_admin
+    assert_category_creation_requires_admin(:post, '/categories')
+  end
 
-    assert last_response.status == 201
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
-    get "/categories/#{acronym}"
-    assert last_response.ok?
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
-    delete "/categories/#{acronym}"
-
-    post "/categories", MultiJson.dump(@test_cat), "CONTENT_TYPE" => "application/json"
-
-    assert last_response.status == 201
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
-    get "/categories/#{acronym}"
-    assert last_response.ok?
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
+  def test_create_category_with_put_requires_admin
+    assert_category_creation_requires_admin(:put, "/categories/#{@test_cat[:acronym]}")
   end
 
   def test_update_patch_category
@@ -100,21 +91,58 @@ class TestCategoriesController < TestCase
     new_desc = "Anatomyzation new DESCRIPTION"
     new_values = {name: new_name, description: new_desc}
 
-    patch "/categories/#{acronym}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
-    assert last_response.status == 204
+    with_settings(enable_security: true) do
+      patch "/categories/#{acronym}?apikey=#{@user.apikey}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
+      assert_equal 403, last_response.status
+      unchanged = Category.find(acronym).include(:name, :description).first
+      assert_equal @cats[acronym], [unchanged.name, unchanged.description]
 
-    get "/categories/#{acronym}"
-    group = MultiJson.load(last_response.body)
-    assert group["name"].eql?(new_name)
-    assert group["description"].eql?(new_desc)
+      patch "/categories/#{acronym}?apikey=#{@admin.apikey}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
+      assert_equal 204, last_response.status
+
+      get "/categories/#{acronym}?apikey=#{@user.apikey}"
+      assert last_response.ok?
+      category = MultiJson.load(last_response.body)
+      assert_equal new_name, category["name"]
+      assert_equal new_desc, category["description"]
+    end
   end
 
   def test_delete_category
     acronym = 'ANAT'
-    delete "/categories/#{acronym}"
-    assert last_response.status == 204
+    with_settings(enable_security: true) do
+      delete "/categories/#{acronym}?apikey=#{@user.apikey}"
+      assert_equal 403, last_response.status
+      refute_nil Category.find(acronym).first
 
-    get "/categories/#{acronym}"
-    assert last_response.status == 404
+      delete "/categories/#{acronym}?apikey=#{@admin.apikey}"
+      assert_equal 204, last_response.status
+
+      get "/categories/#{acronym}?apikey=#{@user.apikey}"
+      assert_equal 404, last_response.status
+    end
+  end
+
+  private
+
+  def assert_category_creation_requires_admin(method, path)
+    acronym = @test_cat[:acronym]
+    with_settings(enable_security: true) do
+      public_send(method, path, MultiJson.dump(@test_cat), "CONTENT_TYPE" => "application/json")
+      assert_equal 401, last_response.status
+      assert_nil Category.find(acronym).first
+
+      public_send(method, "#{path}?apikey=#{@user.apikey}", MultiJson.dump(@test_cat), "CONTENT_TYPE" => "application/json")
+      assert_equal 403, last_response.status
+      assert_nil Category.find(acronym).first
+
+      public_send(method, "#{path}?apikey=#{@admin.apikey}", MultiJson.dump(@test_cat), "CONTENT_TYPE" => "application/json")
+      assert_equal 201, last_response.status
+      assert_equal acronym, MultiJson.load(last_response.body)["acronym"]
+
+      get "/categories/#{acronym}?apikey=#{@user.apikey}"
+      assert last_response.ok?
+      assert_equal acronym, MultiJson.load(last_response.body)["acronym"]
+    end
   end
 end

@@ -65,6 +65,7 @@ class CategoriesController < ApplicationController
     private
 
     def create_category
+      admin_only!
       params ||= @params
       acronym = params["acronym"]
       category = Category.find(acronym).include(Category.goo_attrs_to_load(includes_param)).first

@@ -3,6 +3,10 @@ require_relative '../test_case'
 class TestGroupsController < TestCase
 
   def setup
+    @user = self.class.create_user('test-group-user')
+    @admin = self.class.create_user('test-group-admin')
+    self.class.make_admin(@admin)
+
     # Create some test groups
     @test_group = {acronym: "TEST-GROUP", name: "Test Group", description: "Description of the Test Group"}
 
@@ -32,6 +36,8 @@ class TestGroupsController < TestCase
   def teardown
     # Delete groups
     _delete_groups
+    @user.delete
+    @admin.delete
   end
 
   def _delete_groups
@@ -56,30 +62,15 @@ class TestGroupsController < TestCase
     get "/groups/#{acronym}"
     assert last_response.ok?
     group = MultiJson.load(last_response.body)
-    assert group["acronym"] = acronym
+    assert_equal acronym, group["acronym"]
   end
 
-  def test_create_new_group
-    acronym = @test_group[:acronym]
-    put "/groups/#{acronym}", MultiJson.dump(@test_group), "CONTENT_TYPE" => "application/json"
+  def test_create_group_with_post_requires_admin
+    assert_group_creation_requires_admin(:post, '/groups')
+  end
 
-    assert last_response.status == 201
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
-    get "/groups/#{acronym}"
-    assert last_response.ok?
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
-    delete "/groups/#{acronym}"
-    post "/groups", MultiJson.dump(@test_group), "CONTENT_TYPE" => "application/json"
-
-    assert last_response.status == 201
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
-    get "/groups/#{acronym}"
-    assert last_response.ok?
-    assert MultiJson.load(last_response.body)["acronym"].eql?(acronym)
-
+  def test_create_group_with_put_requires_admin
+    assert_group_creation_requires_admin(:put, "/groups/#{@test_group[:acronym]}")
   end
 
   def test_update_patch_group
@@ -90,21 +81,58 @@ class TestGroupsController < TestCase
     new_desc = "CTSA Health Brand new DESCRIPTION"
     new_values = {name: new_name, description: new_desc}
 
-    patch "/groups/#{acronym}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
-    assert last_response.status == 204
+    with_settings(enable_security: true) do
+      patch "/groups/#{acronym}?apikey=#{@user.apikey}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
+      assert_equal 403, last_response.status
+      unchanged = Group.find(acronym).include(:name, :description).first
+      assert_equal @groups[acronym], [unchanged.name, unchanged.description]
 
-    get "/groups/#{acronym}"
-    group = MultiJson.load(last_response.body)
-    assert group["name"].eql?(new_name)
-    assert group["description"].eql?(new_desc)
+      patch "/groups/#{acronym}?apikey=#{@admin.apikey}", MultiJson.dump(new_values), "CONTENT_TYPE" => "application/json"
+      assert_equal 204, last_response.status
+
+      get "/groups/#{acronym}?apikey=#{@user.apikey}"
+      assert last_response.ok?
+      group = MultiJson.load(last_response.body)
+      assert_equal new_name, group["name"]
+      assert_equal new_desc, group["description"]
+    end
   end
 
   def test_delete_group
     acronym = 'CTSA-HOM'
-    delete "/groups/#{acronym}"
-    assert last_response.status == 204
+    with_settings(enable_security: true) do
+      delete "/groups/#{acronym}?apikey=#{@user.apikey}"
+      assert_equal 403, last_response.status
+      refute_nil Group.find(acronym).first
 
-    get "/groups/#{acronym}"
-    assert last_response.status == 404
+      delete "/groups/#{acronym}?apikey=#{@admin.apikey}"
+      assert_equal 204, last_response.status
+
+      get "/groups/#{acronym}?apikey=#{@user.apikey}"
+      assert_equal 404, last_response.status
+    end
+  end
+
+  private
+
+  def assert_group_creation_requires_admin(method, path)
+    acronym = @test_group[:acronym]
+    with_settings(enable_security: true) do
+      public_send(method, path, MultiJson.dump(@test_group), "CONTENT_TYPE" => "application/json")
+      assert_equal 401, last_response.status
+      assert_nil Group.find(acronym).first
+
+      public_send(method, "#{path}?apikey=#{@user.apikey}", MultiJson.dump(@test_group), "CONTENT_TYPE" => "application/json")
+      assert_equal 403, last_response.status
+      assert_nil Group.find(acronym).first
+
+      public_send(method, "#{path}?apikey=#{@admin.apikey}", MultiJson.dump(@test_group), "CONTENT_TYPE" => "application/json")
+      assert_equal 201, last_response.status
+      assert_equal acronym, MultiJson.load(last_response.body)["acronym"]
+
+      get "/groups/#{acronym}?apikey=#{@user.apikey}"
+      assert last_response.ok?
+      assert_equal acronym, MultiJson.load(last_response.body)["acronym"]
+    end
   end
 end
