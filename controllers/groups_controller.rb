@@ -64,6 +64,7 @@ class GroupsController < ApplicationController
     private
 
     def create_group
+      admin_only!
       params ||= @params
       acronym = params["acronym"]
       group = Group.find(acronym).first
