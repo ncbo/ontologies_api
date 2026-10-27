@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/goo.git
-  revision: c56f3d67e2c4d1280cd510caf84b7a1e2e93f450
-  branch: main
+  revision: abc18c8bc30ec6ae3f2fede2e03914c5e2a5f0a3
+  branch: development
   specs:
     goo (0.0.2)
       activesupport
@@ -22,15 +22,15 @@ GIT
       redis
       request_store
       rest-client
-      rsolr
+      rsolr (>= 2.6.0)
       sparql-client (= 3.2.2)
       stoplight (~> 5.0)
       uuid
 
 GIT
   remote: https://github.com/ncbo/ncbo_annotator.git
-  revision: 74b6a8b1c4ca879aa506b6d34ac6877713e675eb
-  branch: master
+  revision: eec3b42e2a6812ec25957b4db49fddc95d17ca4d
+  branch: develop
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -40,8 +40,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: d85ca28664e4a263fd82ae79d5aa3d1c4450cb63
-  branch: master
+  revision: 1098408c0300044a9488d6b9d7facd2920a0f1a1
+  branch: develop
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -58,8 +58,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_ontology_recommender.git
-  revision: 62cd3805958ccdf96129461e25f0298ecbd1d131
-  branch: master
+  revision: 539df9beaad0757a92b4b2df53913145bc11c728
+  branch: develop
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -69,8 +69,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 59f630f4bca589031244fde3995079c674e51aee
-  branch: master
+  revision: 0c70b32304ff62c587054b229ea46150907769df
+  branch: develop
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
