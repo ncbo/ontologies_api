@@ -14,10 +14,11 @@ class NotesController < ApplicationController
   ##
   # Class notes
   get "/ontologies/:ontology/classes/:cls/notes" do
-    ont = Ontology.find(params["ontology"]).include(:submissions, :acronym).first
+    ont = Ontology.find(params["ontology"]).include(:acronym).first
     error 404, "You must provide a valid id to retrieve notes for an ontology" if ont.nil?
     check_last_modified_segment(LinkedData::Models::Note, [ont.acronym])
     sub = ont.latest_submission(status: :rdf)
+    error 404, "Ontology #{params["ontology"]} has no parsed submission" if sub.nil?
     cls = LinkedData::Models::Class.find(params["cls"]).in(sub).include(notes: LinkedData::Models::Note.goo_attrs_to_load(includes_param)).first
     error 404, "You must provide a valid class id" if cls.nil?
     notes = cls.notes

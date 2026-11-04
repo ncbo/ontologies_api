@@ -229,6 +229,13 @@ class TestClassesController < TestCase
     assert last_response.body["has not been parsed"]
   end
 
+  def test_classes_for_missing_submission
+    get "/ontologies/TEST-ONT-0/classes/roots?ontology_submission_id=99"
+
+    assert_equal 404, last_response.status
+    assert last_response.body["existing submission ID for the TEST-ONT-0 ontology"]
+  end
+
   def test_tree
     ont = Ontology.find("TEST-ONT-0").include(:acronym).first
 
