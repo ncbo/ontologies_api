@@ -33,9 +33,9 @@ module Sinatra
       # Metrics of the ontology's highest submission that has them.
       #
       # Looks the submission up first and then loads its one Metrics record by id. Querying
-      # Metric through submission and ontology instead becomes a join across the Metrics,
-      # OntologySubmission and Ontology graphs over every submission, which takes minutes on
-      # AllegroGraph for ontologies with many submissions.
+      # Metric through submission and ontology, ordered by submissionId, returns every
+      # submission's Metrics record, so its cost grows with the ontology's history; on Virtuoso
+      # goo's nested order_by also makes it scan all submissions (GO: about 10 s).
       def latest_ontology_metrics(ont)
         latest = ont.latest_submission(status: :any, include: [:metrics])
         return nil if latest.nil?
@@ -50,8 +50,13 @@ module Sinatra
         load_metrics(older.select(&:metrics).max_by(&:submissionId)&.metrics)
       end
 
+      # Metrics of one submission. With the submission id bound and no ordering, querying Metric
+      # through the submission matches a single record in one query, which is cheaper than
+      # loading the submission first.
       def submission_metrics(ont, submission_id)
-        load_metrics(ont.submission(submission_id, include: [:metrics])&.metrics)
+        LinkedData::Models::Metric
+          .where(submission: { submissionId: submission_id.to_i, ontology: [acronym: ont.acronym] })
+          .include(LinkedData::Models::Metric.goo_attrs_to_load(includes_param)).first
       end
 
       def load_metrics(metrics)
