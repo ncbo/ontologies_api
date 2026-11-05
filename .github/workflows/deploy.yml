@@ -109,3 +109,35 @@ jobs:
       with:
         target: ${{ env.TARGET }} # which environment to deploy
         deploy_key: ${{ secrets.DEPLOY_ENC_KEY }} # Name of the variable configured in Settings/Secrets of your github project
+
+    # Announce the deployment to New Relic (Change Tracking).
+    # Runs only after a successful capistrano deploy (previous steps fail-fast).
+    # `continue-on-error` keeps a telemetry hiccup from marking the deploy failed.
+    #
+    # Required config:
+    #   secret NEW_RELIC_API_KEY - New Relic User API key (starts with NRAK-)
+    #
+    # The target APM entity is resolved by app_name read from the deployed
+    # config/newrelic.yml (synced from the private config repo into the runner
+    # workspace above), so no entity GUID needs to be stored here. The app_name
+    # in that file matches the New Relic entity name per environment.
+    - name: Read New Relic app_name from config for ${{ env.TARGET }}
+      run: |
+        NAME=$(ruby -ryaml -e 'cfg = YAML.safe_load_file("config/newrelic.yml", aliases: true); print(cfg.fetch(ENV["TARGET"], {})["app_name"] || cfg.dig("common", "app_name"))')
+        echo "NR_APP_NAME=${NAME}" >> "$GITHUB_ENV"
+    - name: Record deployment in New Relic
+      if: ${{ env.NR_APP_NAME != '' }}
+      continue-on-error: true
+      uses: newrelic/deployment-marker-action@v2.6.0
+      with:
+        apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
+        region: "US" # change to "EU" for EU-hosted New Relic accounts
+        commandType: "changeTrackingCreateEvent"
+        entitySearch: "name = '${{ env.NR_APP_NAME }}' AND type = 'APPLICATION' AND domain = 'APM'"
+        category: "Deployment"
+        type: "Basic"
+        version: "${{ env.BRANCH }}@${{ github.sha }}"
+        commit: "${{ github.sha }}"
+        user: "${{ github.actor }}"
+        description: "Deployed ontologies_api to ${{ env.TARGET }}"
+        changelog: "https://github.com/${{ github.repository }}/commits/${{ github.sha }}"
