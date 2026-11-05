@@ -35,6 +35,17 @@ module Rack
         r.update_param(val, r.params[key]) if (r.params.has_key?(key) && !r.params.has_key?(val))
       end
 
+      # `display` is consumed as a comma-separated String (includes_param, the
+      # oLD serializer). Fold the bracketed array form some clients send
+      # (`include[]=a&include[]=b`) into that shape; reject anything else
+      # (e.g. `include[k]=v`) with a 400 instead of a NoMethodError 500.
+      display = r.params["display"]
+      if display.is_a?(Array) && display.all? { |v| v.is_a?(String) }
+        r.update_param("display", display.join(","))
+      elsif !display.nil? && !display.is_a?(String)
+        return bad_request("The `include` parameter must be a comma-separated list, e.g. include=prefLabel,synonym")
+      end
+
       if (!r.params["include_synonyms"].nil?)
         r.params["include_synonyms"] == "false" ? r.update_param("exclude_synonyms", "true") : r.update_param("exclude_synonyms", "false")
       elsif (!r.params["with_synonyms"].nil?)
@@ -42,6 +53,13 @@ module Rack
       end
 
       @app.call(env)
+    end
+
+    private
+
+    def bad_request(message)
+      body = MultiJson.dump({ errors: [message], status: 400 })
+      [400, { "content-type" => "application/json", "content-length" => body.bytesize.to_s }, [body]]
     end
 
   end

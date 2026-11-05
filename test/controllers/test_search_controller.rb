@@ -183,6 +183,20 @@ class TestSearchController < TestCase
   # to start with " AND obsolete:false ..." — a malformed query rejected by
   # Solr (400) and surfaced as 500 by the API. Fix substitutes Solr's
   # match-all literal so the AND'd clauses concatenate cleanly.
+  def test_search_include_param_array_form
+    # `include[]=a&include[]=b` used to raise
+    # NoMethodError: undefined method `to_sym' for [...]:Array (500)
+    get "/search?q=Funding&include[]=prefLabel&include[]=ontology&include[]=ui"
+    assert_equal 400, last_response.status, last_response.body[0, 300]
+    assert_includes MultiJson.load(last_response.body)["errors"].first, "cannot accept ontology, ui"
+
+    get "/search?q=Funding&include[]=prefLabel&include[]=synonym"
+    assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 300]}"
+
+    get "/search?q=Funding&include[key]=prefLabel"
+    assert_equal 400, last_response.status, last_response.body[0, 300]
+  end
+
   def test_search_with_empty_acronym_filter_returns_ok
     get "/search?q=anything&ontology_types=NONEXISTENT_TYPE"
     assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 200]}"
