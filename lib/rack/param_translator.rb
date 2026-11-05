@@ -35,10 +35,7 @@ module Rack
         r.update_param(val, r.params[key]) if (r.params.has_key?(key) && !r.params.has_key?(val))
       end
 
-      # `display` is consumed as a comma-separated String (includes_param, the
-      # oLD serializer). Fold the bracketed array form some clients send
-      # (`include[]=a&include[]=b`) into that shape; reject anything else
-      # (e.g. `include[k]=v`) with a 400 instead of a NoMethodError 500.
+      # The oLD serializer also reads `display`, so normalize it here rather than in includes_param.
       display = r.params["display"]
       if display.is_a?(Array) && display.all? { |v| v.is_a?(String) }
         r.update_param("display", display.join(","))
