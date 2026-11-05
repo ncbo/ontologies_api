@@ -161,6 +161,14 @@ class TestMetricsController < TestCase
         assert last_response.ok?, "#{path} for a user on the ACL"
         assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 2)
       end
+
+      # The list of all metrics leaves the private ontology out unless the user can read it
+      {other => %w[TEST-ONT-0], allowed => %w[TEST-ONT-0 TEST-ONT-1]}.each do |user, expected|
+        get '/metrics', apikey: user.apikey
+        assert last_response.ok?
+        acronyms = MultiJson.load(last_response.body).map { |m| m['@id'].split('/')[-4] }.sort
+        assert_equal expected, acronyms, "/metrics for #{user.username}"
+      end
     end
   ensure
     if ont && original

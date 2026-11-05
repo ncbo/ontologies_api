@@ -7,7 +7,7 @@ class MetricsController < ApplicationController
       latest_metrics = LinkedData::Models::Metric.where.include(LinkedData::Models::Metric.goo_attrs_to_load(includes_param)).all
                     .group_by { |x| x.id.split('/')[-4] }
                     .transform_values { |metrics| metrics.max_by { |x| x.id.split('/')[-2].to_i } }
-      reply latest_metrics.values
+      reply readable_metrics(latest_metrics.values)
     end
 
     #

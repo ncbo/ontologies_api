@@ -14,6 +14,22 @@ module Sinatra
         ont
       end
 
+      # Drops the metrics of ontologies the current user can't read. Metric has no read restriction
+      # of its own, so `reply` would return every ontology's metrics, private ones included.
+      # Metric ids are <ontology id>/submissions/<n>/metrics.
+      def readable_metrics(metrics)
+        return metrics unless LinkedData.settings.enable_security
+
+        ontologies = LinkedData::Models::Ontology.where
+                                                 .include(:acronym, *LinkedData::Models::Ontology.access_control_load_attrs)
+                                                 .all
+        hidden = ontologies.select { |o| o.read_restricted? && !o.readable?(env['REMOTE_USER']) }
+                           .map { |o| o.id.to_s }.to_set
+        return metrics if hidden.empty?
+
+        metrics.reject { |m| hidden.include?(m.id.to_s.split('/submissions/').first) }
+      end
+
       # Metrics of the ontology's highest submission that has them.
       #
       # Looks the submission up first and then loads its one Metrics record by id. Querying
