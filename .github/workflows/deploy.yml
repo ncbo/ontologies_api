@@ -127,7 +127,8 @@ jobs:
         echo "NR_APP_NAME=${NAME}" >> "$GITHUB_ENV"
         # deployment-marker-action v2.6.0 does not default the timestamp in
         # changeTrackingCreateEvent mode; it must be milliseconds since epoch.
-        echo "NR_TIMESTAMP=$(date +%s%3N)" >> "$GITHUB_ENV"
+        # Use Ruby (portable) rather than `date +%s%3N` (GNU-only).
+        echo "NR_TIMESTAMP=$(ruby -e 'print((Time.now.to_f * 1000).to_i)')" >> "$GITHUB_ENV"
     - name: Record deployment in New Relic
       if: ${{ env.NR_APP_NAME != '' }}
       continue-on-error: true
