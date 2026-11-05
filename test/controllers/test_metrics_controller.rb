@@ -137,6 +137,40 @@ class TestMetricsController < TestCase
     end
   end
 
+  def test_private_ontology_metrics_need_access
+    ontology = 'TEST-ONT-1'
+    allowed, other = %w[metrics_acl_user metrics_other_user].map do |username|
+      user = LinkedData::Models::User.new(username: username, email: "#{username}@example.org",
+                                          password: 'metrics_test_pass')
+      user.save
+      user.bring_remaining
+      user
+    end
+    ont = Ontology.find(ontology).first
+    ont.bring_remaining
+    original = { viewingRestriction: ont.viewingRestriction, acl: ont.acl }
+    ont.viewingRestriction = 'private'
+    ont.acl = [allowed]
+    ont.save
+
+    with_settings(enable_security: true) do
+      ["/ontologies/#{ontology}/metrics", "/ontologies/#{ontology}/submissions/2/metrics"].each do |path|
+        get path, apikey: other.apikey
+        assert_equal 403, last_response.status, "#{path} for a user without access"
+        get path, apikey: allowed.apikey
+        assert last_response.ok?, "#{path} for a user on the ACL"
+        assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 2)
+      end
+    end
+  ensure
+    if ont && original
+      ont.viewingRestriction = original[:viewingRestriction]
+      ont.acl = original[:acl] || []
+      ont.save
+    end
+    [allowed, other].compact.each(&:delete)
+  end
+
   def test_metrics_with_submission_id_as_param
     ontology = 'TEST-ONT-0'
     get "/ontologies/#{ontology}/metrics?ontology_submission_id=2"

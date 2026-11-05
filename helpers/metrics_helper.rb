@@ -3,6 +3,17 @@ require 'sinatra/base'
 module Sinatra
   module Helpers
     module MetricsHelper
+      # The ontology a per-ontology metrics route is for, with the access check. Metric has no
+      # read restriction of its own, so the check in `reply` lets a private ontology's metrics
+      # through; check the ontology here instead.
+      def metrics_ontology
+        ont = LinkedData::Models::Ontology.find(params['ontology'])
+                                          .include(:acronym, :administeredBy, :acl, :viewingRestriction).first
+        error 404, "Ontology #{params['ontology']} not found" unless ont
+        check_access(ont) if LinkedData.settings.enable_security
+        ont
+      end
+
       # Metrics of the ontology's highest submission that has them.
       #
       # Looks the submission up first and then loads its one Metrics record by id. Querying
