@@ -125,6 +125,9 @@ jobs:
       run: |
         NAME=$(ruby -ryaml -e 'cfg = YAML.safe_load_file("config/newrelic.yml", aliases: true); print(cfg.fetch(ENV["TARGET"], {})["app_name"] || cfg.dig("common", "app_name"))')
         echo "NR_APP_NAME=${NAME}" >> "$GITHUB_ENV"
+        # deployment-marker-action v2.6.0 does not default the timestamp in
+        # changeTrackingCreateEvent mode; it must be milliseconds since epoch.
+        echo "NR_TIMESTAMP=$(date +%s%3N)" >> "$GITHUB_ENV"
     - name: Record deployment in New Relic
       if: ${{ env.NR_APP_NAME != '' }}
       continue-on-error: true
@@ -136,6 +139,7 @@ jobs:
         entitySearch: "name = '${{ env.NR_APP_NAME }}' AND type = 'APPLICATION' AND domain = 'APM'"
         category: "Deployment"
         type: "Basic"
+        timestamp: "${{ env.NR_TIMESTAMP }}"
         version: "${{ env.BRANCH }}@${{ github.sha }}"
         commit: "${{ github.sha }}"
         user: "${{ github.actor }}"
