@@ -71,13 +71,34 @@ jobs:
           echo "BRANCH=${USER_INPUT_BRANCH:-develop}" >> "$GITHUB_ENV"
           echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> "$GITHUB_ENV"
         fi
+    # GITHUB_SHA is the commit the workflow file was read from (the ref the run
+    # was dispatched on), not what capistrano deploys. Resolve BRANCH to the
+    # commit it points to now, so the deployment info and the New Relic marker
+    # name the deployed code. Capistrano fetches the branch a few seconds later,
+    # so a push in between would still make them differ.
+    - name: Resolve the commit being deployed
+      run: |
+        if [[ "${BRANCH}" =~ ^[0-9a-f]{40}$ ]]; then
+          DEPLOY_SHA=${BRANCH}
+        else
+          # For an annotated tag, prefer the peeled ^{} entry: the commit, not the tag object.
+          DEPLOY_SHA=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" \
+              "refs/heads/${BRANCH}" "refs/tags/${BRANCH}" "refs/tags/${BRANCH}^{}" 2>/dev/null |
+            awk -v b="${BRANCH}" '
+              $2 == "refs/heads/" b      { head = $1 }
+              $2 == "refs/tags/" b "^{}" { peeled = $1 }
+              $2 == "refs/tags/" b       { tag = $1 }
+              END { print (head ? head : (peeled ? peeled : tag)) }')
+        fi
+        echo "DEPLOY_SHA=${DEPLOY_SHA}" >> "$GITHUB_ENV"
     - name: Provide deployment info
       run: |
         echo "=== Deployment Details ======================================"
         echo "Time:        $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
         echo "Branch/Tag:  ${BRANCH}"
         echo "Environment: ${TARGET}"
-        echo "Commit:      ${GITHUB_SHA}"
+        echo "Commit:      ${DEPLOY_SHA:-unresolved}"
+        echo "Workflow:    ${GITHUB_SHA}"
         echo "Triggered by: ${GITHUB_ACTOR}"
         echo "Event:       ${GITHUB_EVENT_NAME}"
         if [ "${GITHUB_EVENT_NAME}" = "workflow_run" ]; then
@@ -136,8 +157,10 @@ jobs:
         entitySearch: "name = '${{ env.NR_APP_NAME }}' AND type = 'APPLICATION' AND domain = 'APM'"
         category: "Deployment"
         type: "Basic"
-        version: "${{ env.BRANCH }}@${{ github.sha }}"
-        commit: "${{ github.sha }}"
+        # Fall back to the branch name alone if the commit couldn't be resolved,
+        # rather than recording the workflow's own commit as the deployed one.
+        version: "${{ env.DEPLOY_SHA && format('{0}@{1}', env.BRANCH, env.DEPLOY_SHA) || env.BRANCH }}"
+        commit: "${{ env.DEPLOY_SHA }}"
         user: "${{ github.actor }}"
         description: "Deployed ontologies_api to ${{ env.TARGET }}"
-        changelog: "https://github.com/${{ github.repository }}/commits/${{ github.sha }}"
+        changelog: "https://github.com/${{ github.repository }}/commits/${{ env.DEPLOY_SHA || env.BRANCH }}"
