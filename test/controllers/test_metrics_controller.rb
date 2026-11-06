@@ -4,6 +4,7 @@ module MetricsGooQueryCountSpy
   def query(*args, **kwargs, &block)
     count = Thread.current[:metrics_goo_query_count]
     Thread.current[:metrics_goo_query_count] = count + 1 unless count.nil?
+    Thread.current[:metrics_goo_queries]&.push(args.first.to_s)
     super
   end
 end
@@ -20,6 +21,21 @@ class TestMetricsController < TestCase
     Thread.current[:metrics_goo_query_count]
   ensure
     Thread.current[:metrics_goo_query_count] = nil
+  end
+
+  def capture_sparql_queries
+    Thread.current[:metrics_goo_queries] = []
+    yield
+    Thread.current[:metrics_goo_queries]
+  ensure
+    Thread.current[:metrics_goo_queries] = nil
+  end
+
+  # @@data holds the values for submission 2; submission 1 is loaded from a different file
+  def assert_metrics_of_submission(metrics, ontology, submission_id, values: @@data)
+    assert metrics['@id'].end_with?("/ontologies/#{ontology}/submissions/#{submission_id}/metrics"),
+           "Expected metrics of #{ontology} submission #{submission_id}, got #{metrics['@id']}"
+    values.each { |k, v| assert_equal(v, metrics[k]) }
   end
 
   def before_suite
@@ -63,25 +79,104 @@ class TestMetricsController < TestCase
   end
 
   def test_single_metrics
+    # Submission 3 is the newest but was never processed, so the metrics come from submission 2
     ontology = 'TEST-ONT-0'
     get "/ontologies/#{ontology}/metrics"
     assert last_response.ok?
-    metrics = MultiJson.load(last_response.body)
+    assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 2)
+  end
 
-    @@data.each do |k,v|
-      assert_equal(v, metrics[k])
+  def test_single_metrics_does_not_join_metrics_through_ontology
+    queries = capture_sparql_queries { get '/ontologies/TEST-ONT-0/metrics' }
+    assert last_response.ok?
+    joins = queries.select { |q| q.include?('metadata/Metrics') && q.include?('metadata/Ontology>') }
+    assert_empty joins, "Expected no query joining Metrics through Ontology:\n#{joins.join("\n")}"
+  end
+
+  def test_single_metrics_falls_back_to_archived_submission
+    # Archiving replaces a submission's statuses with ARCHIVED but keeps its metrics
+    ontology = 'TEST-ONT-1'
+    sub = OntologySubmission.where(ontology: [acronym: ontology], submissionId: 2).first
+    sub.bring_remaining
+    original_status = sub.submissionStatus.dup
+    sub.submissionStatus = [SubmissionStatus.find('ARCHIVED').first]
+    sub.save
+
+    get "/ontologies/#{ontology}/metrics"
+    assert last_response.ok?
+    assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 2)
+  ensure
+    if sub && original_status
+      sub.submissionStatus = original_status
+      sub.save
     end
+  end
+
+  def test_single_metrics_unknown_ontology
+    get '/ontologies/NO-SUCH-ONT/metrics'
+    assert_equal 404, last_response.status
+    get '/ontologies/NO-SUCH-ONT/submissions/1/metrics'
+    assert_equal 404, last_response.status
   end
 
   def test_metrics_with_submission_id
     ontology = 'TEST-ONT-0'
     get "/ontologies/#{ontology}/submissions/2/metrics"
     assert last_response.ok?
-    metrics = MultiJson.load(last_response.body)
+    assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 2)
 
-    @@data.each do |k,v|
-      assert_equal(v, metrics[k])
+    get "/ontologies/#{ontology}/submissions/1/metrics"
+    assert last_response.ok?
+    assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 1, values: {})
+
+    # Submission 3 was never processed and submission 99 does not exist
+    [3, 99].each do |submission_id|
+      get "/ontologies/#{ontology}/submissions/#{submission_id}/metrics"
+      assert last_response.ok?
+      assert_equal({}, MultiJson.load(last_response.body))
     end
+  end
+
+  def test_private_ontology_metrics_need_access
+    ontology = 'TEST-ONT-1'
+    allowed, other = %w[metrics_acl_user metrics_other_user].map do |username|
+      user = LinkedData::Models::User.new(username: username, email: "#{username}@example.org",
+                                          password: 'metrics_test_pass')
+      user.save
+      user.bring_remaining
+      user
+    end
+    ont = Ontology.find(ontology).first
+    ont.bring_remaining
+    original = { viewingRestriction: ont.viewingRestriction, acl: ont.acl }
+    ont.viewingRestriction = 'private'
+    ont.acl = [allowed]
+    ont.save
+
+    with_settings(enable_security: true) do
+      ["/ontologies/#{ontology}/metrics", "/ontologies/#{ontology}/submissions/2/metrics"].each do |path|
+        get path, apikey: other.apikey
+        assert_equal 403, last_response.status, "#{path} for a user without access"
+        get path, apikey: allowed.apikey
+        assert last_response.ok?, "#{path} for a user on the ACL"
+        assert_metrics_of_submission(MultiJson.load(last_response.body), ontology, 2)
+      end
+
+      # The list of all metrics leaves the private ontology out unless the user can read it
+      {other => %w[TEST-ONT-0], allowed => %w[TEST-ONT-0 TEST-ONT-1]}.each do |user, expected|
+        get '/metrics', apikey: user.apikey
+        assert last_response.ok?
+        acronyms = MultiJson.load(last_response.body).map { |m| m['@id'].split('/')[-4] }.sort
+        assert_equal expected, acronyms, "/metrics for #{user.username}"
+      end
+    end
+  ensure
+    if ont && original
+      ont.viewingRestriction = original[:viewingRestriction]
+      ont.acl = original[:acl] || []
+      ont.save
+    end
+    [allowed, other].compact.each(&:delete)
   end
 
   def test_metrics_with_submission_id_as_param

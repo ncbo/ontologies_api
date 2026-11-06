@@ -7,7 +7,7 @@ class MetricsController < ApplicationController
       latest_metrics = LinkedData::Models::Metric.where.include(LinkedData::Models::Metric.goo_attrs_to_load(includes_param)).all
                     .group_by { |x| x.id.split('/')[-4] }
                     .transform_values { |metrics| metrics.max_by { |x| x.id.split('/')[-2].to_i } }
-      reply latest_metrics.values
+      reply readable_metrics(latest_metrics.values)
     end
 
     #
@@ -75,23 +75,12 @@ class MetricsController < ApplicationController
   # Display metrics for ontology
   get "/ontologies/:ontology/metrics" do
     check_last_modified_collection(LinkedData::Models::Metric)
-    ont = Ontology.find(params['ontology']).first
-    error 404, "Ontology #{params['ontology']} not found" unless ont
-    ontology_metrics = LinkedData::Models::Metric
-                      .where(submission: {ontology: [acronym: params['ontology']]})
-                      .order_by(submission: {submissionId: :desc})
-                      .include(LinkedData::Models::Metric.goo_attrs_to_load(includes_param)).first
-    reply ontology_metrics || {}
+    reply latest_ontology_metrics(metrics_ontology) || {}
   end
 
   get "/ontologies/:ontology/submissions/:ontology_submission_id/metrics" do
     check_last_modified_collection(LinkedData::Models::Metric)
-    ont = Ontology.find(params['ontology']).first
-    error 404, "Ontology #{params['ontology']} not found" unless ont
-    ontology_submission_metrics = LinkedData::Models::Metric
-                      .where(submission: { submissionId: params['ontology_submission_id'].to_i, ontology: [acronym: params['ontology']] })
-                      .include(LinkedData::Models::Metric.goo_attrs_to_load(includes_param)).first
-    reply ontology_submission_metrics || {}
+    reply submission_metrics(metrics_ontology, params['ontology_submission_id']) || {}
   end
 
 

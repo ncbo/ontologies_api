@@ -129,6 +129,17 @@ class TestNotesController < TestCase
     assert_operator 5, :<=, notes.length
   end
 
+  def test_notes_for_class_without_parsed_submission
+    user, = LinkedData::SampleData::Ontology.ontology_objects
+    ont = LinkedData::Models::Ontology.new(acronym: "NOTES-NO-SUB", name: "No submissions", administeredBy: [user]).save
+    get "/ontologies/#{ont.acronym}/classes/#{CGI.escape(@@cls.id.to_s)}/notes"
+
+    assert_equal 404, last_response.status
+    assert last_response.body["has no parsed submission"]
+  ensure
+    ont&.delete
+  end
+
   def test_notes_for_class
     get "/ontologies/#{@@ontology.acronym}/classes/#{CGI.escape(@@cls.id.to_s)}"
     cls = MultiJson.load(last_response.body)
