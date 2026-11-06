@@ -297,13 +297,13 @@ class TestCase < AppUnit
   def self.make_admin(user)
     user.bring_remaining
     user.role = [LinkedData::Models::Users::Role.find(LinkedData::Models::Users::Role::ADMIN).first]
-    user.save
+    user.save(override_security: true)
   end
 
   def self.reset_to_not_admin(user)
     user.bring_remaining
     user.role = [LinkedData::Models::Users::Role.find(LinkedData::Models::Users::Role::DEFAULT).first]
-    user.save
+    user.save(override_security: true)
   end
 
   def unused_port
