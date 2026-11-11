@@ -22,7 +22,7 @@ permissions:
 on:
   # Trigger deployment to staging after unit test action completes
   workflow_run:
-    workflows: ["Ruby Unit Tests"]
+    workflows: ["Docker Unit Tests"]
     types:
       - completed
     branches: [develop]  # trigger auto deployment to staging from develop branch
@@ -46,7 +46,7 @@ jobs:
     concurrency:
       group: deploy
     runs-on: ubuntu-latest
-    # run deployment only if "Ruby Unit Tests" workflow completes sucessefully
+    # run deployment only if "Docker Unit Tests" workflow completes sucessefully
     # or when manually triggered
     if: >
       (github.event_name == 'workflow_run' &&
