@@ -40,7 +40,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 1098408c0300044a9488d6b9d7facd2920a0f1a1
+  revision: 01ea0df2b888a888ccb08c7908b51d82b420e478
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -69,7 +69,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 319cd8983b0c38be491155eb9e76910044f35ae2
+  revision: 7f381f83042aa84270681da6e2bf9a636dc33223
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -262,7 +262,7 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    hashdiff (1.2.1)
+    hashdiff (1.2.2)
     htmlentities (4.4.2)
     http-accept (1.7.0)
     http-cookie (1.1.6)
@@ -342,7 +342,7 @@ GEM
       net-ssh (>= 5.0.0, < 9.0.0)
     net-smtp (0.5.2)
       net-protocol
-    net-ssh (8.1.0)
+    net-ssh (8.1.2)
       logger
       openssl (>= 3.2.0)
     netrc (0.11.0)
@@ -362,7 +362,7 @@ GEM
       racc
     pony (1.13.1)
       mail (>= 2.0)
-    prism (1.9.0)
+    prism (2.1.0)
     pry (0.16.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -447,9 +447,9 @@ GEM
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.50.0)
+    rubocop-ast (1.51.0)
       parser (>= 3.3.7.2)
-      prism (~> 1.7)
+      prism (>= 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
     rubyzip (3.7.0)
@@ -667,7 +667,7 @@ CHECKSUMS
   grpc (1.70.1-x86_64-darwin) sha256=628cb929542c277b6e5f638b6b8575b3bdcde250a2a70bddf8c0be1bf77e6781
   grpc (1.70.1-x86_64-linux) sha256=ed12eea749127119c9761a58ba17ce92aadbc35b0b4fa27e4bd8ec84047d63be
   haml (5.2.2) sha256=6e759246556145642ef832d670fc06f9bd8539159a0e600847a00291dd7aae0c
-  hashdiff (1.2.1) sha256=9c079dbc513dfc8833ab59c0c2d8f230fa28499cc5efb4b8dd276cf931457cd1
+  hashdiff (1.2.2) sha256=e2e287452b42f18d2a8d82dd48c435e214a81dbadccf49344b956842a3b9127f
   htmlentities (4.4.2) sha256=bbafbdf69f2eca9262be4efef7e43e6a1de54c95eb600f26984f71d2fe96c5c3
   http-accept (1.7.0) sha256=c626860682bfbb3b46462f8c39cd470fd7b0584f61b3cc9df5b2e9eb9972a126
   http-cookie (1.1.6) sha256=ba4b82be64de61dc281243dac70e3c382c45142f20268ed9276a3670c93feaa9
@@ -710,7 +710,7 @@ CHECKSUMS
   net-scp (4.2.1) sha256=5c9ff6743da37eef6746f248043d97d2bbf3910a4694ec8e372326ec588c2394
   net-sftp (4.1.1) sha256=dc2019e59e3e3552943b576f14cb0201ec55823935b967e10dcda169b04e4573
   net-smtp (0.5.2) sha256=35103cc04d6b2d94632f9928ede07483c24b70b9c0db1f231fea43909b678f3c
-  net-ssh (8.1.0) sha256=c9b488c2fbb13a1770e833443b1ee447ca9a33d5cb57af2e6ab692d6fc25d3c1
+  net-ssh (8.1.2) sha256=78ce245aba70b5b8dab6226b335a7f359e0ba062fef6a1bc57bad32bee22778e
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
   newrelic_rpm (10.9.1) sha256=7a2c8f0bd6c3407f7d981999d46e0d5c39c53bee9ca737f0e083d3b6dcc8f0c3
   oj (3.17.8) sha256=6a2d9b93ef289cba6abf8c33173c72920d8dac2799bd89f73c3539947a730306
@@ -724,7 +724,7 @@ CHECKSUMS
   parseconfig (1.1.2) sha256=e52247d15070fb47f9e58f44f7888d1e7f65775274cd60f9ab4b7acd7943b291
   parser (3.3.13.0) sha256=e02f9b63c2fe05b0c68f692ba4df89b3cb113b663964f75d988fbebfd6c3deca
   pony (1.13.1) sha256=ab507c8ade8b35de96f1e75c0ae4566a3c40ac8a0d5101433969b6fd29c718a7
-  prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
+  prism (2.1.0) sha256=1c0a7c6dea0e93183390fb123f007564dbe663198e2f86ad87204151147601f3
   pry (0.16.1) sha256=d92d82c86e7f2dc34beec6d2892d5cf5ea517eea22eed3ceabb38ee62a98accc
   pstore (0.3.0) sha256=97888d57cdc8b99b3587dde5e1d01fc5ca4a9124dfeb2afb84e3dd982e78f829
   public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623
@@ -762,7 +762,7 @@ CHECKSUMS
   rexml (3.4.4) sha256=19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142
   rsolr (3.0.0) sha256=68aee3bd28ec1064c4a6843616d25d94cacb3ec2db0cc637d38eca2aa6093eb9
   rubocop (1.92.2) sha256=14fb31eed143a0dc6f78186c550c1715e81cd38f59d05d1165050e445c1f5382
-  rubocop-ast (1.50.0) sha256=b9ca88300da0803ee222ad20cdb30494c0a784eed06fdc35d254b06d662788db
+  rubocop-ast (1.51.0) sha256=0ec311e36b191b3872d909078a35274e962ae97dbce64be6812d145ca59acfcb
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   ruby-xxHash (0.4.0.2) sha256=201d8305ec1bd0bc32abeaecf7b423755dd1f45f4f4d02ef793b6bb71bf20684
   rubyzip (3.7.0) sha256=65c19294da75297a939006f3516deacc33185fbd721ff1954f7a231db6d3e121
