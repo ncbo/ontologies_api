@@ -40,7 +40,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_cron.git
-  revision: 01ea0df2b888a888ccb08c7908b51d82b420e478
+  revision: 5103696dd0c127bcab514c740bf8321790ff9d53
   branch: develop
   specs:
     ncbo_cron (0.0.1)
@@ -69,7 +69,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: 7f381f83042aa84270681da6e2bf9a636dc33223
+  revision: c319e14ce450f3414152ca58b07b7d75ef6703b2
   branch: develop
   specs:
     ontologies_linked_data (0.0.1)
@@ -158,7 +158,7 @@ GEM
       sshkit (~> 1.3)
     coderay (1.1.3)
     concurrent-ruby (1.3.8)
-    connection_pool (3.0.2)
+    connection_pool (3.0.3)
     crack (0.4.5)
       rexml
     dante (0.4.0)
@@ -285,7 +285,7 @@ GEM
     jwt (3.3.0)
       base64
     kgio (2.11.4)
-    kramdown (2.5.2)
+    kramdown (2.6.1)
       rexml (>= 3.4.4)
     language_server-protocol (3.17.0.6)
     libxml-ruby (6.0.0)
@@ -336,7 +336,7 @@ GEM
       net-protocol
     net-protocol (0.4.0)
       timeout
-    net-scp (4.2.1)
+    net-scp (4.2.2)
       net-ssh (>= 2.6.5, < 9.0.0)
     net-sftp (4.1.1)
       net-ssh (>= 5.0.0, < 9.0.0)
@@ -422,7 +422,7 @@ GEM
       redis-store (>= 1.6, < 2)
     redis-store (1.12.0)
       redis (>= 4, < 7)
-    regexp_parser (2.13.1)
+    regexp_parser (2.13.2)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -617,7 +617,7 @@ CHECKSUMS
   capistrano-rbenv (2.2.0) sha256=3c8f39b7c624f3806630dcb475484bb3579aef07a40efe85089d83f64b0c35f5
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.8) sha256=b2f1be836e968ccc78ccfce277ea79c72a88633f22306782c16ff23fb415d1e1
-  connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
+  connection_pool (3.0.3) sha256=e0f8ee3ee0039396753e06e8a2dde0ef028e40f7df29e97f57da7577c489cb5e
   crack (0.4.5) sha256=798416fb29b8c9f655d139d5559169b39c4a0a3b8f8f39b7f670eec1af9b21b3
   dante (0.4.0) sha256=b3ae39777ff2ccc68a4733ac68a7697ed338a9733f62efaf8b1bb9ef8578d983
   date (3.6.0) sha256=18ac945c4e24ebd93534f8eab8c2fd8c5604b3e977105b3798d62a1e8d27b580
@@ -679,7 +679,7 @@ CHECKSUMS
   json-schema (6.2.1) sha256=c0bf6113d772348bfd159fb096950beeb1e1e25aaeea50b676bd45191d8dbdf3
   jwt (3.3.0) sha256=44cc34fbc341c148233cf66641522b4bce0dfb1ce55e8073f05c56f44f4ee546
   kgio (2.11.4) sha256=bda7a2146115998a5b07154e708e0ac02c38dcee7e793c33e2e14f600fdfffc6
-  kramdown (2.5.2) sha256=1ba542204c66b6f9111ff00dcc26075b95b220b07f2905d8261740c82f7f02fa
+  kramdown (2.6.1) sha256=fbef3479b69c875aacb118dde77a40d6cc3a91e2c1d505a4c3f3f9e92d142641
   language_server-protocol (3.17.0.6) sha256=5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0
   libxml-ruby (6.0.0) sha256=a9d9458d018dee591d0995fdc1110cd67ec32b7be67d36fdb9e0b01a4ca9dac4
   link_header (0.0.8) sha256=15c65ce43b29f739b30d05e5f25c22c23797e89cf6f905dbb595fb4c70cb55f9
@@ -707,7 +707,7 @@ CHECKSUMS
   net-imap (0.6.8) sha256=eb30bb62227b64a3af6b518b04b2375113d69f68f15de59b0193b07d98acf6d9
   net-pop (0.1.2) sha256=848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3
   net-protocol (0.4.0) sha256=f9f90c8c6f64794a45160bf422177a336db12809de3beeeaa26b88fcd2e8c853
-  net-scp (4.2.1) sha256=5c9ff6743da37eef6746f248043d97d2bbf3910a4694ec8e372326ec588c2394
+  net-scp (4.2.2) sha256=af26fa536fb1fe5a3e77e0095d00685eca58fa49c28968f4fabc52fea21d35a2
   net-sftp (4.1.1) sha256=dc2019e59e3e3552943b576f14cb0201ec55823935b967e10dcda169b04e4573
   net-smtp (0.5.2) sha256=35103cc04d6b2d94632f9928ede07483c24b70b9c0db1f231fea43909b678f3c
   net-ssh (8.1.2) sha256=78ce245aba70b5b8dab6226b335a7f359e0ba062fef6a1bc57bad32bee22778e
@@ -755,7 +755,7 @@ CHECKSUMS
   redis-client (0.30.1) sha256=5151bc5c7bbfe48623732cdae3b900d8a22dc691cc7cdfacfb351ac55116522d
   redis-rack-cache (2.2.1) sha256=9c72978a6354e02efeb2f933dd32c94a4a13f1137dac492442126bf25cc19970
   redis-store (1.12.0) sha256=bea7ed3f9a602d991934761bd56a3bdc78de068a1497d4ccf5e071d39e11d3da
-  regexp_parser (2.13.1) sha256=5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b
+  regexp_parser (2.13.2) sha256=798475411fe146a45752ce1478793bf2392d73dd157acc2eb4c4e3e519912b85
   reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
   request_store (1.7.0) sha256=e1b75d5346a315f452242a68c937ef8e48b215b9453a77a6c0acdca2934c88cb
   rest-client (2.1.0) sha256=35a6400bdb14fae28596618e312776c158f7ebbb0ccad752ff4fa142bf2747e3
