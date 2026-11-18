@@ -148,10 +148,22 @@
               %li also_search_obsolete={true|false}  // default = false (exclude obsolete terms)
               %li cui={C0018787,C0225807,C0018787}  // Allows restricting query by CUIs. default = null (no restriction)
               %li semantic_types={T023,T185,T061}  // Allows restricting query by Semantic Types (TUI). default = null (no restriction)
-              %li include={prefLabel, synonym, definition, notation, cui, semanticType} // default = (see Common Parameters section)
+              %li include={prefLabel, synonym, definition, notation, cui, semanticType, properties, oboId, obsolete, matchType, ontologyType, provisional} // default = (see Common Parameters section)
               %li page={integer representing the page number} // default = 1
               %li pagesize={integer representing the size of the returned page} // default = 50
               %li language={an ISO 639-1 language value, e.g 'fr' or 'en'} // by default search in English
+
+        %p
+          Search results and individual class responses include <code>oboId</code> by default when available.
+          This is a single OBO-style identifier, such as <code>GO:0050892</code> or <code>NCIT:C20047</code>,
+          derived using the same rules as search indexing. It is distinct from <code>notation</code>:
+          an NCIT class can have notation <code>Thesaurus:C20047</code> and oboId <code>NCIT:C20047</code>.
+          The field is omitted when unavailable; clients should hide the identifier in that case.
+        %p
+          Explicit <code>include</code> lists replace the default fields rather than adding to them.
+          For example, use <code>include=prefLabel,oboId,obsolete,matchType,ontologyType,provisional</code>
+          to request the identifier together with search-result metadata.
+          The search endpoint accepts only the fields listed above; <code>include=all</code> is not supported for search.
 
         %h4#nav_search_subtree Subtree Search
 
