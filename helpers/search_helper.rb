@@ -4,7 +4,12 @@ require 'multi_json'
 module Sinatra
   module Helpers
     module SearchHelper
-      ALLOWED_INCLUDES_PARAMS = [:prefLabel, :synonym, :definition, :notation, :cui, :semanticType, :properties].freeze
+      # Explicit includes replace the defaults, so clients must also be able to
+      # request the metadata normally returned alongside class labels.
+      ALLOWED_INCLUDES_PARAMS = %i[
+        prefLabel synonym definition notation cui semanticType properties oboId
+        obsolete matchType ontologyType provisional
+      ].freeze
       ONTOLOGIES_PARAM = "ontologies"
       ONTOLOGY_PARAM = "subtree_ontology"
       EXACT_MATCH_PARAM = "require_exact_match"
