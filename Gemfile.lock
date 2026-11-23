@@ -69,8 +69,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_linked_data.git
-  revision: c03b70c4fa70afe18d77c11f6bd4b0ae91883363
-  branch: fix/referer-apikey-bypass
+  revision: ff0716e8eb4d63b9aabaf14867f2f645e3b3ba11
+  branch: develop
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
