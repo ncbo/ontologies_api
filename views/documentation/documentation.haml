@@ -65,6 +65,8 @@
                 %li Using the <code>apikey</code> query string parameter
                 %li Providing an <code>Authorization</code> header: <code>Authorization: apikey token=your_apikey</code> (replace `your_apikey` with your actual key)
                 %li When using a web browser to explore the API, if you provide your API Key once using method 1, it will be stored in a cookie for subsequent requests. You can override this by providing a different API Key in a new call.
+            %p
+              The example links for the search, annotator, recommender and analytics endpoints on this page are the one exception: they work without an API Key so that you can try them from a web browser. Changing an example in any way, or following a link from its results, requires an API Key.
         %tr
           %td include
           %td
@@ -135,7 +137,7 @@
               <span class="label label-info">GET</span> <span class="label label-info">POST</span> <code>/search?q={search query}</code>
             %li
               example:
-              %a{href: "/search?q=melanoma"} /search?q=melanoma
+              %a.keyless-example{href: "/search?q=melanoma"} /search?q=melanoma
           %li
             Parameters
             %ul
@@ -175,7 +177,7 @@
             %ul
               %li
                 example:
-                %a{href: "/search?q=melanoma&ontology=NCIT&subtree_root_id=http%3a%2f%2fncicb.nci.nih.gov%2fxml%2fowl%2fEVS%2fThesaurus.owl%23C3224"} /search?q=melanoma&ontology=NCIT&subtree_root_id=http%3a%2f%2fncicb.nci.nih.gov%2fxml%2fowl%2fEVS%2fThesaurus.owl%23C3224
+                %a.keyless-example{href: "/search?q=melanoma&ontology=NCIT&subtree_root_id=http%3a%2f%2fncicb.nci.nih.gov%2fxml%2fowl%2fEVS%2fThesaurus.owl%23C3224"} /search?q=melanoma&ontology=NCIT&subtree_root_id=http%3a%2f%2fncicb.nci.nih.gov%2fxml%2fowl%2fEVS%2fThesaurus.owl%23C3224
             %li
               Parameters
               %ul
@@ -192,7 +194,7 @@
             %ul
               %li
                 example:
-                %a{href: "/search?q=melanoma&ontologies=NCIT,GO&roots_only=true"} /search?q=melanoma&ontology=NCIT,GO&roots_only=true
+                %a.keyless-example{href: "/search?q=melanoma&ontologies=NCIT,GO&roots_only=true"} /search?q=melanoma&ontologies=NCIT,GO&roots_only=true
             %li
               Parameters
               %ul
@@ -210,7 +212,7 @@
               <span class="label label-info">GET</span> <span class="label label-info">POST</span> <code>/property_search?q={search query}</code>
             %li
               example:
-              %a{href: "/property_search?q=has dimension"} /property_search?q=has dimension
+              %a.keyless-example{href: "/property_search?q=has%20dimension"} /property_search?q=has%20dimension
           %li
             Parameters
             %ul
@@ -235,7 +237,7 @@
               <span class="label label-info">GET</span> <span class="label label-info">POST</span> <code>/annotator?text={input text}</code>
             %li
               example:
-              %a{href: "/annotator?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye."} /annotator?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.
+              %a.keyless-example{href: "/annotator?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye."} /annotator?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.
           %li
             Parameters
             %ul
@@ -274,7 +276,7 @@
               <span class="label label-info">GET</span> <span class="label label-info">POST</span> <code>/recommender?input={input text or keywords}</code>
             %li
               example: suggest ontologies for the text "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye":
-              %a{href: "/recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye"} /recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye
+              %a.keyless-example{href: "/recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye"} /recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye
           %li
             Parameters
             %ul
@@ -290,13 +292,13 @@
             Additional examples
             %ul
               %li Suggest ontologies for the <u>keywords</u> "leukocyte, phagocyte, motile cell, metabolising cell, dendritic cell, pipette":
-              %a{href: "/recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2"} /recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2
+              %a.keyless-example{href: "/recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2"} /recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2
               %li Suggest ontologies for the <u>keywords</u> "leukocyte, phagocyte, motile cell, metabolising cell, dendritic cell, pipette", <u>limited to the ontologies UBERON, CL, NCIT and EFO</u>:
-              %a{href: "/recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&ontologies=UBERON,CL,NCIT,EFO"} /recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&ontologies=UBERON,CL,NCIT,EFO
+              %a.keyless-example{href: "/recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&ontologies=UBERON,CL,NCIT,EFO"} /recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&ontologies=UBERON,CL,NCIT,EFO
               %li Suggest <u>ontology sets</u> for the <u>keywords</u> "leukocyte, phagocyte, motile cell, metabolising cell, dendritic cell, pipette":
-              %a{href: "/recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&output_type=2"} /recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&output_type=2
+              %a.keyless-example{href: "/recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&output_type=2"} /recommender?input=leukocyte,phagocyte,motile%20cell,metabolising%20cell,dendritic%20cell,%20pipette&input_type=2&output_type=2
               %li Suggest ontologies for the text "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye", <u>limiting the evaluation to ontology coverage</u> (the weights for the other criteria -acceptance, detail and specialization- will be set to 0):
-              %a{href: "/recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye&wa=0&wd=0&ws=0"} /recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye&wa=0&wd=0&ws=0
+              %a.keyless-example{href: "/recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye&wa=0&wd=0&ws=0"} /recommender?input=Melanoma%20is%20a%20malignant%20tumor%20of%20melanocytes%20which%20are%20found%20predominantly%20in%20skin%20but%20also%20in%20the%20bowel%20and%20the%20eye&wa=0&wd=0&ws=0
 
       %h2#nav_batch Batch Endpoints
 
@@ -373,7 +375,7 @@
               <span class="label label-info">GET</span> <code>/analytics</code>
             %li
               example:
-              %a{href: "/analytics"} /analytics
+              %a.keyless-example{href: "/analytics"} /analytics
 
 
           %li Get analytics data for a given month/year
@@ -382,7 +384,7 @@
               <span class="label label-info">GET</span> <code>/analytics?month={month number}&year={year}</code>
             %li
               example:
-              %a{href: "/analytics?month=4&year=2014"} /analytics?month=4&year=2014
+              %a.keyless-example{href: "/analytics?month=4&year=2014"} /analytics?month=4&year=2014
           %li
             Parameters
             %ul
@@ -400,7 +402,7 @@
               <span class="label label-info">GET</span> <code>/ontologies/{acronym}/analytics</code>
             %li
               example:
-              %a{href: "/ontologies/NCIT/analytics"} /ontologies/NCIT/analytics
+              %a.keyless-example{href: "/ontologies/NCIT/analytics"} /ontologies/NCIT/analytics
 
       %h2#nav_resource_endpoints Resource Endpoints
 

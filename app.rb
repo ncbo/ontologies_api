@@ -152,7 +152,8 @@ use Rack::ParamTranslator
 use RequestStore::Middleware
 use Rack::RequestLang
 
-use LinkedData::Security::Authorization
+require_relative 'config/keyless_doc_examples'
+use LinkedData::Security::Authorization, keyless_requests: KEYLESS_DOC_EXAMPLES
 use LinkedData::Security::AccessDenied
 
 if LinkedData::OntologiesAPI.settings.enable_throttling
