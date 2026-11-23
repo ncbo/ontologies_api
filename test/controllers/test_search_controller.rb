@@ -178,6 +178,18 @@ class TestSearchController < TestCase
     end
   end
 
+  def test_search_include_param_array_form
+    get "/search?q=Funding&include[]=prefLabel&include[]=ontology&include[]=ui"
+    assert_equal 400, last_response.status, last_response.body[0, 300]
+    assert_includes MultiJson.load(last_response.body)["errors"].first, "cannot accept ontology, ui"
+
+    get "/search?q=Funding&include[]=prefLabel&include[]=synonym"
+    assert last_response.ok?, "expected 200, got #{last_response.status}: #{last_response.body[0, 300]}"
+
+    get "/search?q=Funding&include[key]=prefLabel"
+    assert_equal 400, last_response.status, last_response.body[0, 300]
+  end
+
   # Regression: when the acronyms list filters down to empty (here via an
   # ontology_types filter that matches no seeded ontology), the Solr fq used
   # to start with " AND obsolete:false ..." — a malformed query rejected by
